@@ -14,4 +14,10 @@
         <!-- Customize your theme here. -->
         <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
     </style>
+    <style name="Theme.Roomies.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.Roomies.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Roomies.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

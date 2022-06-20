@@ -90,10 +90,10 @@
             android:id="@+id/imageView5"
             android:layout_width="236dp"
             android:layout_height="96dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="28dp"
             android:elevation="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
             app:srcCompat="@drawable/logo" />
@@ -103,27 +103,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="136dp"
             android:elevation="20dp"
             android:text="Register"
             android:textColor="@color/turquoise"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/imageView5"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/btnCreateAccount" />
+            app:layout_constraintTop_toTopOf="@+id/textView3" />
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="136dp"
             android:elevation="20dp"
             android:text="Don't have an account?"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/imageView5"
-            app:layout_constraintTop_toBottomOf="@+id/btnCreateAccount" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.372"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnCreateAccount"
+            app:layout_constraintVertical_bias="0.196" />
 
         <ImageView
             android:id="@+id/ivBackground"
