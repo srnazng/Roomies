@@ -229,8 +229,7 @@ Add additional stretch features and polish.
 
 
 ## Wireframes
-[Add picture of your hand sketched wireframes in this section]
-<img src="![](https://i.imgur.com/VA2kWJr.png)" width=600>
+![IMG_0692](https://user-images.githubusercontent.com/31111505/173660646-8b7e29d1-139c-45e2-8445-57111de530d2.jpg)
 
 ## Schema
 ### Models
@@ -323,6 +322,7 @@ Relational database instead? - more queries but smaller queries
 | completed     | Boolean  | whether transaction has been paid |
 | expense       | Expense  | pointer to related expense | 
 
+![thumbnail_IMG_0693](https://user-images.githubusercontent.com/31111505/174542790-bbeff589-f180-4730-8612-79ca24f68f83.jpeg)
 
 ### Networking
 #### List of network requests by screen
@@ -349,7 +349,5 @@ Relational database instead? - more queries but smaller queries
   - (Create/POST) Create circle object
   - (Update/PATCH) Update circle
   - (Update/PATCH) User object
-
-<img src="![](https://imgur.com/irenyM4.png)" width=600>
 
 #### [OPTIONAL:] Existing API Endpoints
