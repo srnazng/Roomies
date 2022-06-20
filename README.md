@@ -149,7 +149,7 @@ Roomie is everything you need to have a good rooommate/housemate experience-- sc
   * Create account
   * Home
 
-## Temporary Schedule
+## Schedule
 
 ### Week 1
 Build out the skeleton of your project. Midpoint self review due Thursday.
@@ -157,40 +157,42 @@ Build out the skeleton of your project. Midpoint self review due Thursday.
 - Create user account
 - Login/logout
 - Outline app (create template)
-  - Set up toolbar
-  - Bottom navigation
-  - Outline screens
-  - Implement navigation buttons
-- Colors
-- Logos
-- Create Parse classes
-
-### Week 2
-Build out core features, with a focus on your difficult/ambiguous technical problems.
+    - Set up toolbar
+    - Bottom navigation
+    - Outline screens
+    - Implement navigation buttons
 - Implement settings page
-  - Edit account information
-  - Edit circle information
+    - Edit account information
+    - Edit circle information
 - Create circle
 - Join circle and view joined circles
 - Implement home page
-  - View circle details
-  - View users in circle
+    - View circle details
+    - View users in circle
+
+### Week 2
+Build out core features, with a focus on your difficult/ambiguous technical problems. 
+- Simple house expense list
+- Add house expense
+- Simple chore schedule
+- Add chore
 
 ### Week 3
 Continue building core features, including ambiguous technical problems.
-- House expense list and summary
-- Add house expense
+- House expense list with more details 
+- Summary of expense
+- Add house expense with details (frequency, upload proof etc.)
 - View expense detail
 - Users send reminder notifications
-  - push, SMS, email (stretch)
+    - push, SMS, email (stretch)
 - Open venmo (stretch)
 
 ### Week 4
 Complete remaining core features, including ambiguous technical problems.
-- My chore chart schedule
+- My chore chart schedule with details
 - Chore chart calendar
-  - https://developers.google.com/calendar/api
-- Add chore
+    - https://developers.google.com/calendar/api
+- Add chore details
 - View chore detail
 
 
@@ -203,7 +205,7 @@ Final self review is due EOW. Add additional stretch features and polish.
 ### Week 6
 Add additional stretch features and polish.
 - Additional stretch features
-- Improve styling
+- Improve styling 
 
 ## Expectations
 - [X] Difficult/Ambiguous Technical Problems
