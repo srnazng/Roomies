@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_home"
+        android:enabled="true"
+        android:icon="@drawable/home"
+        app:showAsAction="ifRoom"
+        android:title="Home" />
+    <item
+        android:id="@+id/action_chores"
+        android:enabled="true"
+        android:icon="@drawable/chores"
+        android:title="Chores"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_expenses"
+        android:enabled="true"
+        android:icon="@drawable/expenses"
+        android:title="Expenses"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_settings"
+        android:enabled="true"
+        android:icon="@drawable/settings"
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
+</menu>
