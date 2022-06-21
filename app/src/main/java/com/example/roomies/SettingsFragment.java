@@ -22,6 +22,7 @@ import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -36,8 +37,10 @@ public class SettingsFragment extends Fragment {
     private Button btnLogout;
     private Button btnManageAccount;
     private Button btnManageCircle;
+    private Button btnLeaveCircle;
     private TextView tvJoinCode;
     private Circle circle;
+    private UserCircle userCircle;
     private ImageView ivClipboard;
 
     public static final String TAG = "SettingsFragment";
@@ -73,6 +76,8 @@ public class SettingsFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         circle = bundle.getParcelable("circle");
+        userCircle = null;
+        getCircle();
 
         // button to edit account settings
         btnManageAccount = view.findViewById(R.id.btnManageAccount);
@@ -113,6 +118,16 @@ public class SettingsFragment extends Fragment {
                 logout(v);
             }
         });
+
+        // button to leave circle
+        btnLeaveCircle = view.findViewById(R.id.btnLeaveCircle);
+        btnLeaveCircle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                leaveCircle();
+            }
+        });
+
         return view;
     }
 
@@ -180,8 +195,40 @@ public class SettingsFragment extends Fragment {
                 }
 
                 // save received posts to list and notify adapter of new data
+                userCircle = userCircles.get(0);
                 circle = userCircles.get(0).getCircle();
             }
         });
+    }
+
+    // delete userCircle object connection current user and their current circle
+    public void leaveCircle(){
+        // get userCircle object
+        getCircle();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("UserCircle");
+
+        // Retrieve the object by id
+        query.getInBackground(userCircle.getObjectId(), (object, e) -> {
+            if (e == null) {
+                //Object was fetched
+                //Deletes the fetched ParseObject from the database
+                object.deleteInBackground(e2 -> {
+                    if(e2==null){
+                        Toast.makeText(getActivity(), "Left circle", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getActivity(), AddCircleActivity.class);
+                        startActivity(i);
+                        getActivity().finish();
+                    }else{
+                        //Something went wrong while deleting the Object
+                        Toast.makeText(getActivity(), "Error leaving circle: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else{
+                //Something went wrong
+                Toast.makeText(getActivity(), "Error retrieving circle, try again later", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
