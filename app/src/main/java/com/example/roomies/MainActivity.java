@@ -25,12 +25,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    // define fragments
-    final Fragment homeFragment = HomeFragment.newInstance();
-    final Fragment choreFragment = ChoreFragment.newInstance();
-    final Fragment expenseFragment = ExpenseFragment.newInstance();
-    final Fragment settingsFragment = SettingsFragment.newInstance();
-
     List<Circle> circles;
 
     public static final String TAG = "MainActivity";
@@ -46,21 +40,21 @@ public class MainActivity extends AppCompatActivity {
         // set up bottom navigator
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            Fragment selectedFragment = homeFragment;
+            Fragment selectedFragment = HomeFragment.newInstance();
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_chores:
-                        selectedFragment = choreFragment;
+                        selectedFragment = ChoreFragment.newInstance();
                         break;
                     case R.id.action_expenses:
-                        selectedFragment = expenseFragment;
+                        selectedFragment = ExpenseFragment.newInstance();
                         break;
                     case R.id.action_settings:
-                        selectedFragment = settingsFragment;
+                        selectedFragment = SettingsFragment.newInstance(circles.get(0));
                         break;
-                    default: selectedFragment = homeFragment;
+                    default: selectedFragment = HomeFragment.newInstance();
                 }
                 fragmentManager.beginTransaction().replace(R.id.frame, selectedFragment).commit();
                 return true;

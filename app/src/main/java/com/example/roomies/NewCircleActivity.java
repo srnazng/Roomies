@@ -57,5 +57,6 @@ public class NewCircleActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("copied text", text);
         clipboard.setPrimaryClip(clip);
+        Toast.makeText(context, "Copied to clipboard " + text, Toast.LENGTH_SHORT).show();
     }
 }
