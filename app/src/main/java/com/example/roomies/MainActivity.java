@@ -34,27 +34,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // all circles which user has joined
+        // currently user can only join 1 circle
         circles = new ArrayList<>();
         getCircles();
 
         // set up bottom navigator
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            // initialize fragment
             Fragment selectedFragment = HomeFragment.newInstance();
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_chores:
+                        // go to chore screen
                         selectedFragment = ChoreFragment.newInstance();
                         break;
                     case R.id.action_expenses:
+                        // go to house expense screen
                         selectedFragment = ExpenseFragment.newInstance();
                         break;
                     case R.id.action_settings:
+                        // go to settings screen (manage user account and circle)
                         selectedFragment = SettingsFragment.newInstance(circles.get(0));
                         break;
-                    default: selectedFragment = HomeFragment.newInstance();
+                    default:
+                        // go to home screen
+                        selectedFragment = HomeFragment.newInstance();
                 }
                 fragmentManager.beginTransaction().replace(R.id.frame, selectedFragment).commit();
                 return true;
@@ -62,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // query UserCircle objects that contain current user to get circles that user has joined
     public void getCircles(){
-        // specify what type of data we want to query - Like.class
+        // specify what type of data we want to query - UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
         // include data referred by user key
         query.include(UserCircle.KEY_USER);
 
-        // start an asynchronous call for posts
+        // start an asynchronous call for UserCircle objects that include current user
         query.findInBackground(new FindCallback<UserCircle>() {
             @Override
             public void done(List<UserCircle> userCircles, ParseException e) {
@@ -78,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                // user has not joined a circle
                 if(userCircles.isEmpty()){
                     Intent i = new Intent(MainActivity.this, CircleActivity.class);
                     startActivity(i);

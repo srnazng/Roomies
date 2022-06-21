@@ -19,6 +19,7 @@ import com.parse.ParseUser;
 import org.parceler.Parcels;
 import org.w3c.dom.Text;
 
+// Allows user to join an existing circle using a join code
 public class JoinCircleActivity extends AppCompatActivity {
     private Button btnJoin;
     private TextView tvLogin;
@@ -29,8 +30,10 @@ public class JoinCircleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_circle);
 
+        // text field to enter join code
         etCode = findViewById(R.id.etCode);
 
+        // join circle button
         btnJoin = findViewById(R.id.btnJoin);
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +53,7 @@ public class JoinCircleActivity extends AppCompatActivity {
         });
     }
 
+    // join existing circle using join code
     private void joinCircle(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Circle");
 
@@ -69,17 +73,18 @@ public class JoinCircleActivity extends AppCompatActivity {
                 // Notice that the SaveCallback is totally optional!
                 userCircle.saveInBackground(e1 -> {
                     if (e1==null){
+                        Toast.makeText(JoinCircleActivity.this, "Circle join success", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(JoinCircleActivity.this, MainActivity.class);
                         startActivity(i);
                         finish();
                     }else{
                         //Something went wrong
-                        Toast.makeText(JoinCircleActivity.this, e1.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(JoinCircleActivity.this, "Error occurred: unable to join circle", Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
                 // something went wrong
-                Toast.makeText(JoinCircleActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(JoinCircleActivity.this, "Invalid join code", Toast.LENGTH_SHORT).show();
             }
         });
     }

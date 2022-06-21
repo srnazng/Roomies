@@ -17,6 +17,7 @@ import com.example.roomies.model.Circle;
 
 import org.parceler.Parcels;
 
+// Gives join code of newly created circle before going to home screen
 public class NewCircleActivity extends AppCompatActivity {
     private TextView tvCode;
     private Button btnContinue;
@@ -31,7 +32,7 @@ public class NewCircleActivity extends AppCompatActivity {
         btnContinue = findViewById(R.id.btnContinue);
         ivCopy = findViewById(R.id.ivCopy);
 
-        // unwrap the movie passed in via intent, using its simple name as a key
+        // unwrap the circle passed in via intent, using its simple name as a key
         Circle circle = Parcels.unwrap(getIntent().getParcelableExtra("circle"));
         tvCode.setText(circle.getObjectId());
 
@@ -53,6 +54,7 @@ public class NewCircleActivity extends AppCompatActivity {
         });
     }
 
+    // copy text to clipboard
     private void setClipboard(Context context, String text) {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("copied text", text);

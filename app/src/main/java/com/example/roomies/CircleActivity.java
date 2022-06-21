@@ -17,6 +17,7 @@ import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
+// Presents user the options of creating a new circle or joining an existing circle
 public class CircleActivity extends AppCompatActivity {
     private Button btnCreateCircle;
     private Button btnJoin;
@@ -62,13 +63,14 @@ public class CircleActivity extends AppCompatActivity {
                 // Notice that the SaveCallback is totally optional!
                 userCircle.saveInBackground(e1 -> {
                     if (e1==null){
+                        Toast.makeText(this, "Create new circle success", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(CircleActivity.this, NewCircleActivity.class);
                         i.putExtra("circle", Parcels.wrap(circle));
                         startActivity(i);
                         finish();
                     }else{
                         //Something went wrong
-                        Toast.makeText(this, e1.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error occurred unable to create new circle", Toast.LENGTH_SHORT).show();
                     }
                 });
             }else{

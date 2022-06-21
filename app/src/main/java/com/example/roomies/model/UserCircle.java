@@ -20,4 +20,6 @@ public class UserCircle extends ParseObject {
     public Circle getCircle(){
         return (Circle) getParseObject(KEY_CIRCLE);
     }
+
+    public void setCircle(Circle circle) { put(KEY_CIRCLE, circle); }
 }
