@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
                         selectedFragment = ExpenseFragment.newInstance();
                         break;
                     case R.id.action_settings:
+                        // refresh circle info
+                        getCircles();
                         // go to settings screen (manage user account and circle)
                         selectedFragment = SettingsFragment.newInstance(circles.get(0));
                         break;
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
         // include data referred by user key
         query.include(UserCircle.KEY_USER);
-
+        query.include(UserCircle.KEY_CIRCLE);
         // start an asynchronous call for UserCircle objects that include current user
         query.findInBackground(new FindCallback<UserCircle>() {
             @Override

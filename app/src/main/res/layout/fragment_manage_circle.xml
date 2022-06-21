@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ManageAccountFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ManageCircleFragment">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/ivProfileImage"
+            android:id="@+id/ivCircleImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="36dp"
@@ -28,7 +29,7 @@
             android:layout_marginTop="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivProfileImage"
+            app:layout_constraintTop_toBottomOf="@+id/ivCircleImage"
             app:srcCompat="@drawable/camera"
             app:tint="@android:color/secondary_text_dark" />
 
@@ -42,7 +43,7 @@
             android:layout_marginTop="20dp"
             android:clipToPadding="false"
             android:elevation="1dp"
-            android:hint="Name"
+            android:hint="Circle Name"
             app:boxBackgroundColor="@color/white"
             app:boxCollapsedPaddingTop="5dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,32 +55,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="1dp"
-                android:textColor="@color/black" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etEmail"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="10dp"
-            android:clipToPadding="false"
-            android:elevation="1dp"
-            android:hint="Email"
-            app:boxBackgroundColor="@color/white"
-            app:boxCollapsedPaddingTop="5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEmailInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="1dp"
-                android:inputType="textEmailAddress"
                 android:textColor="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -102,4 +77,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>

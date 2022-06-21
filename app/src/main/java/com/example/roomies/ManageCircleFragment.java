@@ -19,7 +19,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.roomies.model.Circle;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
@@ -28,20 +31,21 @@ import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ManageAccountFragment#newInstance} factory method to
+ * Use the {@link ManageCircleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ManageAccountFragment extends Fragment {
-    private ImageView ivProfileImage;
+public class ManageCircleFragment extends Fragment {
+
+    private Circle circle;
+    private ImageView ivCircleImage;
     private ImageView ivAddPhoto;
     private EditText etNameInput;
-    private EditText etEmailInput;
     private Button btnUpdate;
     private Bitmap bitmap;
 
     public static final int GET_FROM_GALLERY = 3;
 
-    public ManageAccountFragment() {
+    public ManageCircleFragment() {
         // Required empty public constructor
     }
 
@@ -49,11 +53,12 @@ public class ManageAccountFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment ManageAccountFragment.
+     * @return A new instance of fragment ManageCircleFragment.
      */
-    public static ManageAccountFragment newInstance() {
-        ManageAccountFragment fragment = new ManageAccountFragment();
+    public static ManageCircleFragment newInstance(Circle circle) {
+        ManageCircleFragment fragment = new ManageCircleFragment();
         Bundle args = new Bundle();
+        args.putParcelable("circle", circle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,24 +66,27 @@ public class ManageAccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            circle = getArguments().getParcelable("circle");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_manage_account, container, false);
+        View view = inflater.inflate(R.layout.fragment_manage_circle, container, false);
 
-        // show profile image
-        ivProfileImage = view.findViewById(R.id.ivProfileImage);
-        if (ParseUser.getCurrentUser().getParseFile("image") != null) {
-            Glide.with(this).load(ParseUser.getCurrentUser().getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
+        // show circle image
+        ivCircleImage = view.findViewById(R.id.ivCircleImage);
+        if (circle.getImage() != null) {
+            Glide.with(this).load(circle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCircleImage);
         }
 
         // initialize bitmap for sending new profile image
         bitmap = null;
 
-        // button to edit profile image
+        // button to edit circle image
         ivAddPhoto = view.findViewById(R.id.IvAddPhoto);
         ivAddPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,50 +95,20 @@ public class ManageAccountFragment extends Fragment {
             }
         });
 
-        // set email input to existing email
-        etEmailInput = view.findViewById(R.id.etEmailInput);
-        etEmailInput.setText(ParseUser.getCurrentUser().getEmail());
-
-        // set name input to existing user name
+        // set name input to existing circle name
         etNameInput = view.findViewById(R.id.etNameInput);
-        etNameInput.setText(ParseUser.getCurrentUser().getString("name"));
+        etNameInput.setText(circle.getString("name"));
 
         // update button
         btnUpdate = view.findViewById(R.id.btnUpdate);
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateUser();
+                updateCircle();
             }
         });
 
         return view;
-    }
-
-    public void updateUser() {
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser != null) {
-            // Change only name and email
-            currentUser.put("name", etNameInput.getText().toString());
-            currentUser.put("email", etEmailInput.getText().toString());
-            currentUser.put("username", etEmailInput.getText().toString()); // username is same as email
-
-            // update profile image if a new one has been uploaded
-            if(bitmap != null){
-                currentUser.put("image", conversionBitmapParseFile(bitmap));
-            }
-
-            // Saves the object.
-            currentUser.saveInBackground(e -> {
-                if(e==null){
-                    //Save successfull
-                    Toast.makeText(getActivity(), "Account Update Success", Toast.LENGTH_SHORT).show();
-                }else{
-                    // Something went wrong while saving
-                    Toast.makeText(getActivity(), "Account update failed, try again later.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
     }
 
     // convert bitmap image to ParseFile
@@ -142,7 +120,7 @@ public class ManageAccountFragment extends Fragment {
         return parseFile;
     }
 
-    // after upload new profile image
+    // after upload new circle image
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -155,7 +133,7 @@ public class ManageAccountFragment extends Fragment {
                 bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
 
                 // show uploaded image
-                Glide.with(this).load(selectedImage).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
+                Glide.with(this).load(selectedImage).apply(RequestOptions.circleCropTransform()).into(ivCircleImage);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -164,4 +142,28 @@ public class ManageAccountFragment extends Fragment {
         }
     }
 
+    public void updateCircle() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Circle");
+
+        // Retrieve the object by id
+        query.getInBackground(circle.getObjectId(), (object, e) -> {
+            if (e == null) {
+                // Object was successfully retrieved
+                // Update the fields we want to
+                object.put("name", etNameInput.getText().toString());
+
+                // update circle image if a new one has been uploaded
+                if(bitmap != null){
+                    object.put("image", conversionBitmapParseFile(bitmap));
+                }
+
+                //All other fields will remain the same
+                object.saveInBackground();
+                Toast.makeText(getActivity(), "Update success", Toast.LENGTH_SHORT).show();
+            } else {
+                // something went wrong
+                Toast.makeText(getActivity(), "Update failed, try again later", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
