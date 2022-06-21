@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // user has not joined a circle
                 if(userCircles.isEmpty()){
-                    Intent i = new Intent(MainActivity.this, CircleActivity.class);
+                    Intent i = new Intent(MainActivity.this, AddCircleActivity.class);
                     startActivity(i);
                     finish();
                 }

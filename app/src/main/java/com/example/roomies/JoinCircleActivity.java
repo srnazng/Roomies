@@ -16,9 +16,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.parceler.Parcels;
-import org.w3c.dom.Text;
-
 // Allows user to join an existing circle using a join code
 public class JoinCircleActivity extends AppCompatActivity {
     private Button btnJoin;
@@ -47,7 +44,7 @@ public class JoinCircleActivity extends AppCompatActivity {
         tvLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(JoinCircleActivity.this, CircleActivity.class);
+                Intent i = new Intent(JoinCircleActivity.this, AddCircleActivity.class);
                 startActivity(i);
             }
         });
