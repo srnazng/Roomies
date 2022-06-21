@@ -25,7 +25,6 @@ public class ExpenseFragment extends Fragment {
      *
      * @return A new instance of fragment ExpenseFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ExpenseFragment newInstance() {
         ExpenseFragment fragment = new ExpenseFragment();
         Bundle args = new Bundle();

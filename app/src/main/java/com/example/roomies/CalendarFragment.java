@@ -25,7 +25,7 @@ public class CalendarFragment extends Fragment {
      *
      * @return A new instance of fragment CalendarFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static CalendarFragment newInstance() {
         CalendarFragment fragment = new CalendarFragment();
         Bundle args = new Bundle();

@@ -29,7 +29,6 @@ public class ChoreFragment extends Fragment {
      *
      * @return A new instance of fragment ChoreFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ChoreFragment newInstance() {
         ChoreFragment fragment = new ChoreFragment();
         Bundle args = new Bundle();
@@ -59,7 +58,7 @@ public class ChoreFragment extends Fragment {
         return view;
     }
 
-    // go to profile page of post creator
+    // go to calendar page
     public void toCalendar() {
         FragmentTransaction fragmentTransaction = (getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, CalendarFragment.newInstance());

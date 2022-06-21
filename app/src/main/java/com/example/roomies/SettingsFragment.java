@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.parse.ParseUser;
  */
 public class SettingsFragment extends Fragment {
     private Button btnLogout;
+    private Button btnManageAccount;
     private TextView tvJoinCode;
     private Circle circle;
     private ImageView ivClipboard;
@@ -61,6 +63,15 @@ public class SettingsFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         circle = bundle.getParcelable("circle");
+
+        // button to edit account settings
+        btnManageAccount = view.findViewById(R.id.btnManageAccount);
+        btnManageAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toManageAccount();
+            }
+        });
 
         // join code to share circle
         tvJoinCode = view.findViewById(R.id.tvJoinCode);
@@ -101,5 +112,13 @@ public class SettingsFragment extends Fragment {
         ClipData clip = ClipData.newPlainText("copied text", text);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(context, "Copied to clipboard " + text, Toast.LENGTH_SHORT).show();
+    }
+
+    // go to calendar page
+    public void toManageAccount() {
+        FragmentTransaction fragmentTransaction = (getActivity()).getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, ManageAccountFragment.newInstance());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
