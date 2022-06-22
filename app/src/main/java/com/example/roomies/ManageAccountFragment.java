@@ -1,6 +1,7 @@
 package com.example.roomies;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -26,18 +27,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ManageAccountFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ManageAccountFragment extends Fragment {
     private ImageView ivProfileImage;
     private ImageView ivAddPhoto;
     private EditText etNameInput;
     private EditText etEmailInput;
-    private Button btnUpdate;
+    private Button btnUpdateAccount;
     private Bitmap bitmap;
+    private ProgressDialog pd;
 
     public static final int GET_FROM_GALLERY = 3;
 
@@ -48,9 +45,6 @@ public class ManageAccountFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @return A new instance of fragment ManageAccountFragment.
      */
     public static ManageAccountFragment newInstance() {
@@ -64,6 +58,12 @@ public class ManageAccountFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         currentUser = ParseUser.getCurrentUser();
+
+        // set up progress dialog
+        pd = new ProgressDialog(getActivity());
+        pd.setTitle("Loading...");
+        pd.setMessage("Please wait.");
+        pd.setCancelable(false);
     }
 
     @Override
@@ -99,10 +99,12 @@ public class ManageAccountFragment extends Fragment {
         etNameInput.setText(currentUser.getString("name"));
 
         // update button
-        btnUpdate = view.findViewById(R.id.btnUpdate);
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
+        btnUpdateAccount = view.findViewById(R.id.btnUpdateAccount);
+        btnUpdateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // show progress bar
+                pd.show();
                 updateUser();
             }
         });
@@ -111,7 +113,9 @@ public class ManageAccountFragment extends Fragment {
     }
 
     public void updateUser() {
+
         if (currentUser != null) {
+
             // Change only name and email
             currentUser.put("name", etNameInput.getText().toString());
             currentUser.put("email", etEmailInput.getText().toString());
@@ -131,6 +135,8 @@ public class ManageAccountFragment extends Fragment {
                     // Something went wrong while saving
                     Toast.makeText(getActivity(), "Account update failed, try again later.", Toast.LENGTH_SHORT).show();
                 }
+                // Hide progress bar
+                pd.dismiss();
             });
         }
     }

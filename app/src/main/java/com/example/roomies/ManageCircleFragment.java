@@ -1,6 +1,7 @@
 package com.example.roomies;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -23,7 +24,6 @@ import com.example.roomies.model.Circle;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -41,6 +41,8 @@ public class ManageCircleFragment extends Fragment {
     private ImageView ivAddPhoto;
     private EditText etNameInput;
     private Button btnUpdate;
+    private ProgressDialog pd;
+
     private Bitmap bitmap;
 
     public static final int GET_FROM_GALLERY = 3;
@@ -69,6 +71,10 @@ public class ManageCircleFragment extends Fragment {
         if (getArguments() != null) {
             circle = getArguments().getParcelable("circle");
         }
+        pd = new ProgressDialog(getActivity());
+        pd.setTitle("Loading...");
+        pd.setMessage("Please wait.");
+        pd.setCancelable(false);
     }
 
     @Override
@@ -104,6 +110,7 @@ public class ManageCircleFragment extends Fragment {
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pd.show();
                 updateCircle();
             }
         });
@@ -164,6 +171,7 @@ public class ManageCircleFragment extends Fragment {
                 // something went wrong
                 Toast.makeText(getActivity(), "Update failed, try again later", Toast.LENGTH_SHORT).show();
             }
+            pd.dismiss();
         });
     }
 }
