@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             // initialize fragment
-            Fragment selectedFragment = HomeFragment.newInstance();
+            Fragment selectedFragment = null;
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

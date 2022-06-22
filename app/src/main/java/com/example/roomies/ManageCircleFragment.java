@@ -114,7 +114,7 @@ public class ManageCircleFragment extends Fragment {
     // convert bitmap image to ParseFile
     public ParseFile conversionBitmapParseFile(Bitmap imageBitmap){
         ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        imageBitmap.compress(Bitmap.CompressFormat.PNG,0,byteArrayOutputStream);
         byte[] imageByte = byteArrayOutputStream.toByteArray();
         ParseFile parseFile = new ParseFile("image_file.png",imageByte);
         return parseFile;

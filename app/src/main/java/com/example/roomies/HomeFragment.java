@@ -19,6 +19,7 @@ import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -98,8 +99,7 @@ public class HomeFragment extends Fragment {
 
         // specify what type of data we want to query - UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
-        // include data referred by user key
-        query.include(UserCircle.KEY_USER);
+        // include data referred by circle key
         query.include(UserCircle.KEY_CIRCLE);
         // start an asynchronous call for UserCircle objects that include current user
         query.findInBackground(new FindCallback<UserCircle>() {
@@ -170,45 +170,45 @@ public class HomeFragment extends Fragment {
      * @param view
      */
     public void fillProfileImages(View view){
-        Log.e(TAG, userCircleList.toString());
-        if(userCircleList.size() > 0 && userCircleList.get(0).getUser().getParseFile("image") != null){
-            Glide.with(getActivity()).load(userCircleList.get(0).getUser().getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile1);
+        ParseFile image;
+        if(userCircleList.size() > 0 && (image = userCircleList.get(0).getUser().getParseFile("image")) != null){
+            Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile1);
             ivProfile1.setVisibility(view.VISIBLE);
         }
 
-        if(userCircleList.size() > 1 && userCircleList.get(1).getUser().getParseFile("image") != null){
-            Glide.with(getActivity()).load(userCircleList.get(1).getUser().getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile2);
+        if(userCircleList.size() > 1 && (image = userCircleList.get(1).getUser().getParseFile("image")) != null){
+            Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile2);
             ivProfile2.setVisibility(view.VISIBLE);
         }
         else{
             ivProfile2.setVisibility(view.GONE);
         }
 
-        if(userCircleList.size() > 2 && userCircleList.get(2).getUser().getParseFile("image") != null){
-            Glide.with(getActivity()).load(userCircleList.get(2).getUser().getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile3);
+        if(userCircleList.size() > 2 && (image = userCircleList.get(2).getUser().getParseFile("image")) != null){
+            Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile3);
             ivProfile3.setVisibility(view.VISIBLE);
         }
         else{
             ivProfile3.setVisibility(view.GONE);
         }
 
-        if(userCircleList.size() > 3 && userCircleList.get(3).getUser().getParseFile("image") != null){
-            Glide.with(getActivity()).load(userCircleList.get(3).getUser().getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile4);
+        if(userCircleList.size() > 3 && (image = userCircleList.get(3).getUser().getParseFile("image")) != null){
+            Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile4);
             ivProfile4.setVisibility(view.VISIBLE);
         }
         else{
             ivProfile4.setVisibility(view.GONE);
         }
 
-        if(userCircleList.size() > 4 && userCircleList.get(4).getUser().getParseFile("image") != null){
-            Glide.with(getActivity()).load(userCircleList.get(4).getUser().getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile5);
+        if(userCircleList.size() > 4 && (image = userCircleList.get(4).getUser().getParseFile("image")) != null){
+            Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile5);
             ivProfile5.setVisibility(view.VISIBLE);
         }
         else{
             ivProfile5.setVisibility(view.GONE);
         }
 
-        if(userCircleList.size() > 5 && userCircleList.get(5).getUser().getParseFile("image") != null){
+        if(userCircleList.size() > 5){
             tvExtraProfiles.setVisibility(view.VISIBLE);
             int extra = userCircleList.size() - 5;
             tvExtraProfiles.setText("+" + extra);

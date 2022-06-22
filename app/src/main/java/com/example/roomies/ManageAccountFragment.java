@@ -41,6 +41,8 @@ public class ManageAccountFragment extends Fragment {
 
     public static final int GET_FROM_GALLERY = 3;
 
+    private ParseUser currentUser;
+
     public ManageAccountFragment() {
         // Required empty public constructor
     }
@@ -61,6 +63,7 @@ public class ManageAccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentUser = ParseUser.getCurrentUser();
     }
 
     @Override
@@ -71,8 +74,8 @@ public class ManageAccountFragment extends Fragment {
 
         // show profile image
         ivProfileImage = view.findViewById(R.id.ivProfileImage);
-        if (ParseUser.getCurrentUser().getParseFile("image") != null) {
-            Glide.with(this).load(ParseUser.getCurrentUser().getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
+        if (currentUser.getParseFile("image") != null) {
+            Glide.with(this).load(currentUser.getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
         }
 
         // initialize bitmap for sending new profile image
@@ -89,11 +92,11 @@ public class ManageAccountFragment extends Fragment {
 
         // set email input to existing email
         etEmailInput = view.findViewById(R.id.etEmailInput);
-        etEmailInput.setText(ParseUser.getCurrentUser().getEmail());
+        etEmailInput.setText(currentUser.getEmail());
 
         // set name input to existing user name
         etNameInput = view.findViewById(R.id.etNameInput);
-        etNameInput.setText(ParseUser.getCurrentUser().getString("name"));
+        etNameInput.setText(currentUser.getString("name"));
 
         // update button
         btnUpdate = view.findViewById(R.id.btnUpdate);
@@ -108,7 +111,6 @@ public class ManageAccountFragment extends Fragment {
     }
 
     public void updateUser() {
-        ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             // Change only name and email
             currentUser.put("name", etNameInput.getText().toString());
@@ -136,7 +138,7 @@ public class ManageAccountFragment extends Fragment {
     // convert bitmap image to ParseFile
     public ParseFile conversionBitmapParseFile(Bitmap imageBitmap){
         ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        imageBitmap.compress(Bitmap.CompressFormat.PNG,0,byteArrayOutputStream);
         byte[] imageByte = byteArrayOutputStream.toByteArray();
         ParseFile parseFile = new ParseFile("image_file.png",imageByte);
         return parseFile;
