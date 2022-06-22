@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         // refresh circle info
                         getCircles();
                         // go to settings screen (manage user account and circle)
-                        selectedFragment = SettingsFragment.newInstance(circles.get(0));
+                        selectedFragment = SettingsFragment.newInstance();
                         break;
                     default:
                         // go to home screen

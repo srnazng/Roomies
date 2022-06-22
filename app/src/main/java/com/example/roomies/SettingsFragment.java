@@ -55,10 +55,9 @@ public class SettingsFragment extends Fragment {
      *
      * @return A new instance of fragment SettingsFragment.
      */
-    public static SettingsFragment newInstance(Circle circle) {
+    public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
-        args.putParcelable("circle", circle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,8 +73,7 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_settings, container, false);
 
-        Bundle bundle = this.getArguments();
-        circle = bundle.getParcelable("circle");
+        circle = null;
         userCircle = null;
         getCircle();
 
@@ -99,7 +97,6 @@ public class SettingsFragment extends Fragment {
 
         // join code to share circle
         tvJoinCode = view.findViewById(R.id.tvJoinCode);
-        tvJoinCode.setText(circle.getObjectId());
 
         // copy join code to clipboard
         ivClipboard = view.findViewById(R.id.ivClipboard);
@@ -197,6 +194,7 @@ public class SettingsFragment extends Fragment {
                 // save received posts to list and notify adapter of new data
                 userCircle = userCircles.get(0);
                 circle = userCircles.get(0).getCircle();
+                tvJoinCode.setText(circle.getObjectId());
             }
         });
     }
