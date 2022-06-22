@@ -46,7 +46,8 @@ public class SignUpActivity extends AppCompatActivity {
         tvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAccount();
+               Intent i = new Intent(SignUpActivity.this, LoginActivity.class);
+               startActivity(i);
             }
         });
     }

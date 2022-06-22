@@ -11,26 +11,130 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Settings" />
-
         <Button
+            android:id="@+id/btnLogOut"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="@color/turquoise"
             android:elevation="1dp"
+            android:text="Log Out"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:id="@+id/btnLogOut"
-            android:text="Log Out"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnManageAccount" />
+
+        <Button
+            android:id="@+id/btnLeaveCircle"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/turquoise"
+            android:elevation="1dp"
+            android:text="Leave Circle"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnManageCircle" />
+
+        <Button
+            android:id="@+id/btnManageAccount"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:backgroundTint="@color/turquoise"
+            android:elevation="1dp"
+            android:text="Manage Account"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAccountTitle" />
+
+        <Button
+            android:id="@+id/btnManageCircle"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/turquoise"
+            android:elevation="1dp"
+            android:text="Manage Circle"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvJoinCode" />
+
+        <TextView
+            android:id="@+id/tvAccountTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:text="My Account"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvCircleTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:text="Circle"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/textView2"
-            app:layout_constraintStart_toStartOf="@+id/textView2" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnLogOut"
+            app:layout_constraintVertical_bias="0.27" />
+
+        <TextView
+            android:id="@+id/tvJoinCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="25dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/tvShareLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvCircleTitle"
+            tools:text="abc123def" />
+
+        <ImageView
+            android:id="@+id/ivClipboard"
+            android:layout_width="35dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="25dp"
+            android:src="@drawable/copy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCircleTitle"
+            app:tint="@android:color/secondary_text_dark" />
+
+        <TextView
+            android:id="@+id/tvShareLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:text="Share join code:"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCircleTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

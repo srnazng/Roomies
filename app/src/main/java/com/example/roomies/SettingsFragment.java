@@ -1,5 +1,8 @@
 package com.example.roomies;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -9,7 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.roomies.model.Circle;
 import com.parse.ParseUser;
 
 /**
@@ -19,9 +26,12 @@ import com.parse.ParseUser;
  */
 public class SettingsFragment extends Fragment {
     private Button btnLogout;
+    private TextView tvJoinCode;
+    private Circle circle;
+    private ImageView ivClipboard;
 
     public SettingsFragment() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -30,9 +40,10 @@ public class SettingsFragment extends Fragment {
      *
      * @return A new instance of fragment SettingsFragment.
      */
-    public static SettingsFragment newInstance() {
+    public static SettingsFragment newInstance(Circle circle) {
         SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
+        args.putParcelable("circle", circle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,6 +58,24 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_settings, container, false);
+
+        Bundle bundle = this.getArguments();
+        circle = bundle.getParcelable("circle");
+
+        // join code to share circle
+        tvJoinCode = view.findViewById(R.id.tvJoinCode);
+        tvJoinCode.setText(circle.getObjectId());
+
+        // copy join code to clipboard
+        ivClipboard = view.findViewById(R.id.ivClipboard);
+        ivClipboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setClipboard(getActivity(), circle.getObjectId());
+            }
+        });
+
+        // logout button
         btnLogout = view.findViewById(R.id.btnLogOut);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,5 +94,12 @@ public class SettingsFragment extends Fragment {
             Intent i = new Intent(getActivity(), LoginActivity.class);
             startActivity(i);
         }
+    }
+
+    private void setClipboard(Context context, String text) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("copied text", text);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(context, "Copied to clipboard " + text, Toast.LENGTH_SHORT).show();
     }
 }

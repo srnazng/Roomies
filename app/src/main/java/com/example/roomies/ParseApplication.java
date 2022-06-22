@@ -1,5 +1,8 @@
 package com.example.roomies;
 import android.app.Application;
+
+import com.example.roomies.model.Circle;
+import com.example.roomies.model.UserCircle;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -12,6 +15,8 @@ public class ParseApplication extends Application {
         super.onCreate();
 
         // register classes here
+        ParseObject.registerSubclass(Circle.class);
+        ParseObject.registerSubclass(UserCircle.class);
 
         // Use for troubleshooting -- remove this line for production
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
