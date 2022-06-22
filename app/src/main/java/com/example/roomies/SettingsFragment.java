@@ -75,7 +75,7 @@ public class SettingsFragment extends Fragment {
 
         circle = null;
         userCircle = null;
-        getCircle();
+        updateCircle();
 
         // button to edit account settings
         btnManageAccount = view.findViewById(R.id.btnManageAccount);
@@ -131,7 +131,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getCircle();
+        updateCircle();
     }
 
     public void logout(View v){
@@ -168,7 +168,8 @@ public class SettingsFragment extends Fragment {
     }
 
     // query UserCircle objects that contain current user to get circles that user has joined
-    public void getCircle(){
+    // TODO: return circle
+    public void updateCircle(){
         // specify what type of data we want to query - UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
         // include data referred by user key
@@ -189,11 +190,12 @@ public class SettingsFragment extends Fragment {
                     startActivity(i);
                     getActivity().finish();
                 }
-
-                // save received posts to list and notify adapter of new data
-                userCircle = userCircles.get(0);
-                circle = userCircles.get(0).getCircle();
-                tvJoinCode.setText(circle.getObjectId());
+                else{
+                    // save received posts to list and notify adapter of new data
+                    userCircle = userCircles.get(0);
+                    circle = userCircles.get(0).getCircle();
+                    tvJoinCode.setText(circle.getObjectId());
+                }
             }
         });
     }
@@ -201,7 +203,7 @@ public class SettingsFragment extends Fragment {
     // delete userCircle object connection current user and their current circle
     public void leaveCircle(){
         // get userCircle object
-        getCircle();
+        updateCircle();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserCircle");
 
@@ -212,13 +214,13 @@ public class SettingsFragment extends Fragment {
                 //Deletes the fetched ParseObject from the database
                 object.deleteInBackground(e2 -> {
                     if(e2==null){
-                        Toast.makeText(getActivity(), "Left circle", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "You have left circle " + circle.getName(), Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getActivity(), AddCircleActivity.class);
                         startActivity(i);
                         getActivity().finish();
                     }else{
                         //Something went wrong while deleting the Object
-                        Toast.makeText(getActivity(), "Error leaving circle: " + e2.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error leaving circle " + circle.getName(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }else{

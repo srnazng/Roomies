@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         // all circles which user has joined
         // currently user can only join 1 circle
         circles = new ArrayList<>();
-        getCircles();
+        updateCircles();
 
         // set up bottom navigator
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.action_settings:
                         // refresh circle info
-                        getCircles();
+                        updateCircles();
                         // go to settings screen (manage user account and circle)
                         selectedFragment = SettingsFragment.newInstance();
                         break;
@@ -72,8 +72,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // query UserCircle objects that contain current user to get circles that user has joined
-    public void getCircles(){
+    /**
+     * query UserCircle objects that contain current user to get circles that user has joined
+     * TODO: return circle, add to utils
+     */
+    public void updateCircles(){
         // specify what type of data we want to query - UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
         // include data referred by user key
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // user has not joined a circle
                 if(userCircles.isEmpty()){
+                    // go to AddCircleActivity
                     Intent i = new Intent(MainActivity.this, AddCircleActivity.class);
                     startActivity(i);
                     finish();

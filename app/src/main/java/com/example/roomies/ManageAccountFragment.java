@@ -27,9 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ManageAccountFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment allowing users to edit account settings
  */
 public class ManageAccountFragment extends Fragment {
     private ImageView ivProfileImage;
@@ -75,7 +73,8 @@ public class ManageAccountFragment extends Fragment {
         // show profile image
         ivProfileImage = view.findViewById(R.id.ivProfileImage);
         if (currentUser.getParseFile("image") != null) {
-            Glide.with(this).load(currentUser.getParseFile("image").getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
+            String imageUrl = currentUser.getParseFile("image").getUrl();
+            Glide.with(this).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
         }
 
         // initialize bitmap for sending new profile image

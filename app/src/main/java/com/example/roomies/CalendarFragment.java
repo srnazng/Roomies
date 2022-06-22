@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link CalendarFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Chore calendar fragment
  */
 public class CalendarFragment extends Fragment {
 
@@ -20,9 +18,6 @@ public class CalendarFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @return A new instance of fragment CalendarFragment.
      */
 
