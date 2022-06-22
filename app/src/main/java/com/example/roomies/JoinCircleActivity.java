@@ -67,7 +67,6 @@ public class JoinCircleActivity extends AppCompatActivity {
                 userCircle.put("circle", circle);
 
                 // Saves the new object.
-                // Notice that the SaveCallback is totally optional!
                 userCircle.saveInBackground(e1 -> {
                     if (e1==null){
                         Toast.makeText(JoinCircleActivity.this, "Circle join success", Toast.LENGTH_SHORT).show();

@@ -30,9 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ManageCircleFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment allowing users to edit circle settings
  */
 public class ManageCircleFragment extends Fragment {
 
@@ -52,15 +50,14 @@ public class ManageCircleFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @return A new instance of fragment ManageCircleFragment.
      */
     public static ManageCircleFragment newInstance(Circle circle) {
         ManageCircleFragment fragment = new ManageCircleFragment();
         Bundle args = new Bundle();
-        args.putParcelable("circle", circle);
+        if(circle != null){
+            args.putParcelable("circle", circle);
+        }
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,7 +83,8 @@ public class ManageCircleFragment extends Fragment {
         // show circle image
         ivCircleImage = view.findViewById(R.id.ivCircleImage);
         if (circle.getImage() != null) {
-            Glide.with(this).load(circle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCircleImage);
+            String imageUrl = circle.getImage().getUrl();
+            Glide.with(this).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivCircleImage);
         }
 
         // initialize bitmap for sending new profile image

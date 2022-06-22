@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChoreFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment for chore list and related actions
  */
 public class ChoreFragment extends Fragment {
 
@@ -24,9 +22,6 @@ public class ChoreFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @return A new instance of fragment ChoreFragment.
      */
     public static ChoreFragment newInstance() {

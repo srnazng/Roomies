@@ -27,12 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Home fragment showing current user's Circle information
  */
 public class HomeFragment extends Fragment {
     public static final String TAG = "HomeFragment";
+    public static final int NUM_PROFILES_SHOWN = 5;
 
     private Circle circle;
     private List<UserCircle> userCircleList;
@@ -51,9 +50,6 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
      * @return A new instance of fragment HomeFragment.
      */
     public static HomeFragment newInstance() {
@@ -80,6 +76,8 @@ public class HomeFragment extends Fragment {
         // bind layout
         ivCirclePhoto = view.findViewById(R.id.ivCirclePhoto);
         tvCircleName = view.findViewById(R.id.tvCircleName);
+
+        // TODO: use for loop
         ivProfile1 = view.findViewById(R.id.ivProfile1);
         ivProfile2 = view.findViewById(R.id.ivProfile2);
         ivProfile3 = view.findViewById(R.id.ivProfile3);
@@ -87,15 +85,16 @@ public class HomeFragment extends Fragment {
         ivProfile5 = view.findViewById(R.id.ivProfile5);
         tvExtraProfiles = view.findViewById(R.id.tvExtraProfiles);
 
-        getCircle(getActivity(), view);
+        updateCircle(getActivity(), view);
 
         return view;
     }
 
     /**
      * Query UserCircle objects that contain current user to get circles that user has joined
+     * TODO: return circle, add to utils
      */
-    public void getCircle(Context context, View view){
+    public void updateCircle(Context context, View view){
 
         // specify what type of data we want to query - UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
@@ -113,6 +112,7 @@ public class HomeFragment extends Fragment {
 
                 // user has not joined a circle
                 if(userCircles.isEmpty()){
+                    // go to AddCircleActivity
                     Intent i = new Intent(getActivity(), AddCircleActivity.class);
                     startActivity(i);
                     getActivity().finish();
@@ -125,15 +125,16 @@ public class HomeFragment extends Fragment {
                 Glide.with(context).load(circle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCirclePhoto);
                 tvCircleName.setText(circle.getName());
 
-                getAllProfiles(view);
+                updateAllProfiles(view);
             }
         });
     }
 
     /**
      * Get all UserCircles related to current circle
+     * TODO: return list
      */
-    public void getAllProfiles(View view){
+    private void updateAllProfiles(View view){
         // find profile of all users in current circle - query UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_CIRCLE, circle);
         // include data referred by user key
@@ -150,12 +151,13 @@ public class HomeFragment extends Fragment {
 
                 // user has not joined a circle
                 if(userCircles.isEmpty()){
+                    // go to AddCircleActivity
                     Intent i = new Intent(getActivity(), AddCircleActivity.class);
                     startActivity(i);
                     getActivity().finish();
                 }
 
-                // save received posts to list and notify adapter of new data
+                // update userCircleList
                 userCircleList.clear();
                 userCircleList.addAll(userCircles);
                 if(userCircleList.size() > 0){
@@ -170,6 +172,7 @@ public class HomeFragment extends Fragment {
      * @param view
      */
     public void fillProfileImages(View view){
+        // TODO: use for loop
         ParseFile image;
         if(userCircleList.size() > 0 && (image = userCircleList.get(0).getUser().getParseFile("image")) != null){
             Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile1);
@@ -208,9 +211,11 @@ public class HomeFragment extends Fragment {
             ivProfile5.setVisibility(view.GONE);
         }
 
-        if(userCircleList.size() > 5){
+        // do not show additional user profile images
+        // show how many additional users there are whose profile images are not shown
+        if(userCircleList.size() > NUM_PROFILES_SHOWN){
             tvExtraProfiles.setVisibility(view.VISIBLE);
-            int extra = userCircleList.size() - 5;
+            int extra = userCircleList.size() - NUM_PROFILES_SHOWN;
             tvExtraProfiles.setText("+" + extra);
         }
         else{
