@@ -1,5 +1,6 @@
 package com.example.roomies;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.Button;
 public class ChoreFragment extends Fragment {
 
     private Button btnToCalendar;
+    private Button btnAddChore;
 
     public ChoreFragment() {
         // Required empty public constructor
@@ -48,6 +50,16 @@ public class ChoreFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 toCalendar();
+            }
+        });
+
+        // button to add chore
+        btnAddChore = view.findViewById(R.id.btnAddChore);
+        btnAddChore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), AddChoreActivity.class);
+                startActivity(i);
             }
         });
         return view;

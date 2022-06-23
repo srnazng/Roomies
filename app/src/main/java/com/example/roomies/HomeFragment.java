@@ -173,6 +173,7 @@ public class HomeFragment extends Fragment {
      */
     public void fillProfileImages(View view){
         // TODO: use for loop
+        // TODO: replace getActivity() with context variable
         ParseFile image;
         if(userCircleList.size() > 0 && (image = userCircleList.get(0).getUser().getParseFile("image")) != null){
             Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile1);

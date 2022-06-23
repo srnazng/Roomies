@@ -31,7 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         etNameInput = findViewById(R.id.etNameInput);
-        etEmailInput = findViewById(R.id.etEmailInput);
+        etEmailInput = findViewById(R.id.etChoreName);
         etPasswordInput = findViewById(R.id.etPasswordInput);
         etReenterPasswordInput = findViewById(R.id.etReenterPasswordInput);
 

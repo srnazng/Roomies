@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
             goMainActivity();
         }
 
-        etEmailInput = findViewById(R.id.etEmailInput);
+        etEmailInput = findViewById(R.id.etChoreName);
         etPasswordInput = findViewById(R.id.etPasswordInput);
 
         tvRegister = findViewById(R.id.tvRegister);
