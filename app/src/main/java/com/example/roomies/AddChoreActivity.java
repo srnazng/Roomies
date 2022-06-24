@@ -45,7 +45,7 @@ public class AddChoreActivity extends AppCompatActivity {
     private Button btnAdd;
 
     private List<ParseUser> assignedUsers;
-    private static Date date;
+    private static Calendar date;
     private Chore chore;
 
     private static Context context;
@@ -106,7 +106,7 @@ public class AddChoreActivity extends AppCompatActivity {
         // datePicker dialog
         tvDate = findViewById(R.id.tvDate);
         tvDate.setText(getMonthForInt(month) + " " + day + ", " + year);
-        date = new Date();
+        date = Calendar.getInstance();
 
         tvDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +136,7 @@ public class AddChoreActivity extends AppCompatActivity {
         // check a user has been assigned to chore
         if(assignedUsers.size() < 1){
             Toast.makeText(this, "No one assigned to chore", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         Chore entity = new Chore();
@@ -145,7 +146,8 @@ public class AddChoreActivity extends AppCompatActivity {
         entity.put("title", etChoreName.getText().toString());
         entity.put("description", etChoreDescription.getText().toString());
         entity.put("points", Integer.parseInt(etPoints.getText().toString()));
-        entity.put("dueDate", date);
+        entity.put("dueDatetime", date.getTime());
+        entity.put("allDay", switchAllDay.isChecked());
 
         // get priority from radio group
         int radioButtonID = radioPriority.getCheckedRadioButtonId();
@@ -154,11 +156,6 @@ public class AddChoreActivity extends AppCompatActivity {
         RadioButton r = (RadioButton) radioPriority.getChildAt(idx);
         String selectedPriority = r.getText().toString();
         entity.put("priority", selectedPriority);
-
-        // only include time if not all day
-        if(switchAllDay.isChecked()){
-            entity.put("time", tvTime.getText());
-        }
 
         chore = entity;
 
@@ -247,9 +244,9 @@ public class AddChoreActivity extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Time has been chosen by the user
             String time = convertFromMilitaryTime(hourOfDay, minute);
-            date.setHours(hourOfDay);
-            date.setMinutes(minute);
-            date.setSeconds(0);
+            date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            date.set(Calendar.MINUTE, minute);
+            date.set(Calendar.SECOND, 0);
             tvTime.setText(time);
         }
     }
@@ -272,9 +269,9 @@ public class AddChoreActivity extends AppCompatActivity {
 
         // set date text
         public void onDateSet(DatePicker view, int year, int month, int day) {
-            date.setYear(year);
-            date.setMonth(month - 1);
-            date.setDate(day);
+            date.set(Calendar.YEAR, year);
+            date.set(Calendar.MONTH, month);
+            date.set(Calendar.DAY_OF_MONTH, day);
             tvDate.setText(getMonthForInt(month) + " " + day + ", " + year);
         }
     }
