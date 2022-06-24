@@ -33,8 +33,8 @@ public class HomeFragment extends Fragment {
     public static final String TAG = "HomeFragment";
     public static final int NUM_PROFILES_SHOWN = 5;
 
-    private Circle circle;
-    private List<UserCircle> userCircleList;
+    public static Circle currentCircle;
+    public static List<UserCircle> userCircleList;
     private ImageView ivCirclePhoto;
     private TextView tvCircleName;
 
@@ -119,11 +119,11 @@ public class HomeFragment extends Fragment {
                 }
 
                 // save received posts to list and notify adapter of new data
-                circle = userCircles.get(0).getCircle();
+                currentCircle = userCircles.get(0).getCircle();
 
                 // fill image and text on home screen
-                Glide.with(context).load(circle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCirclePhoto);
-                tvCircleName.setText(circle.getName());
+                Glide.with(context).load(currentCircle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCirclePhoto);
+                tvCircleName.setText(currentCircle.getName());
 
                 updateAllProfiles(view);
             }
@@ -136,7 +136,7 @@ public class HomeFragment extends Fragment {
      */
     private void updateAllProfiles(View view){
         // find profile of all users in current circle - query UserCircle.class
-        ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_CIRCLE, circle);
+        ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_CIRCLE, currentCircle);
         // include data referred by user key
         query.include(UserCircle.KEY_USER);
         // start an asynchronous call for UserCircle objects that include current circle
@@ -173,7 +173,6 @@ public class HomeFragment extends Fragment {
      */
     public void fillProfileImages(View view){
         // TODO: use for loop
-        // TODO: replace getActivity() with context variable
         ParseFile image;
         if(userCircleList.size() > 0 && (image = userCircleList.get(0).getUser().getParseFile("image")) != null){
             Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile1);

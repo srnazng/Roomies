@@ -54,7 +54,7 @@ public class ChoreFragment extends Fragment {
         });
 
         // button to add chore
-        btnAddChore = view.findViewById(R.id.btnAddChore);
+        btnAddChore = view.findViewById(R.id.btnAdd);
         btnAddChore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

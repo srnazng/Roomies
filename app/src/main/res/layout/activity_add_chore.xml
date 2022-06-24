@@ -29,6 +29,7 @@
         android:layout_marginTop="10dp"
         android:clipToPadding="false"
         android:elevation="1dp"
+        android:textAlignment="textStart"
         app:boxBackgroundColor="@color/white"
         app:boxCollapsedPaddingTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +42,6 @@
             android:layout_height="wrap_content"
             android:elevation="1dp"
             android:hint="Name"
-            android:inputType="textEmailAddress"
             android:textColor="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -67,7 +67,9 @@
             android:layout_height="wrap_content"
             android:elevation="1dp"
             android:hint="Description"
-            android:inputType="textEmailAddress"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:textAlignment="textStart"
             android:textColor="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -81,6 +83,7 @@
         android:layout_marginTop="10dp"
         android:minHeight="48dp"
         android:text="All day"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/choreDescription" />
 
@@ -103,5 +106,132 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
         tools:text="3:00 PM" />
+
+    <TextView
+        android:id="@+id/tvPriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="22dp"
+        android:text="Priority"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+
+    <RadioGroup
+        android:id="@+id/radioPriority"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/switchAllDay"
+        app:layout_constraintStart_toEndOf="@+id/tvPriority"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate">
+
+        <RadioButton
+            android:id="@+id/rbHigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="High" />
+
+        <RadioButton
+            android:id="@+id/rbMed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="Medium" />
+
+        <RadioButton
+            android:id="@+id/rbLow"
+            android:layout_width="86dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Low" />
+
+    </RadioGroup>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/points"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        android:clipToPadding="false"
+        android:elevation="1dp"
+        app:boxBackgroundColor="@color/white"
+        app:boxCollapsedPaddingTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioPriority">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPoints"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            android:hint="Number of Points"
+            android:inputType="number"
+            android:text="1"
+            android:textColor="@color/black" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnAdd"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/turquoise"
+        android:elevation="1dp"
+        android:text="Add Chore"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAssignTo">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipUsers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkable="true"
+                android:text="Serena Zeng"
+                android:visibility="gone"
+                app:chipIcon="@mipmap/ic_launcher" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tvAssignTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="25dp"
+        android:text="Assign to"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/points" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
