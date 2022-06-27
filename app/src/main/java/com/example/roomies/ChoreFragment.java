@@ -58,6 +58,9 @@ public class ChoreFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initialize chores
+        choreList = new ArrayList<>();
+        updateChoreList();
     }
 
     @Override
@@ -68,9 +71,7 @@ public class ChoreFragment extends Fragment {
 
         // Bind to recycler view
         rvChores = view.findViewById(R.id.rvChores);
-        // Initialize chores
-        choreList = new ArrayList<>();
-        updateChoreList();
+
         // Create adapter passing in the chore data
         adapter = new ChoreAdapter(choreList);
         // Attach the adapter to the recyclerview to populate items

@@ -149,6 +149,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         }
         entity.put("total", Float.parseFloat(price));
         entity.put("creator", ParseUser.getCurrentUser());
+        entity.put("circle", currentCircle);
 
         // TODO: upload photo proof
         // entity.put("proof", new ParseFile("resume.txt", "My string content".getBytes()));
