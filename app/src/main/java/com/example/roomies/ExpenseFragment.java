@@ -85,6 +85,13 @@ public class ExpenseFragment extends Fragment {
         return view;
     }
 
+    // update expense list on fragment resume
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateExpenseList();
+    }
+
     // query database for circle's expenses
     public void updateExpenseList(){
         // only get expenses from user's current circle
