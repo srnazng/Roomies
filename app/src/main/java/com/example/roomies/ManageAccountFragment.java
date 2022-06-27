@@ -93,7 +93,7 @@ public class ManageAccountFragment extends Fragment {
         });
 
         // set email input to existing email
-        etEmailInput = view.findViewById(R.id.etChoreName);
+        etEmailInput = view.findViewById(R.id.etEmailInput);
         etEmailInput.setText(currentUser.getEmail());
 
         // set name input to existing user name

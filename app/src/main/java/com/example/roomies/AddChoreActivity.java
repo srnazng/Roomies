@@ -30,7 +30,6 @@ import com.parse.ParseUser;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class AddChoreActivity extends AppCompatActivity {
