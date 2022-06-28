@@ -82,7 +82,7 @@ public class ManageCircleFragment extends Fragment {
 
         // show circle image
         ivCircleImage = view.findViewById(R.id.ivCircleImage);
-        if (circle.getImage() != null) {
+        if (circle != null && circle.getImage() != null) {
             String imageUrl = circle.getImage().getUrl();
             Glide.with(this).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivCircleImage);
         }
@@ -101,7 +101,9 @@ public class ManageCircleFragment extends Fragment {
 
         // set name input to existing circle name
         etNameInput = view.findViewById(R.id.etNameInput);
-        etNameInput.setText(circle.getString("name"));
+        if(circle != null){
+            etNameInput.setText(circle.getString("name"));
+        }
 
         // update button
         btnUpdate = view.findViewById(R.id.btnUpdate);

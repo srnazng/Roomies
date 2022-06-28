@@ -6,4 +6,16 @@
     <string name="back4app_client_key">PzLuqc9DPhNsZKRuT0YLgPc4Ob7HoMllAWe0cJTE</string>
     <string name="title_activity_join_circle">JoinCircleActivity</string>
     <string name="pref_name">Roomies</string>
+    <string-array name="frequency_array">
+        <item>day</item>
+        <item>week</item>
+        <item>month</item>
+        <item>year</item>
+    </string-array>
+    <string-array name="frequency_array_plural">
+        <item>days</item>
+        <item>weeks</item>
+        <item>months</item>
+        <item>years</item>
+    </string-array>
 </resources>

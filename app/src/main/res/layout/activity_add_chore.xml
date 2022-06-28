@@ -10,7 +10,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:text="Add Chore"
         android:textColor="@color/black"
         android:textSize="24sp"
@@ -92,7 +92,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
         tools:text="Thu Jun 16, 2022" />
@@ -101,23 +100,35 @@
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
         tools:text="3:00 PM" />
+
+    <ImageView
+        android:id="@+id/ivRepeat"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate"
+        app:srcCompat="@drawable/repeat"
+        app:tint="@color/black" />
 
     <TextView
         android:id="@+id/tvPriority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="23dp"
         android:text="Priority"
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+        app:layout_constraintTop_toBottomOf="@+id/ivRepeat" />
 
     <RadioGroup
         android:id="@+id/radioPriority"
@@ -128,7 +139,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@+id/switchAllDay"
         app:layout_constraintStart_toEndOf="@+id/tvPriority"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate">
+        app:layout_constraintTop_toBottomOf="@+id/ivRepeat">
 
         <RadioButton
             android:id="@+id/rbHigh"
@@ -233,5 +244,16 @@
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/points" />
+
+    <TextView
+        android:id="@+id/tvRepeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:paddingStart="5dp"
+        android:text="Does not repeat"
+        app:layout_constraintBottom_toBottomOf="@+id/ivRepeat"
+        app:layout_constraintStart_toEndOf="@+id/ivRepeat"
+        app:layout_constraintTop_toTopOf="@+id/ivRepeat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

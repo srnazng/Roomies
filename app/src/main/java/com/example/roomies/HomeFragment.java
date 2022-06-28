@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -88,6 +89,17 @@ public class HomeFragment extends Fragment {
         updateCircle(getActivity(), view);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateCircle(getActivity(), getView());
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        updateCircle(getActivity(), view);
     }
 
     /**
