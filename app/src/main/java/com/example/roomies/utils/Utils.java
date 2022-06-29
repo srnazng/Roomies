@@ -17,6 +17,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,6 +81,17 @@ public class Utils {
             return 0;
 
         return (int)( (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    public static long getWeeksDifference(Calendar d1, Calendar d2){
+
+        Instant d1i = Instant.ofEpochMilli(d1.getTimeInMillis());
+        Instant d2i = Instant.ofEpochMilli(d2.getTimeInMillis());
+
+        LocalDateTime startDate = LocalDateTime.ofInstant(d1i, ZoneId.systemDefault());
+        LocalDateTime endDate = LocalDateTime.ofInstant(d2i, ZoneId.systemDefault());
+
+        return ChronoUnit.WEEKS.between(startDate, endDate);
     }
 
      /**
