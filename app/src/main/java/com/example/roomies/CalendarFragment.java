@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,6 @@ import com.example.roomies.adapter.CalendarAdapter;
 import com.example.roomies.model.CalendarDay;
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
-import com.example.roomies.model.UserCircle;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -75,6 +75,7 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+
         // Lookup the calendar recyclerview
         rvCalendar = view.findViewById(R.id.rvCalendar);
 
@@ -210,5 +211,16 @@ public class CalendarFragment extends Fragment {
             }
         }
         adapter.notifyDataSetChanged();
+
+        // scroll to today's date
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        if(adapter.getItemCount() > today){
+            rvCalendar.post(new Runnable() {
+                @Override
+                public void run() {
+                    rvCalendar.smoothScrollToPosition(today);
+                }
+            });
+        }
     }
 }

@@ -17,7 +17,6 @@ import com.example.roomies.model.CalendarDay;
 import com.example.roomies.model.Chore;
 import com.google.android.material.chip.Chip;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
