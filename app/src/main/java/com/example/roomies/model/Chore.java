@@ -16,6 +16,7 @@ public class Chore extends ParseObject {
     public static final String KEY_POINTS = "points";
     public static final String KEY_ALL_DAY = "allDay";
     public static final String KEY_DUE = "dueDatetime";
+    public static final String KEY_RECURRENCE = "recurrence";
 
     public ParseUser getCreator(){
         return getParseUser(KEY_CREATOR);
@@ -58,4 +59,8 @@ public class Chore extends ParseObject {
     public Date getDue() { return getDate(KEY_DUE); }
 
     public void setDue(Date date) { put(KEY_DUE, date); }
+
+    public Recurrence getRecurrence() { return (Recurrence) getParseObject(KEY_RECURRENCE); }
+
+    public void setRecurrence(Recurrence recurrence) { put(KEY_RECURRENCE, recurrence); }
 }

@@ -2,6 +2,7 @@ package com.example.roomies;
 import android.app.Application;
 
 import com.example.roomies.model.Chore;
+import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.Expense;
 import com.example.roomies.model.Recurrence;
@@ -22,6 +23,7 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(Circle.class);
         ParseObject.registerSubclass(UserCircle.class);
         ParseObject.registerSubclass(Chore.class);
+        ParseObject.registerSubclass(ChoreAssignment.class);
         ParseObject.registerSubclass(Transaction.class);
         ParseObject.registerSubclass(Expense.class);
         ParseObject.registerSubclass(Recurrence.class);

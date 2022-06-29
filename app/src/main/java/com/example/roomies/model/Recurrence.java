@@ -10,7 +10,6 @@ import java.util.List;
 
 @ParseClassName("Recurrence")
 public class Recurrence extends ParseObject {
-    public static final String KEY_CHORE = "chore";
     public static final String KEY_END_DATE = "endDate";
     public static final String KEY_FREQUENCY = "frequency";
     public static final String KEY_FREQUENCY_TYPE = "frequencyType";
@@ -23,10 +22,6 @@ public class Recurrence extends ParseObject {
     public static final String TYPE_YEAR = "year";
 
     public enum DaysOfWeek { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY};
-
-    public Chore getChore(){  return (Chore) getParseObject(KEY_CHORE); }
-
-    public void setChore(Chore chore){ put(KEY_CHORE, chore); }
 
     public Date getEndDate() { return getDate(KEY_END_DATE); }
 

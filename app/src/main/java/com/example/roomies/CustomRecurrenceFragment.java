@@ -1,5 +1,6 @@
 package com.example.roomies;
 import static com.example.roomies.model.Recurrence.*;
+import static com.example.roomies.utils.Utils.getMonthForInt;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -287,17 +288,6 @@ public class CustomRecurrenceFragment extends DialogFragment {
             endDate.set(Calendar.DAY_OF_MONTH, day);
             tvEndDate.setText(getMonthForInt(month) + " " + day + ", " + year);
         }
-    }
-
-    // get name of month from number
-    public static String getMonthForInt(int num) {
-        String month = "wrong";
-        DateFormatSymbols dfs = new DateFormatSymbols();
-        String[] months = dfs.getMonths();
-        if (num >= 0 && num <= 11) {
-            month = months[num];
-        }
-        return month;
     }
 
     // calculate end date

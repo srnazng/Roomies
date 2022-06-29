@@ -1,6 +1,9 @@
 package com.example.roomies;
 import static com.example.roomies.HomeFragment.*;
 import static com.example.roomies.model.Recurrence.*;
+import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
+import static com.example.roomies.utils.Utils.getMonthForInt;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
@@ -25,6 +28,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.roomies.model.Chore;
+import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -159,7 +163,12 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addChore();
+                if(recurrence == null){
+                    addChore();
+                }
+                else{
+                    addRecurrence();
+                }
             }
         });
     }
@@ -181,6 +190,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         entity.put("points", Integer.parseInt(etPoints.getText().toString()));
         entity.put("dueDatetime", date.getTime());
         entity.put("allDay", switchAllDay.isChecked());
+        entity.setRecurrence(recurrence);
 
         // get priority from radio group
         int radioButtonID = radioPriority.getCheckedRadioButtonId();
@@ -208,7 +218,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     public void assignChores(){
         // loop through all assigned users
         for(int i=0; i<assignedUsers.size(); i++){
-            ParseObject entity = new ParseObject("ChoreAssignment");
+            ChoreAssignment entity = new ChoreAssignment();
 
             entity.put("user", assignedUsers.get(i));
             entity.put("chore", chore);
@@ -224,19 +234,13 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                 }
             });
         }
-        if(recurrence != null){
-            addRecurrence();
-        }
-        else{
-            //done
-            Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        //done
+        Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     // create Recurrence object
     public void addRecurrence() {
-        recurrence.setChore(chore);
         Date d = getEndDate();
         if(d != null){
             recurrence.setEndDate(getEndDate());
@@ -254,8 +258,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         recurrence.saveInBackground(e -> {
             if (e==null){
                 //Save was done
-                Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
-                finish();
+                addChore();
             }else{
                 //Something went wrong
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -449,21 +452,5 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
             date.set(Calendar.DAY_OF_MONTH, day);
             tvDate.setText(getMonthForInt(month) + " " + day + ", " + year);
         }
-    }
-
-    // 24 hour time to 12 hour time with AM or PM
-    public static String convertFromMilitaryTime(int hourOfDay, int minute){
-        return ((hourOfDay > 12) ? hourOfDay % 12 : hourOfDay) + ":" + (minute < 10 ? ("0" + minute) : minute) + " " + ((hourOfDay >= 12) ? "PM" : "AM");
-    }
-
-    // get name of month from number
-    public static String getMonthForInt(int num) {
-        String month = "wrong";
-        DateFormatSymbols dfs = new DateFormatSymbols();
-        String[] months = dfs.getMonths();
-        if (num >= 0 && num <= 11) {
-            month = months[num];
-        }
-        return month;
     }
 }

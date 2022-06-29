@@ -1,16 +1,10 @@
 package com.example.roomies.utils;
 
-import static com.example.roomies.utils.JSONSharedPreferences.*;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.roomies.AddCircleActivity;
-import com.example.roomies.R;
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
 import com.parse.FindCallback;
@@ -22,14 +16,53 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-/**
- *  TODO: implement different utility functions
- */
 public class Utils {
     public static final String TAG = "Utils";
+
+    // get name of month from number
+    public static String getMonthForInt(int num) {
+        String month = "wrong";
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (num >= 0 && num <= 11) {
+            month = months[num];
+        }
+        return month;
+    }
+
+    // 24 hour time to 12 hour time with AM or PM
+    public static String convertFromMilitaryTime(int hourOfDay, int minute){
+        return ((hourOfDay > 12) ? hourOfDay % 12 : hourOfDay) + ":" + (minute < 10 ? ("0" + minute) : minute) + " " + ((hourOfDay >= 12) ? "PM" : "AM");
+    }
+
+    public static String calendarDayOfWeek(Calendar c){
+        int num = c.get(Calendar.DAY_OF_WEEK);
+        if(num == 1){
+            return "Sun";
+        }
+        if(num == 2){
+            return "Mon";
+        }
+        if(num == 3){
+            return "Tues";
+        }
+        if(num == 4){
+            return "Wed";
+        }
+        if(num == 5){
+            return "Thurs";
+        }
+        if(num == 6){
+            return "Fri";
+        }
+        return "Sat";
+    }
+
      /**
      * query UserCircle objects that contain current user to get circles that user has joined
      */
