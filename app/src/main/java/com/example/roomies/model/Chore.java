@@ -18,6 +18,10 @@ public class Chore extends ParseObject {
     public static final String KEY_DUE = "dueDatetime";
     public static final String KEY_RECURRENCE = "recurrence";
 
+    public static final String PRIORITY_LOW = "Low";
+    public static final String PRIORITY_MED = "Medium";
+    public static final String PRIORITY_HIGH = "High";
+
     public ParseUser getCreator(){
         return getParseUser(KEY_CREATOR);
     }
@@ -42,11 +46,11 @@ public class Chore extends ParseObject {
 
     public String getPriority() { return getString(KEY_PRIORITY); }
 
-    public void setPriorityLow() { put(KEY_TITLE, "Low"); }
+    public void setPriorityLow() { put(KEY_TITLE, PRIORITY_LOW); }
 
-    public void setPriorityMed() { put(KEY_TITLE, "Medium"); }
+    public void setPriorityMed() { put(KEY_TITLE, PRIORITY_MED); }
 
-    public void setPriorityHigh() { put(KEY_TITLE, "High"); }
+    public void setPriorityHigh() { put(KEY_TITLE, PRIORITY_HIGH); }
 
     public int getPoints() { return getInt(KEY_POINTS); }
 

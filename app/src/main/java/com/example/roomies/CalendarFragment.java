@@ -148,7 +148,7 @@ public class CalendarFragment extends Fragment {
                     myChores.clear();
                     for(int i=0; i<choreAssignments.size(); i++) {
                         ChoreAssignment c = choreAssignments.get(i);
-                        if(c.getChore().getCircle().equals(currentCircle)){
+                        if(c.getChore().getCircle().getObjectId().equals(currentCircle.getObjectId())){
                             myChores.add(c.getChore());
                         }
                     }
@@ -196,7 +196,7 @@ public class CalendarFragment extends Fragment {
             due.setTime(c.getDue());
 
             // add if due date specified as day
-            if(c.getDue().after(start.getTime()) && c.getDue().before(end.getTime())){
+            if(due.getTime().after(start.getTime()) && due.getTime().before(end.getTime())){
                 for(int j=0; j<begin.getActualMaximum(Calendar.DAY_OF_MONTH); j++){
                     if(due.get(Calendar.DAY_OF_MONTH) ==
                             calendar.get(j).getDay().get(Calendar.DAY_OF_MONTH)){

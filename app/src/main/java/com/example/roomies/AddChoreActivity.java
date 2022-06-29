@@ -190,7 +190,10 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         entity.put("points", Integer.parseInt(etPoints.getText().toString()));
         entity.put("dueDatetime", date.getTime());
         entity.put("allDay", switchAllDay.isChecked());
-        entity.setRecurrence(recurrence);
+
+        if(recurrence != null){
+            entity.setRecurrence(recurrence);
+        }
 
         // get priority from radio group
         int radioButtonID = radioPriority.getCheckedRadioButtonId();

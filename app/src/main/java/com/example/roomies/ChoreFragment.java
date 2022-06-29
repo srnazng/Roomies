@@ -60,7 +60,6 @@ public class ChoreFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Initialize chores
         choreList = new ArrayList<>();
-        updateChoreList();
     }
 
     @Override
@@ -74,6 +73,8 @@ public class ChoreFragment extends Fragment {
 
         // Create adapter passing in the chore data
         adapter = new ChoreAdapter(choreList);
+        updateChoreList();
+
         // Attach the adapter to the recyclerview to populate items
         rvChores.setAdapter(adapter);
         // Set layout manager to position the items
