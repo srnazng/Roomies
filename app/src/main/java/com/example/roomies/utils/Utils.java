@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Utils {
@@ -61,6 +62,21 @@ public class Utils {
             return "Fri";
         }
         return "Sat";
+    }
+
+    public static void clearTime(Calendar c){
+        c.set(Calendar.MILLISECOND, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+    }
+
+    public static int getDaysDifference(Date fromDate, Date toDate)
+    {
+        if(fromDate==null||toDate==null)
+            return 0;
+
+        return (int)( (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
     }
 
      /**

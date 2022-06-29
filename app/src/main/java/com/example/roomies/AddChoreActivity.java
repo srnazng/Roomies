@@ -30,14 +30,11 @@ import android.widget.Toast;
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
+import com.example.roomies.utils.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import org.json.JSONException;
-
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -273,12 +270,17 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     public Date getEndDate() {
         if(endDate == null && numOccurrences == null){
             // never end
-            endDate = date;
+            endDate = Calendar.getInstance();
+            endDate.setTime(date.getTime());
             endDate.set(Calendar.YEAR, date.get(Calendar.YEAR) + 100);
+            Utils.clearTime(endDate);
         }
         else if(endDate == null){
             // after number of occurrences
-            endDate = date;
+            endDate = Calendar.getInstance();
+            endDate.setTime(date.getTime());
+            Utils.clearTime(endDate);
+
             if(recurrence.getFrequencyType().equals(TYPE_DAY)){
                 // add numOccurrence days to first due date
                 endDate.add(Calendar.DAY_OF_MONTH, (numOccurrences - 1) * recurrence.getFrequency());
@@ -307,7 +309,6 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                         }
                         if(DaysOfWeek.values()[date.get(Calendar.DAY_OF_WEEK) - 1].compareTo(last) < 0){
                             int diff = last.ordinal() - DaysOfWeek.values()[date.get(Calendar.DAY_OF_WEEK) - 1].ordinal();
-//                            endDate.set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH) + diff);
                             endDate.add(Calendar.DAY_OF_YEAR, diff);
                             Log.e(TAG, "diff " + diff);
                         }
