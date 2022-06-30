@@ -1,8 +1,9 @@
 package com.example.roomies;
-import static com.example.roomies.HomeFragment.*;
+
 import static com.example.roomies.model.Recurrence.*;
-import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
-import static com.example.roomies.utils.Utils.getMonthForInt;
+import static com.example.roomies.utils.ChoreUtils.addCircleChore;
+import static com.example.roomies.utils.TimeUtils.convertFromMilitaryTime;
+import static com.example.roomies.utils.TimeUtils.getMonthForInt;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -30,7 +31,10 @@ import android.widget.Toast;
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
-import com.example.roomies.utils.Utils;
+import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.ChoreUtils;
+import com.example.roomies.utils.CircleUtils;
+import com.example.roomies.utils.TimeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseUser;
@@ -180,7 +184,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
         Chore entity = new Chore();
 
-        entity.put("circle", currentCircle);
+        entity.put("circle", CircleUtils.getCurrentCircle());
         entity.put("creator", ParseUser.getCurrentUser());
         entity.put("title", etChoreName.getText().toString());
         entity.put("description", etChoreDescription.getText().toString());
@@ -236,6 +240,8 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         }
         //done
         Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
+        addCircleChore(chore);
+        ChoreUtils.initChores();
         finish();
     }
 
@@ -273,13 +279,13 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
             endDate = Calendar.getInstance();
             endDate.setTime(date.getTime());
             endDate.set(Calendar.YEAR, date.get(Calendar.YEAR) + 100);
-            Utils.clearTime(endDate);
+            TimeUtils.clearTime(endDate);
         }
         else if(endDate == null){
             // after number of occurrences
             endDate = Calendar.getInstance();
             endDate.setTime(date.getTime());
-            Utils.clearTime(endDate);
+            TimeUtils.clearTime(endDate);
 
             if(recurrence.getFrequencyType().equals(TYPE_DAY)){
                 // add numOccurrence days to first due date
@@ -333,6 +339,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
     // create chips for assigning chore to users
     public void initializeChips(){
+        List<UserCircle> userCircleList = CircleUtils.getUserCircleList();
         if(userCircleList != null){
             // loop through users in circle
             for(int i=0; i<userCircleList.size(); i++){

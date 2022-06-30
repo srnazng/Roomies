@@ -15,12 +15,12 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19855957031250002" />
         <entry key="app/src/main/res/layout/activity_new_circle.xml" value="0.491796875" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.35975952148437507" />
-        <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.14895833333333333" />
+        <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.17534637451171875" />
         <entry key="app/src/main/res/layout/calendar_day.xml" value="0.5283459945284854" />
         <entry key="app/src/main/res/layout/calendar_event.xml" value="0.8770801624104019" />
         <entry key="app/src/main/res/layout/dialog_custom_recurrence.xml" value="0.9520833333333333" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.43162901307966706" />
-        <entry key="app/src/main/res/layout/fragment_chore.xml" value="0.322463768115942" />
+        <entry key="app/src/main/res/layout/fragment_chore.xml" value="0.23853820598006645" />
         <entry key="app/src/main/res/layout/fragment_custom_recurrence.xml" value="0.4889176327115307" />
         <entry key="app/src/main/res/layout/fragment_expense.xml" value="0.3065353393554688" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.5468483816013628" />

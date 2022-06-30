@@ -20,6 +20,9 @@ import android.widget.Toast;
 import com.example.roomies.R;
 import com.example.roomies.model.Expense;
 import com.example.roomies.model.Transaction;
+import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.CircleUtils;
+import com.example.roomies.utils.ExpenseUtils;
 import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -97,6 +100,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     // add views showing users that can be assigned to pay for expense
     public void fillUserTransactions(){
+        List<UserCircle> userCircleList = CircleUtils.getUserCircleList();
         if(userCircleList == null){
             Toast.makeText(this, "Error accessing circle", Toast.LENGTH_SHORT).show();
         }
@@ -149,7 +153,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         }
         entity.put("total", Float.parseFloat(price));
         entity.put("creator", ParseUser.getCurrentUser());
-        entity.put("circle", currentCircle);
+        entity.put("circle", CircleUtils.getCurrentCircle());
 
         // TODO: upload photo proof
         // entity.put("proof", new ParseFile("resume.txt", "My string content".getBytes()));
@@ -167,6 +171,8 @@ public class AddExpenseActivity extends AppCompatActivity {
                 else{
                     // done
                     Toast.makeText(this, "Added expense", Toast.LENGTH_SHORT).show();
+                    ExpenseUtils.addCircleExpense(expense);
+                    ExpenseUtils.initExpenses();
                     finish();
                 }
             }else{
@@ -221,6 +227,8 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         // all transactions successfully saved
         Toast.makeText(this, "Added expense", Toast.LENGTH_SHORT).show();
+        ExpenseUtils.addCircleExpense(expense);
+        ExpenseUtils.initExpenses();
         finish();
     }
 }

@@ -1,10 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.HomeFragment.currentCircle;
-import static com.example.roomies.utils.Utils.clearTime;
-import static com.example.roomies.utils.Utils.getDaysDifference;
-import static com.example.roomies.utils.Utils.getMonthForInt;
-import static com.example.roomies.utils.Utils.getWeeksDifference;
+import static com.example.roomies.utils.TimeUtils.*;
 
 import android.os.Bundle;
 
@@ -23,13 +19,8 @@ import android.widget.Toast;
 import com.example.roomies.adapter.CalendarAdapter;
 import com.example.roomies.model.CalendarDay;
 import com.example.roomies.model.Chore;
-import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
-import com.example.roomies.utils.Utils;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
+import com.example.roomies.utils.ChoreUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,11 +74,14 @@ public class CalendarFragment extends Fragment {
         // Lookup the calendar recyclerview
         rvCalendar = view.findViewById(R.id.rvCalendar);
 
+        // set calendar month
+        firstOfMonth = Calendar.getInstance();
+        firstOfMonth.set(Calendar.DAY_OF_MONTH, 1);
+
         // Initialize
-        myChores = new ArrayList<>();
-        allChores = new ArrayList<>();
+        myChores = ChoreUtils.getMyChores();
+        allChores = ChoreUtils.getCircleChores();
         calendar = new ArrayList<>();
-        updateMyChores();
 
         // Create adapter
         adapter = new CalendarAdapter(calendar);
@@ -95,10 +89,9 @@ public class CalendarFragment extends Fragment {
         rvCalendar.setAdapter(adapter);
         // Set layout manager to position the items
         rvCalendar.setLayoutManager(new LinearLayoutManager(getActivity()));
+        updateMyChores();
 
         // month currently being displayed
-        firstOfMonth = Calendar.getInstance();
-        firstOfMonth.set(Calendar.DAY_OF_MONTH, 1);
         tvMonth = view.findViewById(R.id.tvMonth);
         tvMonth.setText(getMonthForInt(firstOfMonth.get(Calendar.MONTH)) + " " + firstOfMonth.get(Calendar.YEAR));
 
@@ -128,41 +121,14 @@ public class CalendarFragment extends Fragment {
 
     // get chores that are assigned to current user
     public void updateMyChores(){
-        // only get chore assignments of current user
-        ParseQuery<ChoreAssignment> query = ParseQuery.getQuery(ChoreAssignment.class).whereEqualTo(ChoreAssignment.KEY_USER, ParseUser.getCurrentUser());
-        // include chore and recurrence objects
-        query.include(ChoreAssignment.KEY_CHORE);
-        query.include(ChoreAssignment.KEY_CHORE + "." + Chore.KEY_RECURRENCE);
-        // start an asynchronous call for ChoreAssignment objects
-        query.findInBackground(new FindCallback<ChoreAssignment>() {
-            @Override
-            public void done(List<ChoreAssignment> choreAssignments, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting choreAssignments", e);
-                    Toast.makeText(getActivity(), "Unable to retrieve chores", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // no chores
-                if(choreAssignments == null || choreAssignments.isEmpty()){
-                    Log.i(TAG, "No assigned chores");
-                }
-                else{
-                    // save received chore assignments in this circle to list
-                    myChores.clear();
-                    for(int i=0; i<choreAssignments.size(); i++) {
-                        ChoreAssignment c = choreAssignments.get(i);
-                        if(c.getChore().getCircle().getObjectId().equals(currentCircle.getObjectId())){
-                            myChores.add(c.getChore());
-                        }
-                    }
-
-                    // create each day item in calendar
-                    updateCalendar(myChores, firstOfMonth);
-                }
-            }
-        });
+        if(ChoreUtils.getMyChores() != null){
+            // create each day item in calendar
+            updateCalendar(ChoreUtils.getMyChores(), firstOfMonth);
+        }
+        else if(myChores.isEmpty()){
+            Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();
+        }
+        else { Log.e(TAG, "Error retrieving chores"); }
     }
 
     // create CalendarDay objects for recyclerview
@@ -180,16 +146,7 @@ public class CalendarFragment extends Fragment {
         end.add(Calendar.DAY_OF_YEAR, begin.getActualMaximum(Calendar.DAY_OF_MONTH));
         clearTime(end);
 
-        // create CalendarDay objects for entire month
-        for(int i=0; i<begin.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
-            Calendar date = Calendar.getInstance();
-            date.setTime(start.getTime());
-            date.add(Calendar.DAY_OF_MONTH, i);
-
-            CalendarDay day = new CalendarDay(date);
-            day.setChores(new ArrayList<>());
-            calendar.add(day);
-        }
+        initCalendar(start);
 
         // add myChores to chores lists of CalendarDay objects
         for(int i=0; i<chores.size(); i++){
@@ -286,13 +243,14 @@ public class CalendarFragment extends Fragment {
 
         // scroll to today's date
         Calendar today = Calendar.getInstance();
+
         if(today.get(Calendar.MONTH) == firstOfMonth.get(Calendar.MONTH) &&
                 today.get(Calendar.YEAR) == firstOfMonth.get(Calendar.YEAR) &&
-                adapter.getItemCount() > today.get(Calendar.DAY_OF_MONTH) ){
+                adapter.getItemCount() > today.get(Calendar.DAY_OF_MONTH) - 1 ){
             rvCalendar.post(new Runnable() {
                 @Override
                 public void run() {
-                    rvCalendar.smoothScrollToPosition(today.get(Calendar.DAY_OF_MONTH));
+                    rvCalendar.smoothScrollToPosition(today.get(Calendar.DAY_OF_MONTH) - 1);
                 }
             });
         }
@@ -306,56 +264,17 @@ public class CalendarFragment extends Fragment {
         }
     }
 
-    // compare calendar objects ignoring time
-    public int compare(Calendar c1, Calendar c2) {
-        if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR))
-            return c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR);
-        if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH))
-            return c1.get(Calendar.MONTH) - c2.get(Calendar.MONTH);
-        return c1.get(Calendar.DAY_OF_MONTH) - c2.get(Calendar.DAY_OF_MONTH);
+    // create CalendarDay objects for entire month
+    public void initCalendar(Calendar start){
+        for(int i=0; i<start.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
+            Calendar date = Calendar.getInstance();
+            date.setTime(start.getTime());
+            date.add(Calendar.DAY_OF_MONTH, i);
+
+            CalendarDay day = new CalendarDay(date);
+            day.setChores(new ArrayList<>());
+            calendar.add(day);
+        }
     }
 
-    // determines if an event occurs on a day given a starting day and a repetition frequency
-    public boolean occursToday_dayFreq(Calendar startRecurrence, int freq, Calendar today){
-        clearTime(startRecurrence);
-        clearTime(today);
-
-        int diff = getDaysDifference(startRecurrence.getTime(), today.getTime());
-
-        if(diff % freq == 0){
-            return true;
-        }
-        return false;
-    }
-
-    // determines if an event occurs on a day given a starting day, selected days of week, and a repetition frequency
-    public boolean occursToday_weekFreq(Calendar startRecurrence, String daysOfWeek, int freq, Calendar today){
-        clearTime(startRecurrence);
-        clearTime(today);
-
-        long diff = getWeeksDifference(startRecurrence, today);
-        int dayOfWeek = today.get(Calendar.DAY_OF_WEEK) - 1;
-
-        if(!daysOfWeek.contains(dayOfWeek + ",")){
-            return false;
-        }
-
-        if(diff % freq != 0){
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean occursToday_monthFreq(Calendar startRecurrence, int freq, Calendar today){
-        clearTime(startRecurrence);
-        clearTime(today);
-
-        long diff = Utils.getMonthsDifference(startRecurrence, today);
-
-        if(diff % freq == 0){
-            return true;
-        }
-        return false;
-    }
 }

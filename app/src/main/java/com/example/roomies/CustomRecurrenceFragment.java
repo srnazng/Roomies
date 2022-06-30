@@ -1,6 +1,6 @@
 package com.example.roomies;
 import static com.example.roomies.model.Recurrence.*;
-import static com.example.roomies.utils.Utils.getMonthForInt;
+import static com.example.roomies.utils.TimeUtils.getMonthForInt;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -30,7 +30,6 @@ import com.example.roomies.model.Recurrence;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.Utils;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -137,6 +138,7 @@ public class SettingsFragment extends Fragment {
     public void logout(View v){
         ParseUser.logOut();
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
+        Utils.endSession();
 
         if(currentUser == null){
             Intent i = new Intent(getActivity(), LoginActivity.class);

@@ -1,7 +1,5 @@
 package com.example.roomies;
 
-import static com.example.roomies.HomeFragment.currentCircle;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,14 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.roomies.adapter.ChoreAdapter;
 import com.example.roomies.model.Chore;
-import com.example.roomies.model.UserCircle;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
+import com.example.roomies.utils.ChoreUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +26,12 @@ import java.util.List;
  */
 public class ChoreFragment extends Fragment {
 
-    private Button btnToCalendar;
-    private Button btnAddChore;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton btnToCalendar;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton btnAddChore;
     private RecyclerView rvChores;
     private ChoreAdapter adapter;
 
-    public List<Chore> choreList;
+    public static List<Chore> choreList;
 
     public static final String TAG = "ChoreFragment";
 
@@ -59,7 +53,7 @@ public class ChoreFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize chores
-        choreList = new ArrayList<>();
+        choreList = ChoreUtils.getCircleChores();
     }
 
     @Override
@@ -105,6 +99,7 @@ public class ChoreFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ChoreUtils.initChores();
         updateChoreList();
     }
 
@@ -118,31 +113,7 @@ public class ChoreFragment extends Fragment {
 
     // query database for circle's list of chores
     public void updateChoreList(){
-        // only get chores for user's current circle
-        ParseQuery<Chore> query = ParseQuery.getQuery(Chore.class).whereEqualTo(Chore.KEY_CIRCLE, currentCircle);
-        // include data referred by user key
-        query.include(UserCircle.KEY_USER);
-        // start an asynchronous call for Chore objects
-        query.findInBackground(new FindCallback<Chore>() {
-            @Override
-            public void done(List<Chore> chores, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting userCircles", e);
-                    Toast.makeText(getActivity(), "Unable to retrieve chores", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // no chores
-                if(chores.isEmpty()){
-                    Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();
-                }
-
-                // save received chores to list and notify adapter of new data
-                choreList.clear();
-                choreList.addAll(chores);
-                adapter.notifyDataSetChanged();
-            }
-        });
+        choreList = ChoreUtils.getCircleChores();
+        adapter.notifyDataSetChanged();
     }
 }

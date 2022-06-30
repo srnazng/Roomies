@@ -47,6 +47,9 @@ public class ChoreAdapter extends
 
     @Override
     public int getItemCount() {
+        if(chores == null){
+            return 0;
+        }
         return chores.size();
     }
 

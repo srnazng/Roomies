@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.roomies.utils.CircleUtils;
+import com.example.roomies.utils.Utils;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -71,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 Log.e(TAG, "login success");
-                goMainActivity();
+                Utils.startSession(LoginActivity.this);
             }
         });
     }

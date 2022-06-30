@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.CircleUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;

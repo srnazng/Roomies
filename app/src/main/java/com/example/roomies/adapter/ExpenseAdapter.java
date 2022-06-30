@@ -48,6 +48,9 @@ public class ExpenseAdapter extends
 
     @Override
     public int getItemCount() {
+        if(expenses == null){
+            return 0;
+        }
         return expenses.size();
     }
 
