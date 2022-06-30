@@ -25,6 +25,7 @@ import com.example.roomies.model.CalendarDay;
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
+import com.example.roomies.utils.Utils;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -179,8 +180,6 @@ public class CalendarFragment extends Fragment {
         end.add(Calendar.DAY_OF_YEAR, begin.getActualMaximum(Calendar.DAY_OF_MONTH));
         clearTime(end);
 
-        Log.e(TAG, start.getTime() + " to " + end.getTime());
-
         // create CalendarDay objects for entire month
         for(int i=0; i<begin.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
             Calendar date = Calendar.getInstance();
@@ -199,19 +198,18 @@ public class CalendarFragment extends Fragment {
             due.setTime(c.getDue());
             clearTime(due);
 
-            Log.e(TAG, c.getTitle() + " " + c.getDue());
-
-            // add if due date specified as day
+            // add if due date specified as a day in this month
             if(compare(due, start) >= 0 && compare(end, due) > 0){
-                Log.e(TAG, c.getTitle() + " DUE THIS MONTH");
                 for(int j=0; j<begin.getActualMaximum(Calendar.DAY_OF_MONTH); j++){
                     if(compare(due, calendar.get(j).getDay()) == 0){
                         calendar.get(j).getChores().add(c);
-                        break;
+                        updateAdapter();
+                        continue;
                     }
                 }
             }
 
+            // add if recurrence occurs in this month
             Recurrence r = c.getRecurrence();
             Calendar endRecurrenceDate = Calendar.getInstance();
 
@@ -222,48 +220,68 @@ public class CalendarFragment extends Fragment {
 
             // if recurrence has not ended
             if(r != null && compare(endRecurrenceDate, start) >= 0){
-                Log.e(TAG, c.getTitle() + " HAS RECURRENCE");
-
                 Calendar startRecurrenceDate = Calendar.getInstance();
                 startRecurrenceDate.setTime(c.getDue());
                 clearTime(startRecurrenceDate);
 
-                // recurrence with daily frequency
-                if(r.getFrequencyType().equals(Recurrence.TYPE_DAY)){
+                // recurrence with daily/weekly frequency
+                if(r.getFrequencyType().equals(Recurrence.TYPE_DAY) ||
+                        r.getFrequencyType().equals(Recurrence.TYPE_WEEK)){
                     for(int j=0; j<firstOfMonth.getActualMaximum(Calendar.DAY_OF_MONTH); j++){
                         Calendar thisDay = calendar.get(j).getDay();
                         // if calendar day is before endDate of recurrence
                         if(compare(thisDay, endRecurrenceDate) <= 0 ){
-                            if(compare(thisDay, startRecurrenceDate) >= 0
+                            // daily recurrence
+                            if(r.getFrequencyType().equals(Recurrence.TYPE_DAY)
+                                    && compare(thisDay, startRecurrenceDate) >= 0
                                     && occursToday_dayFreq(startRecurrenceDate, r.getFrequency(), thisDay)
                                     && !calendar.get(j).getChores().contains(c)){
                                 calendar.get(j).getChores().add(c);
                             }
-                        }
-                        else{
-                            break;
-                        }
-                    }
-                }
-                // recurrence with weekly frequency
-                else if(r.getFrequencyType().equals(Recurrence.TYPE_WEEK)){
-                    for(int j=0; j<firstOfMonth.getActualMaximum(Calendar.DAY_OF_MONTH); j++){
-                        Calendar thisDay = calendar.get(j).getDay();
-                        // if calendar day is before endDate of recurrence
-                        if(compare(thisDay, endRecurrenceDate) <= 0 ){
-                            if(compare(thisDay, startRecurrenceDate) >= 0
+                            // weekly recurrence
+                            else if(r.getFrequencyType().equals(Recurrence.TYPE_WEEK)
+                                    && compare(thisDay, startRecurrenceDate) >= 0
                                     && occursToday_weekFreq(startRecurrenceDate, r.getDaysOfWeek(), r.getFrequency(), thisDay)
                                     && !calendar.get(j).getChores().contains(c)){
                                 calendar.get(j).getChores().add(c);
                             }
                         }
-                        else{
-                            break;
+                        else { break; }
+                    }
+                }
+                // recurrence with monthly frequency
+                else if(r.getFrequencyType().equals(Recurrence.TYPE_MONTH)){
+                    int dayOfMonth = due.get(Calendar.DAY_OF_MONTH);
+
+                    if(firstOfMonth.getActualMaximum(Calendar.DAY_OF_MONTH) >= dayOfMonth){
+                        Calendar thisDay = calendar.get(dayOfMonth - 1).getDay();
+                        if(compare(thisDay, endRecurrenceDate) <= 0
+                                && compare(thisDay, startRecurrenceDate) >= 0
+                                && occursToday_monthFreq(startRecurrenceDate, r.getFrequency(), thisDay)
+                                && !calendar.get(dayOfMonth - 1).getChores().contains(c)){
+                            calendar.get(dayOfMonth - 1).getChores().add(c);
                         }
                     }
                 }
+                // recurrence with yearly frequency
+                else {
+                    if(firstOfMonth.get(Calendar.MONTH) == due.get(Calendar.MONTH)
+                         && (firstOfMonth.get(Calendar.YEAR) - due.get(Calendar.YEAR)) % r.getFrequency() == 0){
+                        int dayOfMonth = due.get(Calendar.DAY_OF_MONTH);
+                        Calendar thisDay = calendar.get(dayOfMonth - 1).getDay();
+                        if(compare(thisDay, endRecurrenceDate) <= 0
+                                && compare(thisDay, startRecurrenceDate) >= 0
+                                && !calendar.get(dayOfMonth - 1).getChores().contains(c)){
+                            calendar.get(dayOfMonth - 1).getChores().add(c);
+                        }
+                    }
+                }
+                updateAdapter();
             }
         }
+    }
+
+    public void updateAdapter(){
         adapter.notifyDataSetChanged();
 
         // scroll to today's date
@@ -327,5 +345,17 @@ public class CalendarFragment extends Fragment {
         }
 
         return true;
+    }
+
+    public boolean occursToday_monthFreq(Calendar startRecurrence, int freq, Calendar today){
+        clearTime(startRecurrence);
+        clearTime(today);
+
+        long diff = Utils.getMonthsDifference(startRecurrence, today);
+
+        if(diff % freq == 0){
+            return true;
+        }
+        return false;
     }
 }

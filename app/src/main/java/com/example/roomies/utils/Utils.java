@@ -94,6 +94,17 @@ public class Utils {
         return ChronoUnit.WEEKS.between(startDate, endDate);
     }
 
+    public static long getMonthsDifference(Calendar d1, Calendar d2){
+
+        Instant d1i = Instant.ofEpochMilli(d1.getTimeInMillis());
+        Instant d2i = Instant.ofEpochMilli(d2.getTimeInMillis());
+
+        LocalDateTime startDate = LocalDateTime.ofInstant(d1i, ZoneId.systemDefault());
+        LocalDateTime endDate = LocalDateTime.ofInstant(d2i, ZoneId.systemDefault());
+
+        return ChronoUnit.MONTHS.between(startDate, endDate);
+    }
+
      /**
      * query UserCircle objects that contain current user to get circles that user has joined
      */
