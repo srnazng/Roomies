@@ -6,9 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.roomies.utils.ChoreUtils;
 import com.example.roomies.utils.CircleUtils;
-import com.example.roomies.utils.Utils;
 
 public class SplashScreenActivity extends AppCompatActivity {
     @Override

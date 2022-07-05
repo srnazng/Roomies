@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.example.roomies.SplashScreenActivity;
 
-public class Utils {
+public class SessionUtils {
     public static void startSession(Context context){
         Intent i = new Intent(context, SplashScreenActivity.class);
         context.startActivity(i);
