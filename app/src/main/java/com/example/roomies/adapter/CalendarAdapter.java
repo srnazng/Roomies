@@ -55,6 +55,9 @@ public class CalendarAdapter extends
 
     @Override
     public int getItemCount() {
+        if(dayList == null){
+            return 0;
+        }
         return dayList.size();
     }
 
