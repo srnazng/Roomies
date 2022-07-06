@@ -83,7 +83,7 @@ public class CalendarDayUtils {
         end.add(Calendar.DAY_OF_YEAR, begin.getActualMaximum(Calendar.DAY_OF_MONTH));
         clearTime(end);
 
-        initCalendar(start);
+        initCalendar();
 
         // add myChores to chores lists of CalendarDay objects
         for(int i=0; i<chores.size(); i++){
@@ -176,7 +176,7 @@ public class CalendarDayUtils {
     }
 
     // create CalendarDay objects for entire month
-    public static void initCalendar(Calendar start){
+    public static void initCalendar(){
         if(firstOfMonth == null){
             firstOfMonth = Calendar.getInstance();
             firstOfMonth.set(Calendar.DAY_OF_MONTH, 1);
@@ -187,9 +187,9 @@ public class CalendarDayUtils {
 
         calendarList.clear();
 
-        for(int i=0; i<start.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
+        for(int i=0; i<firstOfMonth.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
             Calendar date = Calendar.getInstance();
-            date.setTime(start.getTime());
+            date.setTime(firstOfMonth.getTime());
             date.add(Calendar.DAY_OF_MONTH, i);
 
             CalendarDay day = new CalendarDay(date);

@@ -94,6 +94,7 @@ public class CircleUtils {
                 if(firstInit){
                     ChoreUtils.initChores();
                     ExpenseUtils.initExpenses();
+                    CalendarDayUtils.initCalendar();
                 }
 
                 initUserCircleList();

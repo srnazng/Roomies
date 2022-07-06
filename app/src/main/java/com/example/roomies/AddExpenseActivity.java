@@ -1,11 +1,12 @@
 package com.example.roomies;
-import static com.example.roomies.HomeFragment.*;
+import static com.example.roomies.utils.ExpenseUtils.*;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -13,19 +14,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.roomies.R;
-import com.example.roomies.model.Expense;
-import com.example.roomies.model.Transaction;
 import com.example.roomies.model.UserCircle;
 import com.example.roomies.utils.CircleUtils;
-import com.example.roomies.utils.ExpenseUtils;
-import com.google.android.material.chip.ChipGroup;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
+import com.example.roomies.utils.NumberTextWatcher;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -38,7 +32,10 @@ public class AddExpenseActivity extends AppCompatActivity {
     private CheckBox checkSplit;
     private Button btnSubmitExpense;
     private LinearLayout transactions;
-    private Expense expense;
+    private TextView tvSplitSum;
+    private ConstraintLayout layoutAssign;
+    private Button btnSplit;
+    private Button btnSelectAll;
 
     private List<View> transactionViews;
     private List<ParseUser> transactionUsers;
@@ -67,19 +64,21 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         // total expense amount
         etTotal = findViewById(R.id.etTotal);
-        etTotal.setText("$ ");
+        etTotal.addTextChangedListener(new NumberTextWatcher(etTotal));
 
         // button to submit expense to database
         btnSubmitExpense = findViewById(R.id.btnSubmitExpense);
         btnSubmitExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitExpense();
+                submitExpense(AddExpenseActivity.this, etExpenseName, etTotal,
+                        checkSplit.isChecked(), transactionViews, transactionUsers);
             }
         });
 
         // checkbox determining if expense is divided among users
         checkSplit = findViewById(R.id.checkSplit);
+        layoutAssign = findViewById(R.id.layoutAssign);
         checkSplit.setChecked(true);
         checkSplit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
@@ -87,13 +86,33 @@ public class AddExpenseActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(checkSplit.isChecked()){
-                    transactions.setVisibility(View.VISIBLE);
-                    tvAssignTo.setVisibility(View.VISIBLE);
+                    layoutAssign.setVisibility(View.VISIBLE);
                 }
                 else{
-                    transactions.setVisibility(View.GONE);
-                    tvAssignTo.setVisibility(View.GONE);
+                    layoutAssign.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        // split cost evenly
+        btnSplit = findViewById(R.id.btnSplit);
+        btnSplit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                splitCost(AddExpenseActivity.this,
+                        etTotal.getText().toString(),
+                        transactionViews,
+                        tvSplitSum,
+                        getNumAssigned(transactionViews));
+            }
+        });
+
+        // select all users in circle
+        btnSelectAll = findViewById(R.id.btnSelectAll);
+        btnSelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectAll();
             }
         });
     }
@@ -113,9 +132,14 @@ public class AddExpenseActivity extends AppCompatActivity {
 
             EditText etAmount = v.findViewById(R.id.etAmount);
             etAmount.setVisibility(View.INVISIBLE);
-
-            TextView tvDollar = v.findViewById(R.id.tvDollar);
-            tvDollar.setVisibility(View.INVISIBLE);
+            etAmount.addTextChangedListener(new NumberTextWatcher(etAmount){
+                @Override
+                public void afterTextChanged(Editable s) {
+                    super.afterTextChanged(s);
+                    // update sum of assigned transactions
+                    findAssignedSum(tvSplitSum, transactionViews);
+                }
+            });
 
             CheckBox checkName = v.findViewById(R.id.checkName);
             checkName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
@@ -125,11 +149,9 @@ public class AddExpenseActivity extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(isChecked){
                         etAmount.setVisibility(View.VISIBLE);
-                        tvDollar.setVisibility(View.VISIBLE);
                     }
                     else{
                         etAmount.setVisibility(View.INVISIBLE);
-                        tvDollar.setVisibility(View.INVISIBLE);
                     }
                 }
             });
@@ -140,95 +162,20 @@ public class AddExpenseActivity extends AppCompatActivity {
             // add to view of all transactions
             transactions.addView(v);
         }
+
+        // TextView showing sum of assigned transactions
+        tvSplitSum = new TextView(this);
+        findAssignedSum(tvSplitSum, transactionViews);
+        tvSplitSum.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        transactions.addView(tvSplitSum);
     }
 
-    // add Expense object on database
-    public void submitExpense(){
-       Expense entity = new Expense();
-        entity.put("name", etExpenseName.getText().toString());
-
-        String price = etTotal.getText().toString();
-        if(!price.isEmpty() && price.charAt(0) == '$'){
-            price = price.substring(1);
-        }
-        entity.put("total", Float.parseFloat(price));
-        entity.put("creator", ParseUser.getCurrentUser());
-        entity.put("circle", CircleUtils.getCurrentCircle());
-
-        // TODO: upload photo proof
-        // entity.put("proof", new ParseFile("resume.txt", "My string content".getBytes()));
-
-        expense = entity;
-
-        // Saves the new object.
-        entity.saveInBackground(e -> {
-            if (e==null){
-                //Save was done
-                if(checkSplit.isChecked()){
-                    // assign expense to specific users
-                    submitTransactions();
-                }
-                else{
-                    // done
-                    Toast.makeText(this, "Added expense", Toast.LENGTH_SHORT).show();
-                    ExpenseUtils.addCircleExpense(expense);
-                    ExpenseUtils.initExpenses();
-                    finish();
-                }
-            }else{
-                //Something went wrong
-                Toast.makeText(this, "Error adding expense", Toast.LENGTH_LONG).show();
-                Log.e(TAG, e.getMessage());
-            }
-        });
-    }
-
-    // add Transaction objects for each user assigned to pay expense
-    public void submitTransactions(){
-        String currentUser = ParseUser.getCurrentUser().getObjectId();
-
-        // loop through all users in circle
+    // select all users in circle to pay expense
+    public void selectAll(){
         for(int i=0; i<transactionViews.size(); i++){
             View view = transactionViews.get(i);
             CheckBox checkName = view.findViewById(R.id.checkName);
-
-            // user is assigned to help pay for this expense and is not current user
-            if(checkName.isChecked() && !transactionUsers.get(i).getObjectId().equals(currentUser)){
-                EditText etAmount = view.findViewById(R.id.etAmount);
-                Transaction entity = new Transaction();
-
-                // current user
-                entity.put("receiver", ParseUser.getCurrentUser());
-                // assigned user
-                entity.put("payer", transactionUsers.get(i));
-                // amount specified
-                if(!etAmount.getText().toString().isEmpty()){
-                    entity.put("amount", Float.parseFloat(etAmount.getText().toString()));
-                }
-                // related Expense object
-                entity.put("expense", expense);
-                // transaction status
-                entity.put("completed", false);
-
-                // Saves the new object.
-                // Notice that the SaveCallback is totally optional!
-                entity.saveInBackground(e -> {
-                    if (e==null){
-                        //Save was done
-                    }else{
-                        //Something went wrong
-                        Log.e(TAG, e.getMessage());
-                        Toast.makeText(this, "Error making transaction", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                });
-            }
+            checkName.setChecked(true);
         }
-
-        // all transactions successfully saved
-        Toast.makeText(this, "Added expense", Toast.LENGTH_SHORT).show();
-        ExpenseUtils.addCircleExpense(expense);
-        ExpenseUtils.initExpenses();
-        finish();
     }
 }
