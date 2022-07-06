@@ -6,16 +6,10 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.roomies.utils.CircleUtils;
-
 public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // load database data
-        CircleUtils.initCircle(true);
-
         setContentView(R.layout.activity_splash_screen);
         new Handler().postDelayed(new Runnable() {
             @Override

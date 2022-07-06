@@ -1,12 +1,7 @@
 package com.example.roomies;
 import android.app.Application;
 
-import com.example.roomies.model.Chore;
-import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Circle;
-import com.example.roomies.model.Expense;
-import com.example.roomies.model.Recurrence;
-import com.example.roomies.model.Transaction;
 import com.example.roomies.model.UserCircle;
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -22,11 +17,6 @@ public class ParseApplication extends Application {
         // register classes here
         ParseObject.registerSubclass(Circle.class);
         ParseObject.registerSubclass(UserCircle.class);
-        ParseObject.registerSubclass(Chore.class);
-        ParseObject.registerSubclass(ChoreAssignment.class);
-        ParseObject.registerSubclass(Transaction.class);
-        ParseObject.registerSubclass(Expense.class);
-        ParseObject.registerSubclass(Recurrence.class);
 
         // Use for troubleshooting -- remove this line for production
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);

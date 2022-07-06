@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 import android.content.ClipboardManager;
 
 import com.example.roomies.model.Circle;
-import com.example.roomies.utils.SessionUtils;
 
 import org.parceler.Parcels;
 
@@ -40,7 +40,8 @@ public class NewCircleActivity extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionUtils.startSession(NewCircleActivity.this);
+                Intent i = new Intent(NewCircleActivity.this, MainActivity.class);
+                startActivity(i);
             }
         });
 

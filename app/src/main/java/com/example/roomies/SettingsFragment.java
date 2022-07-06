@@ -1,14 +1,12 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.CircleUtils.*;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,30 +17,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.model.Circle;
+import com.parse.ParseUser;
 
 /**
- * Settings page
+ * A simple {@link Fragment} subclass.
+ * Use the {@link SettingsFragment#newInstance} factory method to
+ * create an instance of this fragment.
  */
 public class SettingsFragment extends Fragment {
     private Button btnLogout;
-    private Button btnManageAccount;
-    private Button btnManageCircle;
-    private Button btnLeaveCircle;
     private TextView tvJoinCode;
+    private Circle circle;
     private ImageView ivClipboard;
-
-    public static final String TAG = "SettingsFragment";
 
     public SettingsFragment() {
 
     }
 
     /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment SettingsFragment.
      */
-    public static SettingsFragment newInstance() {
+    public static SettingsFragment newInstance(Circle circle) {
         SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
+        args.putParcelable("circle", circle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,34 +59,19 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_settings, container, false);
 
-        // button to edit account settings
-        btnManageAccount = view.findViewById(R.id.btnManageAccount);
-        btnManageAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toManageAccount();
-            }
-        });
-
-        // button to edit circle settings
-        btnManageCircle = view.findViewById(R.id.btnManageCircle);
-        btnManageCircle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toManageCircle();
-            }
-        });
+        Bundle bundle = this.getArguments();
+        circle = bundle.getParcelable("circle");
 
         // join code to share circle
         tvJoinCode = view.findViewById(R.id.tvJoinCode);
-        tvJoinCode.setText(getCurrentCircle().getObjectId());
+        tvJoinCode.setText(circle.getObjectId());
 
         // copy join code to clipboard
         ivClipboard = view.findViewById(R.id.ivClipboard);
         ivClipboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setClipboard(getActivity(), getCurrentCircle().getObjectId());
+                setClipboard(getActivity(), circle.getObjectId());
             }
         });
 
@@ -94,26 +80,20 @@ public class SettingsFragment extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logout(getActivity());
+                logout(v);
             }
         });
-
-        // button to leave circle
-        btnLeaveCircle = view.findViewById(R.id.btnLeaveCircle);
-        btnLeaveCircle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                leaveCircle(getActivity());
-            }
-        });
-
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        initCircle(false);
+    public void logout(View v){
+        ParseUser.logOut();
+        ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
+
+        if(currentUser == null){
+            Intent i = new Intent(getActivity(), LoginActivity.class);
+            startActivity(i);
+        }
     }
 
     private void setClipboard(Context context, String text) {
@@ -121,21 +101,5 @@ public class SettingsFragment extends Fragment {
         ClipData clip = ClipData.newPlainText("copied text", text);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(context, "Copied to clipboard " + text, Toast.LENGTH_SHORT).show();
-    }
-
-    // go to manage account page
-    public void toManageAccount() {
-        FragmentTransaction fragmentTransaction = (getActivity()).getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, ManageAccountFragment.newInstance());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
-    // go to manage account page
-    public void toManageCircle() {
-        FragmentTransaction fragmentTransaction = (getActivity()).getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, ManageCircleFragment.newInstance(getCurrentCircle()));
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 }
