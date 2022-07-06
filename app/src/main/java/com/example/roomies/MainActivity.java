@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.CircleUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -37,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
         // all circles which user has joined
         // currently user can only join 1 circle
         circles = new ArrayList<>();
-        getCircles();
+        updateCircles();
 
         // set up bottom navigator
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             // initialize fragment
-            Fragment selectedFragment = HomeFragment.newInstance();
+            Fragment selectedFragment = null;
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -57,8 +58,10 @@ public class MainActivity extends AppCompatActivity {
                         selectedFragment = ExpenseFragment.newInstance();
                         break;
                     case R.id.action_settings:
+                        // refresh circle info
+                        updateCircles();
                         // go to settings screen (manage user account and circle)
-                        selectedFragment = SettingsFragment.newInstance(circles.get(0));
+                        selectedFragment = SettingsFragment.newInstance();
                         break;
                     default:
                         // go to home screen
@@ -70,13 +73,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // query UserCircle objects that contain current user to get circles that user has joined
-    public void getCircles(){
+    /**
+     * query UserCircle objects that contain current user to get circles that user has joined
+     * TODO: return circle, add to utils
+     */
+    public void updateCircles(){
         // specify what type of data we want to query - UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
         // include data referred by user key
         query.include(UserCircle.KEY_USER);
-
+        query.include(UserCircle.KEY_CIRCLE);
         // start an asynchronous call for UserCircle objects that include current user
         query.findInBackground(new FindCallback<UserCircle>() {
             @Override
@@ -89,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // user has not joined a circle
                 if(userCircles.isEmpty()){
+                    // go to AddCircleActivity
                     Intent i = new Intent(MainActivity.this, AddCircleActivity.class);
                     startActivity(i);
                     finish();

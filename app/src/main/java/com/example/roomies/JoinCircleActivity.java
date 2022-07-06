@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.SessionUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -67,13 +68,10 @@ public class JoinCircleActivity extends AppCompatActivity {
                 userCircle.put("circle", circle);
 
                 // Saves the new object.
-                // Notice that the SaveCallback is totally optional!
                 userCircle.saveInBackground(e1 -> {
                     if (e1==null){
                         Toast.makeText(JoinCircleActivity.this, "Circle join success", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(JoinCircleActivity.this, MainActivity.class);
-                        startActivity(i);
-                        finish();
+                        SessionUtils.startSession(JoinCircleActivity.this);
                     }else{
                         //Something went wrong
                         Toast.makeText(JoinCircleActivity.this, "Error occurred: unable to join circle", Toast.LENGTH_SHORT).show();
