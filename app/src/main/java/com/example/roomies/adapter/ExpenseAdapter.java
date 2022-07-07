@@ -6,6 +6,7 @@ import static com.example.roomies.utils.ExpenseUtils.getCircleTransactions;
 import static com.example.roomies.utils.ExpenseUtils.getMyExpenseTransaction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roomies.ExpenseDetailActivity;
 import com.example.roomies.ExpenseFragment;
 import com.example.roomies.R;
 import com.example.roomies.model.Expense;
@@ -108,6 +110,15 @@ public class ExpenseAdapter extends
 
             // user who created expense
             ParseUser receiver = expense.getCreator();
+
+            card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, ExpenseDetailActivity.class);
+                    i.putExtra("expense", expense);
+                    context.startActivity(i);
+                }
+            });
 
             // filter set to all circle expenses
             if(ExpenseFragment.getFilter() == ExpenseFragment.Filters.CIRCLE_EXPENSES){

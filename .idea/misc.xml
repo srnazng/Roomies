@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/layout/activity_add_circle.xml" value="0.6625905797101449" />
         <entry key="app/src/main/res/layout/activity_add_expense.xml" value="0.4649993896484375" />
         <entry key="app/src/main/res/layout/activity_circle.xml" value="0.361016845703125" />
+        <entry key="app/src/main/res/layout/activity_expense_detail.xml" value="0.4360837964942283" />
         <entry key="app/src/main/res/layout/activity_join_circle.xml" value="0.22927602132161462" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.23734893798828127" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19855957031250002" />
@@ -23,7 +24,7 @@
         <entry key="app/src/main/res/layout/fragment_chore.xml" value="0.23853820598006645" />
         <entry key="app/src/main/res/layout/fragment_custom_recurrence.xml" value="0.4889176327115307" />
         <entry key="app/src/main/res/layout/fragment_expense.xml" value="0.5925666199158486" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.5468483816013628" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.29570735800285775" />
         <entry key="app/src/main/res/layout/fragment_manage_account.xml" value="0.4793778941326938" />
         <entry key="app/src/main/res/layout/fragment_manage_circle.xml" value="0.44114583333333335" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.7577763070814031" />

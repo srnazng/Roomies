@@ -1,5 +1,7 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.ExpenseUtils.*;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.roomies.model.Circle;
+import com.example.roomies.model.Expense;
 import com.example.roomies.model.UserCircle;
 import com.example.roomies.utils.CircleUtils;
 import com.parse.FindCallback;
@@ -45,6 +48,12 @@ public class HomeFragment extends Fragment {
     private ImageView ivProfile4;
     private ImageView ivProfile5;
     private TextView tvExtraProfiles;
+
+    private TextView tvPendingRequestsNum;
+    private TextView tvPendingPaymentsNum;
+    private TextView tvHighNum;
+    private TextView tvMedNum;
+    private TextView tvLowNum;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -74,6 +83,11 @@ public class HomeFragment extends Fragment {
         // bind layout
         ivCirclePhoto = view.findViewById(R.id.ivCirclePhoto);
         tvCircleName = view.findViewById(R.id.tvCircleName);
+        tvPendingRequestsNum = view.findViewById(R.id.tvPendingRequestsNum);
+        tvPendingPaymentsNum = view.findViewById(R.id.tvPendingPaymentsNum);
+        tvHighNum = view.findViewById(R.id.tvHighNum);
+        tvMedNum = view.findViewById(R.id.tvMedNum);
+        tvLowNum = view.findViewById(R.id.tvLowNum);
 
         // TODO: use for loop
         ivProfile1 = view.findViewById(R.id.ivProfile1);
@@ -111,6 +125,7 @@ public class HomeFragment extends Fragment {
             Glide.with(context).load(currentCircle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCirclePhoto);
             tvCircleName.setText(currentCircle.getName());
 
+            updateStats();
             updateAllProfiles(view);
         }
         else{
@@ -189,5 +204,22 @@ public class HomeFragment extends Fragment {
         else{
             tvExtraProfiles.setVisibility(view.GONE);
         }
+    }
+
+    /**
+     * update home screen expense and chore stats
+     */
+    private void updateStats(){
+        List<Expense> paymentList = getMyPendingPayments();
+        if(paymentList != null){
+            tvPendingPaymentsNum.setText("" + paymentList.size());
+        }
+
+        List<Expense> requestList = getMyPendingRequests();
+        if(requestList != null){
+            tvPendingRequestsNum.setText("" + requestList.size());
+        }
+
+        // TODO: chore stats
     }
 }
