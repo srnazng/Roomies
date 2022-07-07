@@ -6,9 +6,12 @@ import static com.example.roomies.utils.ExpenseUtils.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,8 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     private Button btnDetailMarkPaid;
     private Button btnDetailEdit;
     private Button btnDetailCancel;
+    private ImageButton btnVenmo;
+    private ImageButton btnCashApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,10 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         btnDetailCancel = findViewById(R.id.btnDetailCancel);
         btnDetailMarkPaid = findViewById(R.id.btnDetailMarkPaid);
         btnDetailEdit = findViewById(R.id.btnDetailEditExpense);
+        btnVenmo = findViewById(R.id.btnVenmo);
+        btnVenmo.setVisibility(View.GONE);
+        btnCashApp = findViewById(R.id.btnCashApp);
+        btnCashApp.setVisibility(View.GONE);
         expenseDetailCard = findViewById(R.id.expenseDetailCard);
         tvExpenseReason = findViewById(R.id.tvExpenseReason);
         tvCreator = findViewById(R.id.tvCreator);
@@ -62,80 +71,14 @@ public class ExpenseDetailActivity extends AppCompatActivity {
 
         // view if user is assigned to pay expense
         if(isPayment()){
-            tvCreator.setText("Pay to " + expense.getCreator().getString("name"));
-            tvAmount.setText("You owe: $" + String.format("%.2f", myTransaction.getAmount()));
-            tvAmount.setVisibility(View.VISIBLE);
-
-            expenseDetailCard.setCheckable(true);
-            expenseDetailCard.setLongClickable(true);
-            expenseDetailCard.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    changeTransactionStatus(expense, !expenseDetailCard.isChecked(), expenseDetailCard);
-                    return true;
-                }
-            });
-
-            expenseDetailCard.setChecked(myTransaction.getCompleted());
-
-            btnDetailMarkPaid.setVisibility(View.VISIBLE);
-            btnDetailEdit.setVisibility(View.GONE);
-            btnDetailCancel.setVisibility(View.GONE);
-
-            btnDetailMarkPaid.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    changeTransactionStatus(expense, !expenseDetailCard.isChecked(), expenseDetailCard);
-                }
-            });
+            setPaymentView();
         }
         // view if user created expense
         else if(isRequest()){
-            tvCreator.setText("Created by " + expense.getCreator().getString("name"));
-            tvAmount.setVisibility(View.GONE);
-
-            // determine if card should be marked completed
-            expenseDetailCard.setChecked(true);
-            for(int i=0; i<transactions.size(); i++){
-                if(!transactions.get(i).getCompleted()){
-                    expenseDetailCard.setChecked(false);
-                    break;
-                }
-            }
-
-            btnDetailMarkPaid.setVisibility(View.GONE);
-            btnDetailEdit.setVisibility(View.VISIBLE);
-            btnDetailCancel.setVisibility(View.VISIBLE);
-
-            btnDetailCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(ExpenseDetailActivity.this, "Cancel expense success", Toast.LENGTH_SHORT).show();
-                    cancelExpense(expense);
-                    updateExpenseList(getFilterInt());
-                    finish();
-                }
-            });
+            setRequestView();
         }
         else{
-            tvCreator.setText("Created by " + expense.getCreator().getString("name"));
-            tvAmount.setVisibility(View.GONE);
-
-            // card settings
-            expenseDetailCard.setChecked(true);
-            expenseDetailCard.setLongClickable(false);
-
-            // determine if card should be marked completed
-            for(int i=0; i<transactions.size(); i++){
-                if(!transactions.get(i).getCompleted()){
-                    expenseDetailCard.setChecked(false);
-                    break;
-                }
-            }
-
-            btnDetailMarkPaid.setVisibility(View.GONE);
-            btnDetailEdit.setVisibility(View.GONE);
-            btnDetailCancel.setVisibility(View.GONE);
+            setDefaultView();
         }
     }
 
@@ -187,5 +130,108 @@ public class ExpenseDetailActivity extends AppCompatActivity {
             chip.setChecked(t.getCompleted());
             assigneeChipGroup.addView(chip);
         }
+    }
+
+    private void setPaymentView(){
+        tvCreator.setText("Pay to " + expense.getCreator().getString("name"));
+        tvAmount.setText("You owe: $" + String.format("%.2f", myTransaction.getAmount()));
+        tvAmount.setVisibility(View.VISIBLE);
+
+        expenseDetailCard.setCheckable(true);
+        expenseDetailCard.setLongClickable(true);
+        expenseDetailCard.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                changeTransactionStatus(expense, !expenseDetailCard.isChecked(), expenseDetailCard);
+                return true;
+            }
+        });
+
+        expenseDetailCard.setChecked(myTransaction.getCompleted());
+
+        btnDetailMarkPaid.setVisibility(View.VISIBLE);
+        btnDetailEdit.setVisibility(View.GONE);
+        btnDetailCancel.setVisibility(View.GONE);
+
+        btnDetailMarkPaid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeTransactionStatus(expense, !expenseDetailCard.isChecked(), expenseDetailCard);
+            }
+        });
+
+        String venmo = myTransaction.getReceiver().getString("venmo");
+        if(venmo != null && !venmo.isEmpty()){
+            btnVenmo.setVisibility(View.VISIBLE);
+            btnVenmo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri uri = Uri.parse("https://account.venmo.com/u/" + venmo);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            });
+        }
+
+        String cashApp = myTransaction.getReceiver().getString("cashApp");
+        if(cashApp != null && !cashApp.isEmpty()){
+            btnCashApp.setVisibility(View.VISIBLE);
+            btnCashApp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri uri = Uri.parse("https://cash.app/" + cashApp);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
+    private void setRequestView(){
+        tvCreator.setText("Created by " + expense.getCreator().getString("name"));
+        tvAmount.setVisibility(View.GONE);
+
+        // determine if card should be marked completed
+        expenseDetailCard.setChecked(true);
+        for(int i=0; i<transactions.size(); i++){
+            if(!transactions.get(i).getCompleted()){
+                expenseDetailCard.setChecked(false);
+                break;
+            }
+        }
+
+        btnDetailMarkPaid.setVisibility(View.GONE);
+        btnDetailEdit.setVisibility(View.VISIBLE);
+        btnDetailCancel.setVisibility(View.VISIBLE);
+        btnDetailCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ExpenseDetailActivity.this, "Cancel expense success", Toast.LENGTH_SHORT).show();
+                cancelExpense(expense);
+                updateExpenseList(getFilterInt());
+                finish();
+            }
+        });
+    }
+
+    private void setDefaultView(){
+        tvCreator.setText("Created by " + expense.getCreator().getString("name"));
+        tvAmount.setVisibility(View.GONE);
+
+        // card settings
+        expenseDetailCard.setChecked(true);
+        expenseDetailCard.setLongClickable(false);
+
+        // determine if card should be marked completed
+        for(int i=0; i<transactions.size(); i++){
+            if(!transactions.get(i).getCompleted()){
+                expenseDetailCard.setChecked(false);
+                break;
+            }
+        }
+
+        btnDetailMarkPaid.setVisibility(View.GONE);
+        btnDetailEdit.setVisibility(View.GONE);
+        btnDetailCancel.setVisibility(View.GONE);
     }
 }

@@ -32,6 +32,8 @@ public class ManageAccountFragment extends Fragment {
     private ImageView ivAddPhoto;
     private EditText etNameInput;
     private EditText etEmailInput;
+    private EditText etVenmoInput;
+    private EditText etCashAppInput;
     private Button btnUpdateAccount;
     private Bitmap bitmap;
     private ProgressDialog pd;
@@ -100,6 +102,18 @@ public class ManageAccountFragment extends Fragment {
         etNameInput = view.findViewById(R.id.etNameInput);
         etNameInput.setText(currentUser.getString("name"));
 
+        // set venmo input to existing venmo username
+        etVenmoInput = view.findViewById(R.id.etVenmoInput);
+        if(currentUser.getString("venmo") != null){
+            etVenmoInput.setText(currentUser.getString("venmo"));
+        }
+
+        // set cashApp input to existing cashApp username
+        etCashAppInput = view.findViewById(R.id.etCashAppInput);
+        if(currentUser.getString("cashApp") != null){
+            etCashAppInput.setText(currentUser.getString("cashApp"));
+        }
+
         // update button
         btnUpdateAccount = view.findViewById(R.id.btnUpdateAccount);
         btnUpdateAccount.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +136,13 @@ public class ManageAccountFragment extends Fragment {
             currentUser.put("name", etNameInput.getText().toString());
             currentUser.put("email", etEmailInput.getText().toString());
             currentUser.put("username", etEmailInput.getText().toString()); // username is same as email
+            currentUser.put("venmo", etVenmoInput.getText().toString());
+
+            String cashApp = etCashAppInput.getText().toString();
+            if(cashApp.charAt(0) != '$'){
+                cashApp = "$" + cashApp;
+            }
+            currentUser.put("cashApp", cashApp);
 
             // update profile image if a new one has been uploaded
             if(bitmap != null){
@@ -131,7 +152,7 @@ public class ManageAccountFragment extends Fragment {
             // Saves the object.
             currentUser.saveInBackground(e -> {
                 if(e==null){
-                    //Save successfull
+                    //Save successful
                     Toast.makeText(getActivity(), "Account Update Success", Toast.LENGTH_SHORT).show();
                 }else{
                     // Something went wrong while saving

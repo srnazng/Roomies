@@ -165,7 +165,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Number of Pending Requests:" />
+                            android:text="Number of Pending Requests" />
 
                         <TextView
                             android:id="@+id/tvPendingRequestsNum"
@@ -192,7 +192,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Number of Pending Payments:" />
+                            android:text="Number of Pending Payments" />
 
                         <TextView
                             android:id="@+id/tvPendingPaymentsNum"
@@ -270,7 +270,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="High Priority:" />
+                            android:text="High Priority" />
 
                         <TextView
                             android:id="@+id/tvHighNum"
@@ -297,7 +297,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Medium Priority:" />
+                            android:text="Medium Priority" />
 
                         <TextView
                             android:id="@+id/tvMedNum"
@@ -324,7 +324,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Low Priority: " />
+                            android:text="Low Priority" />
 
                         <TextView
                             android:id="@+id/tvLowNum"
