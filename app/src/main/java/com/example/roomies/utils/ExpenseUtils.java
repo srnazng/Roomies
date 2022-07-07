@@ -1,5 +1,9 @@
 package com.example.roomies.utils;
 
+import static com.example.roomies.ExpenseFragment.getFilterInt;
+import static com.example.roomies.ExpenseFragment.updateExpenseList;
+import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -17,6 +21,7 @@ import com.example.roomies.model.Expense;
 import com.example.roomies.model.Transaction;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -27,25 +32,51 @@ import java.util.List;
 
 public class ExpenseUtils {
     private static List<Expense> circleExpenses;
-    private static List<Expense> myExpenses;
+    private static List<Transaction> circleTransactions;
+
+    // paid by me
+    private static List<Expense> myPendingPayments;
+    private static List<Expense> myCompletedPayments;
+
+    // paid to me
+    private static List<Expense> myPendingRequests;
+    private static List<Expense> myCompletedRequests;
 
     public static final String sumMessage = "\nTotal amount assigned: $";
 
     public static final String TAG = "ExpenseUtils";
 
-    /**
-     * @return list of all expenses for current circle
-     */
     public static List<Expense> getCircleExpenses(){
         return circleExpenses;
+    }
+
+    public static List<Transaction> getCircleTransactions(){
+        return circleTransactions;
+    }
+
+    public static List<Expense> getMyCompletedPayments(){
+        return myCompletedPayments;
+    }
+
+    public static List<Expense> getMyPendingPayments(){
+        return myPendingPayments;
+    }
+
+    public static List<Expense> getMyCompletedRequests(){
+        return myCompletedRequests;
+    }
+
+    public static List<Expense> getMyPendingRequests(){
+        return myPendingRequests;
     }
 
     /**
      * Initialize all lists of expenses
      */
     public static void initExpenses(){
+        Log.i(TAG, "initialize expenses");
         initCircleExpenses();
-        // TODO: get expenses only related to user
+        initCircleTransactions();
     }
 
     /**
@@ -53,14 +84,11 @@ public class ExpenseUtils {
      */
     public static void clearAll(){
         circleExpenses.clear();
-    }
-
-    /**
-     * Add expense to circleExpenses
-     * @param e   Expense object to add
-     */
-    public static void addCircleExpense(Expense e){
-        circleExpenses.add(e);
+        circleTransactions.clear();
+        myCompletedPayments.clear();
+        myPendingPayments.clear();
+        myCompletedRequests.clear();
+        myPendingRequests.clear();
     }
 
     /**
@@ -93,17 +121,124 @@ public class ExpenseUtils {
 
                 // no expenses
                 if(expenses.isEmpty()){
-                    Log.i(TAG, "No expenses");
+                    Log.i(TAG, "No circle expenses");
                 }
 
                 // save received expenses to list and notify adapter of new data
                 circleExpenses.clear();
                 circleExpenses.addAll(expenses);
+                updateExpenseList(getFilterInt());
             }
         });
     }
 
-    // remove dollar sign and commas from price string
+    /**
+     * Query transactions belonging to current circle
+     */
+    public static void initCircleTransactions(){
+        if(circleTransactions == null){
+            circleTransactions = new ArrayList<>();
+        }
+        if(myCompletedPayments == null){
+            myCompletedPayments = new ArrayList<>();
+        }
+        if(myPendingPayments == null){
+            myPendingPayments = new ArrayList<>();
+        }
+        if(myPendingRequests == null){
+            myPendingRequests = new ArrayList<>();
+        }
+        if(myCompletedRequests == null){
+            myCompletedRequests = new ArrayList<>();
+        }
+
+        // no current circle
+        if(CircleUtils.getCurrentCircle() == null){
+            return;
+        }
+
+        // only get expenses from user's current circle
+        ParseQuery<Transaction> query = ParseQuery.getQuery(Transaction.class).whereEqualTo(Transaction.KEY_CIRCLE, getCurrentCircle());
+        // include receiver object
+        query.include(Transaction.KEY_EXPENSE);
+        query.include(Transaction.KEY_RECEIVER);
+        query.include(Transaction.KEY_PAYER);
+        query.include(Transaction.KEY_EXPENSE + "." + Expense.KEY_CREATOR);
+
+        // start an asynchronous call for Transaction objects
+        query.findInBackground(new FindCallback<Transaction>() {
+            @Override
+            public void done(List<Transaction> transactions, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting expenses", e);
+                    return;
+                }
+
+                // no expenses
+                if(transactions.isEmpty()){
+                    Log.i(TAG, "No expenses");
+                }
+
+                // clear lists
+                circleTransactions.clear();
+                myPendingRequests.clear();
+                myPendingPayments.clear();
+                myCompletedRequests.clear();
+                myCompletedPayments.clear();
+
+                // save received expenses to list
+                for(int i=0; i<transactions.size(); i++){
+                    Transaction t = transactions.get(i);
+                    circleTransactions.add(t);
+
+                    // transactions where current user pays money
+                    if(t.getPayer().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                        if(t.getCompleted()){
+                            myCompletedPayments.add(t.getExpense());
+                        }
+                        else{
+                            myPendingPayments.add(t.getExpense());
+                        }
+                    }
+
+                    // transaction where current user receives money
+                    if(t.getReceiver().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                        if(!t.getCompleted() && !expenseExists(t.getExpense(), myPendingRequests)){
+                            myPendingRequests.add(t.getExpense());
+                        }
+                        else if(t.getCompleted()
+                                && !expenseExists(t.getExpense(), myCompletedRequests)
+                                && !expenseExists(t.getExpense(), myPendingRequests)){
+                            myCompletedRequests.add(t.getExpense());
+                        }
+                    }
+                }
+                updateExpenseList(getFilterInt());
+            }
+        });
+    }
+
+    /**
+     * Search for expense in expenseList
+     * @param expense
+     * @param expenseList
+     * @return whether expense is in expenseList
+     */
+    public static boolean expenseExists(Expense expense, List<Expense> expenseList){
+        for(int i=0; i<expenseList.size(); i++){
+            if(expenseList.get(i) != null && expenseList.get(i).getObjectId().equals(expense.getObjectId())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * remove dollar sign and commas from price string
+     * @param price
+     * @return reformatted price
+     */
     public static String removeDollar(String price){
         // remove dollar sign
         if(!price.isEmpty() && price.charAt(0) == '$'){
@@ -119,7 +254,15 @@ public class ExpenseUtils {
         return price.replaceAll(",", "");
     }
 
-    // divide total cost evenly among everyone selected to pay expense
+    /**
+     * divide total cost evenly among everyone selected to pay expense
+     * @param context
+     * @param expenseTotal
+     * @param transactionViews
+     * @param tvSplitSum
+     * @param numAssigned
+     * @return whether expense was split successfully
+     */
     public static boolean splitCost(Context context, String expenseTotal, List<View> transactionViews, TextView tvSplitSum, int numAssigned){
         // cannot split cost if total not entered
         if(expenseTotal.equals("$")){
@@ -193,7 +336,10 @@ public class ExpenseUtils {
         return true;
     }
 
-    // get the number of users in circle assigned ot pay expense
+    /**
+     * @param transactionViews
+     * @return number of users assigned to pay expense
+     */
     public static int getNumAssigned(List<View> transactionViews){
         if(transactionViews == null || transactionViews.isEmpty()){
             return 0;
@@ -213,7 +359,12 @@ public class ExpenseUtils {
         return numAssigned;
     }
 
-    // show the total amount users are assigned to pay
+    /**
+     * show the total amount users are assigned to pay
+     * @param tvSplitSum
+     * @param transactionViews
+     * @return sum of amounts assigned as a String
+     */
     public static String findAssignedSum(TextView tvSplitSum, List<View> transactionViews){
         BigDecimal sum = new BigDecimal(0);
         if(transactionViews == null){
@@ -240,8 +391,15 @@ public class ExpenseUtils {
         return String.format("%.2f", sum);
     }
 
-
-    // add Expense object on database
+    /**
+     * add Expense object on database
+     * @param context
+     * @param etExpenseName
+     * @param etTotal
+     * @param split
+     * @param transactionViews
+     * @param transactionUsers
+     */
     public static void submitExpense(Context context,
                                      @NonNull EditText etExpenseName,
                                      EditText etTotal,
@@ -282,8 +440,9 @@ public class ExpenseUtils {
                 else{
                     // done
                     Toast.makeText(context, "Added expense", Toast.LENGTH_SHORT).show();
-                    ExpenseUtils.addCircleExpense(expense);
-                    ExpenseUtils.initExpenses();
+                    circleExpenses.add(expense);
+                    myPendingRequests.add(expense);
+                    initExpenses();
                     ((Activity) context).finish();
                 }
             }else{
@@ -294,7 +453,13 @@ public class ExpenseUtils {
         });
     }
 
-    // add Transaction objects for each user assigned to pay expense
+    /**
+     * add Transaction objects for each user assigned to pay expense
+     * @param context
+     * @param transactionViews
+     * @param transactionUsers
+     * @param expense
+     */
     public static void submitTransactions(Context context, List<View> transactionViews, List<ParseUser> transactionUsers, Expense expense){
         String currentUser = ParseUser.getCurrentUser().getObjectId();
 
@@ -320,12 +485,24 @@ public class ExpenseUtils {
                 entity.put("expense", expense);
                 // transaction status
                 entity.put("completed", false);
+                entity.put("circle", getCurrentCircle());
 
                 // Saves the new object.
                 // Notice that the SaveCallback is totally optional!
+                int finalI = i;
                 entity.saveInBackground(e -> {
                     if (e==null){
                         //Save was done
+                        circleTransactions.add(entity);
+
+                        // all transactions successfully saved
+                        if(finalI + 1 == transactionViews.size()){
+                            Toast.makeText(context, "Added expense", Toast.LENGTH_SHORT).show();
+                            circleExpenses.add(expense);
+                            myPendingRequests.add(expense);
+                            initExpenses();
+                            ((Activity) context).finish();
+                        }
                     }else{
                         //Something went wrong
                         Log.e(TAG, e.getMessage());
@@ -335,12 +512,129 @@ public class ExpenseUtils {
                 });
             }
         }
-
-        // all transactions successfully saved
-        Toast.makeText(context, "Added expense", Toast.LENGTH_SHORT).show();
-        ExpenseUtils.addCircleExpense(expense);
-        ExpenseUtils.initExpenses();
-        ((Activity) context).finish();
     }
 
+    /**
+     * @param expense
+     * @param transactionList
+     * @return list of all transactions in transactionList that are a part of the expense
+     */
+    public static List<Transaction> getAllExpenseTransactions(Expense expense, List<Transaction> transactionList){
+        List<Transaction> list = new ArrayList<>();
+        String searchExpense = expense.getObjectId();
+        for(int i=0; i<transactionList.size(); i++){
+            String transactionExpense = transactionList.get(i).getExpense().getObjectId();
+            if(searchExpense.equals(transactionExpense)){
+                list.add(transactionList.get(i));
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * @param expense
+     * @param transactionList
+     * @return Current user's transaction associated with expense or null if none
+     */
+    public static Transaction getMyExpenseTransaction(Expense expense, List<Transaction> transactionList){
+        String searchExpense = expense.getObjectId();
+
+        for(int i=0; i<transactionList.size(); i++){
+            Transaction t = transactionList.get(i);
+            if(searchExpense.equals(t.getExpense().getObjectId())
+                    && t.getPayer().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                return t;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * mark expense as completed and reflect in card view
+     * @param expense
+     * @param completed
+     * @param card
+     */
+    public static void changeTransactionStatus(Expense expense,
+                                               boolean completed,
+                                               com.google.android.material.card.MaterialCardView card){
+        Transaction t = getMyExpenseTransaction(expense, circleTransactions);
+
+        if(t != null){
+            t.setCompleted(completed);
+            t.saveInBackground(e -> {
+                if(e == null){
+                    // save completed
+                    Log.i(TAG, "Card status set to complete " + completed);
+                    if(card != null){
+                        card.setChecked(!card.isChecked());
+                    }
+                    initExpenses();
+                    updateExpenseList(getFilterInt());
+                }
+                else{
+                    Log.e(TAG, "Error updating transaction");
+                }
+            });
+        }
+        else{
+            Log.i(TAG, "No transaction found");
+        }
+    }
+
+
+    public static void cancelExpense(Expense expense){
+        circleExpenses.remove(expense);
+
+        // get transactions belonging to the expense
+        ParseQuery<Transaction> query = ParseQuery.getQuery(Transaction.class).whereEqualTo(Transaction.KEY_EXPENSE, expense);
+
+        // start an asynchronous call for Transaction objects
+        query.findInBackground(new FindCallback<Transaction>() {
+            @Override
+            public void done(List<Transaction> transactions, ParseException e) {
+                if(e == null){
+                    for(int i=0; i<transactions.size(); i++){
+                        // delete transaction
+                        int finalI = i;
+                        transactions.get(i).deleteInBackground(e2 -> {
+                            if(e2==null){
+                                Log.i(TAG, "Success deleting transaction");
+                                circleTransactions.remove(transactions.get(finalI));
+                            }else{
+                                //Something went wrong while deleting the Object
+                                Log.e(TAG, "Error deleting transaction", e2);
+                            }
+                        });
+                    }
+                    deleteExpense(expense);
+                }
+            }
+        });
+    }
+
+    public static void deleteExpense(Expense expense){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Expense");
+
+        // Retrieve the object by id
+        query.getInBackground(expense.getObjectId(), (object, e) -> {
+            if (e == null) {
+                //Object was fetched
+                //Deletes the fetched ParseObject from the database
+                object.deleteInBackground(e2 -> {
+                    if(e2==null){
+                        Log.i(TAG, "Success deleting expense");
+                        circleExpenses.remove(expense);
+                    }else{
+                        //Something went wrong while deleting the Object
+                        Log.e(TAG, "Error deleting expense", e2);
+                    }
+                });
+            }else{
+                //Something went wrong
+                Log.e(TAG, "Error querying expense", e);;
+            }
+        });
+    }
 }

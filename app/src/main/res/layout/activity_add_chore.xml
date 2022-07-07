@@ -207,7 +207,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ScrollView
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="30dp"
@@ -231,7 +231,7 @@
                 app:chipIcon="@mipmap/ic_launcher" />
 
         </com.google.android.material.chip.ChipGroup>
-    </ScrollView>
+    </HorizontalScrollView>
 
     <TextView
         android:id="@+id/tvAssignTo"

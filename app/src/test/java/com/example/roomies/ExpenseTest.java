@@ -5,6 +5,11 @@ import static org.junit.Assert.assertNotEquals;
 
 import android.view.View;
 
+import com.example.roomies.model.Expense;
+import com.example.roomies.model.Transaction;
+import com.parse.Parse;
+
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,15 +19,17 @@ public class ExpenseTest {
     private List<View> transactionViews;
     private String expenseTotal;
 
+    public static final int NUM_ITEMS = 5;
+
     // success split expense
     @Test
     public void testSplit(){
         transactionViews = new ArrayList<>();
-        for(int i=0; i<6; i++){
+        for(int i=0; i<NUM_ITEMS; i++){
             transactionViews.add(null);
         }
         expenseTotal = "$0.01";
-        boolean success = splitCost(null, expenseTotal, transactionViews, null, 5);
+        boolean success = splitCost(null, expenseTotal, transactionViews, null, NUM_ITEMS);
         assertEquals(true, success);
         assertEquals("0.00", findAssignedSum(null, transactionViews));
     }
@@ -66,4 +73,16 @@ public class ExpenseTest {
         initCircleExpenses();
         assertNotEquals(null, getCircleExpenses());
     }
+
+    // init circle expenses
+    @Test
+    public void testInitCircleTransactions(){
+        initCircleTransactions();
+        assertNotEquals(null, getCircleTransactions());
+        assertNotEquals(null, getMyCompletedPayments());
+        assertNotEquals(null, getMyPendingPayments());
+        assertNotEquals(null, getMyCompletedRequests());
+        assertNotEquals(null, getMyPendingRequests());
+    }
+
 }
