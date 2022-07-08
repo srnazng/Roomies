@@ -1,12 +1,10 @@
 package com.example.roomies.utils;
 
-import static com.example.roomies.utils.TimeUtils.clearTime;
-import static com.example.roomies.utils.TimeUtils.compare;
-import static com.example.roomies.utils.TimeUtils.occursToday_dayFreq;
-import static com.example.roomies.utils.TimeUtils.occursToday_monthFreq;
-import static com.example.roomies.utils.TimeUtils.occursToday_weekFreq;
-
-import android.util.Log;
+import static com.example.roomies.utils.Utils.clearTime;
+import static com.example.roomies.utils.Utils.compare;
+import static com.example.roomies.utils.Utils.occursToday_dayFreq;
+import static com.example.roomies.utils.Utils.occursToday_monthFreq;
+import static com.example.roomies.utils.Utils.occursToday_weekFreq;
 
 import androidx.recyclerview.widget.RecyclerView;
 

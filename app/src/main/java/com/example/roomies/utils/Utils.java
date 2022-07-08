@@ -1,5 +1,21 @@
 package com.example.roomies.utils;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+import com.parse.ParseFile;
+
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormatSymbols;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -8,8 +24,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimeUtils {
+public class Utils {
     public static final String TAG = "Utils";
+    public static final int GET_FROM_GALLERY = 3;
 
     /**
      *
@@ -190,11 +207,76 @@ public class TimeUtils {
         clearTime(startRecurrence);
         clearTime(today);
 
-        long diff = TimeUtils.getMonthsDifference(startRecurrence, today);
+        long diff = Utils.getMonthsDifference(startRecurrence, today);
         if(diff % freq == 0){
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Convert bitmap to ParseFile
+     * @param imageBitmap
+     * @return
+     */
+    public static ParseFile conversionBitmapParseFile(Bitmap imageBitmap){
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.PNG,0,byteArrayOutputStream);
+        byte[] imageByte = byteArrayOutputStream.toByteArray();
+        ParseFile parseFile = new ParseFile("image_file.png",imageByte);
+        return parseFile;
+    }
+
+    /**
+     * get file name from Uri
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static String getPath( Context context, Uri uri ) {
+        String result = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver( ).query( uri, proj, null, null, null );
+        if(cursor != null){
+            if ( cursor.moveToFirst( ) ) {
+                int column_index = cursor.getColumnIndexOrThrow( proj[0] );
+                result = cursor.getString( column_index );
+            }
+            cursor.close( );
+        }
+        if(result == null) {
+            result = "Not found";
+        }
+        return result.substring(result.lastIndexOf("/")+1);
+    }
+
+    /**
+     * Show dialog popup of image
+     * @param context
+     * @param imageUri
+     */
+    public static void showImage(Context context, Uri imageUri) {
+        if(imageUri == null){
+            return;
+        }
+
+        Dialog builder = new Dialog(context);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+
+        ImageView imageView = new ImageView(context);
+        imageView.setImageURI(imageUri);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
     }
 }

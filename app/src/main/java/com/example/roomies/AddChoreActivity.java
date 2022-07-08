@@ -2,8 +2,8 @@ package com.example.roomies;
 
 import static com.example.roomies.model.Recurrence.*;
 import static com.example.roomies.utils.ChoreUtils.addCircleChore;
-import static com.example.roomies.utils.TimeUtils.convertFromMilitaryTime;
-import static com.example.roomies.utils.TimeUtils.getMonthForInt;
+import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
+import static com.example.roomies.utils.Utils.getMonthForInt;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -34,7 +34,7 @@ import com.example.roomies.model.Recurrence;
 import com.example.roomies.model.UserCircle;
 import com.example.roomies.utils.ChoreUtils;
 import com.example.roomies.utils.CircleUtils;
-import com.example.roomies.utils.TimeUtils;
+import com.example.roomies.utils.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseUser;
@@ -279,13 +279,13 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
             endDate = Calendar.getInstance();
             endDate.setTime(date.getTime());
             endDate.set(Calendar.YEAR, date.get(Calendar.YEAR) + 100);
-            TimeUtils.clearTime(endDate);
+            Utils.clearTime(endDate);
         }
         else if(endDate == null){
             // after number of occurrences
             endDate = Calendar.getInstance();
             endDate.setTime(date.getTime());
-            TimeUtils.clearTime(endDate);
+            Utils.clearTime(endDate);
 
             if(recurrence.getFrequencyType().equals(TYPE_DAY)){
                 // add numOccurrence days to first due date

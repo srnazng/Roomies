@@ -1,5 +1,8 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.Utils.GET_FROM_GALLERY;
+import static com.example.roomies.utils.Utils.conversionBitmapParseFile;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -20,10 +23,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.parse.ParseFile;
 import com.parse.ParseUser;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -37,10 +38,6 @@ public class ManageAccountFragment extends Fragment {
     private Button btnUpdateAccount;
     private Bitmap bitmap;
     private ProgressDialog pd;
-
-    public static final int GET_FROM_GALLERY = 3;
-
-    private ParseUser currentUser;
 
     public ManageAccountFragment() {
         // Required empty public constructor
@@ -60,7 +57,6 @@ public class ManageAccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        currentUser = ParseUser.getCurrentUser();
 
         // set up progress dialog
         pd = new ProgressDialog(getActivity());
@@ -77,8 +73,8 @@ public class ManageAccountFragment extends Fragment {
 
         // show profile image
         ivProfileImage = view.findViewById(R.id.ivProfileImage);
-        if (currentUser.getParseFile("image") != null) {
-            String imageUrl = currentUser.getParseFile("image").getUrl();
+        if (ParseUser.getCurrentUser().getParseFile("image") != null) {
+            String imageUrl = ParseUser.getCurrentUser().getParseFile("image").getUrl();
             Glide.with(this).load(imageUrl).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
         }
 
@@ -96,22 +92,22 @@ public class ManageAccountFragment extends Fragment {
 
         // set email input to existing email
         etEmailInput = view.findViewById(R.id.etEmailInput);
-        etEmailInput.setText(currentUser.getEmail());
+        etEmailInput.setText(ParseUser.getCurrentUser().getEmail());
 
         // set name input to existing user name
         etNameInput = view.findViewById(R.id.etNameInput);
-        etNameInput.setText(currentUser.getString("name"));
+        etNameInput.setText(ParseUser.getCurrentUser().getString("name"));
 
         // set venmo input to existing venmo username
         etVenmoInput = view.findViewById(R.id.etVenmoInput);
-        if(currentUser.getString("venmo") != null){
-            etVenmoInput.setText(currentUser.getString("venmo"));
+        if(ParseUser.getCurrentUser().getString("venmo") != null){
+            etVenmoInput.setText(ParseUser.getCurrentUser().getString("venmo"));
         }
 
         // set cashApp input to existing cashApp username
         etCashAppInput = view.findViewById(R.id.etCashAppInput);
-        if(currentUser.getString("cashApp") != null){
-            etCashAppInput.setText(currentUser.getString("cashApp"));
+        if(ParseUser.getCurrentUser().getString("cashApp") != null){
+            etCashAppInput.setText(ParseUser.getCurrentUser().getString("cashApp"));
         }
 
         // update button
@@ -129,9 +125,8 @@ public class ManageAccountFragment extends Fragment {
     }
 
     public void updateUser() {
-
-        if (currentUser != null) {
-
+        if (ParseUser.getCurrentUser() != null) {
+            ParseUser currentUser = ParseUser.getCurrentUser();
             // Change only name and email
             currentUser.put("name", etNameInput.getText().toString());
             currentUser.put("email", etEmailInput.getText().toString());
@@ -162,15 +157,6 @@ public class ManageAccountFragment extends Fragment {
                 pd.dismiss();
             });
         }
-    }
-
-    // convert bitmap image to ParseFile
-    public ParseFile conversionBitmapParseFile(Bitmap imageBitmap){
-        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.PNG,0,byteArrayOutputStream);
-        byte[] imageByte = byteArrayOutputStream.toByteArray();
-        ParseFile parseFile = new ParseFile("image_file.png",imageByte);
-        return parseFile;
     }
 
     // after upload new profile image

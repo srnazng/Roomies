@@ -1,11 +1,19 @@
 package com.example.roomies;
 import static com.example.roomies.utils.ExpenseUtils.*;
+import static com.example.roomies.utils.Utils.GET_FROM_GALLERY;
+import static com.example.roomies.utils.Utils.getPath;
+import static com.example.roomies.utils.Utils.showImage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +30,8 @@ import com.example.roomies.utils.CircleUtils;
 import com.example.roomies.utils.NumberTextWatcher;
 import com.parse.ParseUser;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +46,13 @@ public class AddExpenseActivity extends AppCompatActivity {
     private ConstraintLayout layoutAssign;
     private Button btnSplit;
     private Button btnSelectAll;
+    private Button btnUpload;
+    private TextView tvFileName;
+    private TextView tvViewImage;
+    private TextView tvDelete;
+
+    private Bitmap bitmap;
+    private Uri uri;
 
     private List<View> transactionViews;
     private List<ParseUser> transactionUsers;
@@ -72,9 +89,46 @@ public class AddExpenseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 submitExpense(AddExpenseActivity.this, etExpenseName, etTotal,
-                        checkSplit.isChecked(), transactionViews, transactionUsers);
+                        checkSplit.isChecked(), transactionViews, bitmap, transactionUsers);
             }
         });
+
+        // button to upload receipt
+        btnUpload = findViewById(R.id.btnUpload);
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+            }
+        });
+
+        // show name of uploaded file
+        tvFileName = findViewById(R.id.tvFileName);
+        tvFileName.setVisibility(View.INVISIBLE);
+
+        // button to view uploaded image
+        tvViewImage = findViewById(R.id.tvViewImage);
+        tvViewImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImage(AddExpenseActivity.this, uri);
+            }
+        });
+        tvViewImage.setVisibility(View.INVISIBLE);
+
+        // button to remove uploaded image
+        tvDelete = findViewById(R.id.tvDelete);
+        tvDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bitmap = null;
+                uri = null;
+                tvFileName.setVisibility(View.INVISIBLE);
+                tvViewImage.setVisibility(View.INVISIBLE);
+                tvDelete.setVisibility(View.INVISIBLE);
+            }
+        });
+        tvDelete.setVisibility(View.INVISIBLE);
 
         // checkbox determining if expense is divided among users
         checkSplit = findViewById(R.id.checkSplit);
@@ -176,6 +230,30 @@ public class AddExpenseActivity extends AppCompatActivity {
             View view = transactionViews.get(i);
             CheckBox checkName = view.findViewById(R.id.checkName);
             checkName.setChecked(true);
+        }
+    }
+
+    // after upload new image
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Detects request codes
+        if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            try {
+                // set bitmap to uploaded image
+                bitmap = MediaStore.Images.Media.getBitmap(AddExpenseActivity.this.getContentResolver(), selectedImage);
+                uri = selectedImage;
+                tvFileName.setText(getPath(AddExpenseActivity.this, selectedImage));
+                tvFileName.setVisibility(View.VISIBLE);
+                tvViewImage.setVisibility(View.VISIBLE);
+                tvDelete.setVisibility(View.VISIBLE);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

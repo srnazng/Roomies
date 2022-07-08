@@ -19,6 +19,6 @@ public class SessionUtils {
         ChoreUtils.clearAll();
         ExpenseUtils.clearAll();
         CircleUtils.clearAll();
-        setFirstOfMonth(Calendar.getInstance());
+        setFirstOfMonth(null);
     }
 }

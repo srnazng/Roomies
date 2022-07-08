@@ -1,7 +1,7 @@
 package com.example.roomies;
 
 import static com.example.roomies.utils.CalendarDayUtils.*;
-import static com.example.roomies.utils.TimeUtils.*;
+import static com.example.roomies.utils.Utils.*;
 
 import android.os.Bundle;
 
@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.adapter.CalendarAdapter;
-import com.example.roomies.model.CalendarDay;
 import com.example.roomies.model.Chore;
 import com.example.roomies.utils.ChoreUtils;
 

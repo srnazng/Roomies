@@ -165,23 +165,23 @@ public class ExpenseFragment extends Fragment {
 
         if(position == 0){
             layoutFilter.setVisibility(View.VISIBLE);
-            if(checkPending.isChecked()){
+            if(checkPending.isChecked() && ExpenseUtils.getMyPendingPayments() != null){
                 expenseList.addAll(ExpenseUtils.getMyPendingPayments());
             }
-            if(checkCompleted.isChecked()){
+            if(checkCompleted.isChecked() && ExpenseUtils.getMyCompletedPayments() != null){
                 expenseList.addAll(ExpenseUtils.getMyCompletedPayments());
             }
         }
         else if(position == 1){
             layoutFilter.setVisibility(View.VISIBLE);
-            if(checkPending.isChecked()){
+            if(checkPending.isChecked() && ExpenseUtils.getMyPendingRequests() != null){
                 expenseList.addAll(ExpenseUtils.getMyPendingRequests());
             }
-            if(checkCompleted.isChecked()){
+            if(checkCompleted.isChecked() && ExpenseUtils.getMyCompletedRequests() != null){
                 expenseList.addAll(ExpenseUtils.getMyCompletedRequests());
             }
         }
-        else{
+        else if(ExpenseUtils.getCircleExpenses() != null){
             layoutFilter.setVisibility(View.INVISIBLE);
             expenseList.addAll(ExpenseUtils.getCircleExpenses());
         }

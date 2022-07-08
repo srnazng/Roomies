@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
-        android:clickable="true"
+        android:clickable="false"
         android:focusable="true"
         app:cardElevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +59,14 @@
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="@color/black" />
 
+                <ImageView
+                    android:id="@+id/ivProof"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="5dp"
+                    app:srcCompat="@drawable/ic_launcher_background" />
+
                 <HorizontalScrollView
                     android:id="@+id/assigneeScroll"
                     android:layout_width="match_parent"
@@ -84,8 +92,8 @@
 
                 <ImageButton
                     android:id="@+id/btnVenmo"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
@@ -96,8 +104,8 @@
 
                 <ImageButton
                     android:id="@+id/btnCashApp"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="@color/white"
@@ -149,49 +157,56 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvComments"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/etComment"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/expenseDetailCard"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintVertical_bias="0.015">
 
-    <EditText
-        android:id="@+id/etComment"
-        android:layout_width="0dp"
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        android:ems="10"
-        android:hint="Comment"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ivProfile"
-        app:layout_constraintEnd_toStartOf="@+id/ivSend"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/ivProfile"
-        app:layout_constraintTop_toTopOf="@+id/ivProfile" />
-
-    <ImageView
-        android:id="@+id/ivProfile"
-        android:layout_width="56dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="4dp"
+        android:background="@color/white"
+        android:paddingTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:srcCompat="@drawable/profile_default" />
-
-    <ImageView
-        android:id="@+id/ivSend"
-        android:layout_width="37dp"
-        android:layout_height="43dp"
-        android:layout_marginEnd="5dp"
-        app:tint="@color/turquoise"
-        app:layout_constraintBottom_toBottomOf="@+id/etComment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etComment"
-        app:srcCompat="@drawable/payment" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/etComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:ems="10"
+            android:hint="Comment"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivSend"
+            app:layout_constraintStart_toEndOf="@+id/ivProfile" />
+
+        <ImageView
+            android:id="@+id/ivProfile"
+            android:layout_width="56dp"
+            android:layout_height="48dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:srcCompat="@drawable/profile_default" />
+
+        <ImageView
+            android:id="@+id/ivSend"
+            android:layout_width="37dp"
+            android:layout_height="43dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/payment"
+            app:tint="@color/turquoise" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

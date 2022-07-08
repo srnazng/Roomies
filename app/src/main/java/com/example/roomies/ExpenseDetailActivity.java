@@ -3,6 +3,7 @@ package com.example.roomies;
 import static com.example.roomies.ExpenseFragment.getFilterInt;
 import static com.example.roomies.ExpenseFragment.updateExpenseList;
 import static com.example.roomies.utils.ExpenseUtils.*;
+import static com.example.roomies.utils.Utils.showImage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,6 +42,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     private Transaction myTransaction;
     private ImageView ivProfile;
     private ImageView ivSend;
+    private ImageView ivProof;
     private EditText etComment;
 
     private RecyclerView rvComments;
@@ -76,13 +78,20 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         tvAmount = findViewById(R.id.tvAmount);
         assigneeChipGroup = findViewById(R.id.assigneeChipGroup);
         rvComments = findViewById(R.id.rvComments);
+        ivProof = findViewById(R.id.ivProof);
+
+        ivProof.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImage(ExpenseDetailActivity.this, Uri.parse(expense.getProof().getUrl()));
+            }
+        });
 
         // set up comments Recycler View
         comments = new ArrayList<>();
         adapter = new ExpenseCommentsAdapter(this, comments);
         rvComments.setAdapter(adapter);
         rvComments.setLayoutManager(new LinearLayoutManager(this));
-        initComments(expense, comments, adapter);
 
         // let user send comment under expense
         ivProfile = findViewById(R.id.ivProfile);
@@ -103,14 +112,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
             }
         });
 
-        // set expense title
-        tvExpenseReason.setText(expense.getName() + " $" + String.format("%.2f", expense.getTotal()));
-
-        // get all transactions relating to expense
-        transactions = getAllExpenseTransactions(expense, getCircleTransactions());
-
-        // show all users assigned expense
-        initializeChips();
+        initDetails();
 
         // view if user is assigned to pay expense
         if(isPayment()){
@@ -122,6 +124,24 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         }
         else{
             setDefaultView();
+        }
+    }
+
+    public void initDetails(){
+        initComments(expense, comments, adapter);
+        // set expense title
+        tvExpenseReason.setText(expense.getName() + " $" + String.format("%.2f", expense.getTotal()));
+        // get all transactions relating to expense
+        transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+        // show all users assigned expense
+        initializeChips();
+
+        // show receipt
+        if(expense.getProof() != null){
+            Glide.with(this).load(expense.getProof().getUrl()).into(ivProof);
+        }
+        else{
+            ivProof.setVisibility(View.GONE);
         }
     }
 
@@ -250,6 +270,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(ExpenseDetailActivity.this, EditExpenseActivity.class);
                 i.putExtra("expense", expense);
+                i.putExtra("fromDetails", true);
                 startActivity(i);
             }
         });

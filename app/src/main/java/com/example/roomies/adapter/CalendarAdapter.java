@@ -1,6 +1,6 @@
 package com.example.roomies.adapter;
 
-import static com.example.roomies.utils.TimeUtils.calendarDayOfWeek;
+import static com.example.roomies.utils.Utils.calendarDayOfWeek;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -3,9 +3,11 @@ package com.example.roomies.utils;
 import static com.example.roomies.ExpenseFragment.getFilterInt;
 import static com.example.roomies.ExpenseFragment.updateExpenseList;
 import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
+import static com.example.roomies.utils.Utils.conversionBitmapParseFile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -208,6 +210,7 @@ public class ExpenseUtils {
                     if(t.getReceiver().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
                         if(!t.getCompleted() && !expenseExists(t.getExpense(), myPendingRequests)){
                             myPendingRequests.add(t.getExpense());
+                            myCompletedRequests.removeIf(exp -> exp.getObjectId().equals(t.getExpense().getObjectId()));
                         }
                         else if(t.getCompleted()
                                 && !expenseExists(t.getExpense(), myCompletedRequests)
@@ -407,6 +410,7 @@ public class ExpenseUtils {
                                      EditText etTotal,
                                      boolean split,
                                      List<View> transactionViews,
+                                     Bitmap bitmap,
                                      List<ParseUser> transactionUsers){
         // submit expense without expense name
         if(etExpenseName.getText().toString().isEmpty()){
@@ -425,9 +429,10 @@ public class ExpenseUtils {
         entity.put("total", Float.parseFloat(removeDollar(etTotal.getText().toString())));
         entity.put("creator", ParseUser.getCurrentUser());
         entity.put("circle", CircleUtils.getCurrentCircle());
-
-        // TODO: upload photo proof
-        // entity.put("proof", new ParseFile("resume.txt", "My string content".getBytes()));
+        // upload receipt image if uploaded
+        if(bitmap != null){
+            entity.put("proof", conversionBitmapParseFile(bitmap));
+        }
 
         Expense expense = entity;
 
@@ -469,6 +474,7 @@ public class ExpenseUtils {
         for(int i=0; i<transactionViews.size(); i++){
             View view = transactionViews.get(i);
             CheckBox checkName = view.findViewById(R.id.checkName);
+            int finalI = i;
 
             // user is assigned to help pay for this expense and is not current user
             if(checkName.isChecked() && !transactionUsers.get(i).getObjectId().equals(currentUser)){
@@ -491,7 +497,6 @@ public class ExpenseUtils {
 
                 // Saves the new object.
                 // Notice that the SaveCallback is totally optional!
-                int finalI = i;
                 entity.saveInBackground(e -> {
                     if (e==null){
                         //Save was done
@@ -512,6 +517,13 @@ public class ExpenseUtils {
                         return;
                     }
                 });
+            }
+            else if (finalI + 1 == transactionViews.size()){
+                Toast.makeText(context, "Added expense", Toast.LENGTH_SHORT).show();
+                circleExpenses.add(expense);
+                myPendingRequests.add(expense);
+                initExpenses();
+                ((Activity) context).finish();
             }
         }
     }
@@ -706,9 +718,12 @@ public class ExpenseUtils {
      * @param name
      * @param total
      */
-    public static void editExpense(Expense expense, String name, Float total){
+    public static void editExpense(Expense expense, String name, Float total, Bitmap bitmap){
         expense.setName(name);
         expense.setTotal(total);
+        if(bitmap != null){
+            expense.setProof(conversionBitmapParseFile(bitmap));
+        }
         expense.saveInBackground(e -> {
             if (e==null){
                 initExpenses();
