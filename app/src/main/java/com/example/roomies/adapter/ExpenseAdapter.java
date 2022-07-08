@@ -97,6 +97,7 @@ public class ExpenseAdapter extends
             btnMarkPaid = itemView.findViewById(R.id.btnMarkPaid);
             btnEdit = itemView.findViewById(R.id.btnEditExpense);
             btnCancel = itemView.findViewById(R.id.btnCancelTransaction);
+            btnComment = itemView.findViewById(R.id.btnComment);
         }
 
         // bind expense
@@ -111,7 +112,18 @@ public class ExpenseAdapter extends
             // user who created expense
             ParseUser receiver = expense.getCreator();
 
+            // see card details on click
             card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, ExpenseDetailActivity.class);
+                    i.putExtra("expense", expense);
+                    context.startActivity(i);
+                }
+            });
+
+            // go to card details to comment
+            btnComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(context, ExpenseDetailActivity.class);

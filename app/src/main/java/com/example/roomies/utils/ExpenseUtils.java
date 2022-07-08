@@ -16,8 +16,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.roomies.R;
+import com.example.roomies.adapter.ExpenseCommentsAdapter;
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.Expense;
+import com.example.roomies.model.ExpenseComment;
 import com.example.roomies.model.Transaction;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -637,4 +639,65 @@ public class ExpenseUtils {
             }
         });
     }
+
+    /**
+     * Create ExpenseComment object and save
+     * @param expense
+     * @param comment
+     * @param expenseCommentList
+     * @param adapter
+     */
+    public static void sendComment(Expense expense,
+                                   String comment,
+                                   List<ExpenseComment> expenseCommentList,
+                                   ExpenseCommentsAdapter adapter){
+        ExpenseComment entity = new ExpenseComment();
+
+        entity.put("expense", expense);
+        entity.put("user", ParseUser.getCurrentUser());
+        entity.put("comment", comment);
+
+        // Saves ExpenseComment object
+        entity.saveInBackground(e -> {
+            if (e==null){
+                //Save was done
+                expenseCommentList.add(entity);
+                adapter.notifyDataSetChanged();
+                initComments(expense, expenseCommentList, adapter);
+            }else{
+                //Something went wrong
+                Log.e(TAG, "Error sending comment");
+            }
+        });
+    }
+
+    /**
+     * Initialize expenseCommentList with expense's ExpenseComments
+     * @param expense
+     * @param expenseCommentList
+     * @param adapter
+     */
+    public static void initComments(Expense expense, List<ExpenseComment> expenseCommentList, ExpenseCommentsAdapter adapter){
+        // only get ExpenseComments related to expense
+        ParseQuery<ExpenseComment> query = ParseQuery.getQuery(ExpenseComment.class).whereEqualTo(ExpenseComment.KEY_EXPENSE, expense);
+        // include user object
+        query.include(ExpenseComment.KEY_USER);
+        // start an asynchronous call for ExpenseComment objects
+        query.findInBackground(new FindCallback<ExpenseComment>() {
+            @Override
+            public void done(List<ExpenseComment> comments, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting expenses", e);
+                    return;
+                }
+                expenseCommentList.clear();
+                expenseCommentList.addAll(comments);
+                if(adapter != null){
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
 }

@@ -5,29 +5,45 @@ import static com.example.roomies.ExpenseFragment.updateExpenseList;
 import static com.example.roomies.utils.ExpenseUtils.*;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.roomies.adapter.ExpenseCommentsAdapter;
 import com.example.roomies.model.Expense;
+import com.example.roomies.model.ExpenseComment;
 import com.example.roomies.model.Transaction;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseDetailActivity extends AppCompatActivity {
     private Expense expense;
     private List<Transaction> transactions;
+    private List<ExpenseComment> comments;
+    private ExpenseCommentsAdapter adapter;
     private Transaction myTransaction;
+    private ImageView ivProfile;
+    private ImageView ivSend;
+    private EditText etComment;
 
+    private RecyclerView rvComments;
     private TextView tvExpenseReason;
     private TextView tvCreator;
     private TextView tvAmount;
@@ -59,6 +75,33 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         tvCreator = findViewById(R.id.tvCreator);
         tvAmount = findViewById(R.id.tvAmount);
         assigneeChipGroup = findViewById(R.id.assigneeChipGroup);
+        rvComments = findViewById(R.id.rvComments);
+
+        // set up comments Recycler View
+        comments = new ArrayList<>();
+        adapter = new ExpenseCommentsAdapter(this, comments);
+        rvComments.setAdapter(adapter);
+        rvComments.setLayoutManager(new LinearLayoutManager(this));
+        initComments(expense, comments, adapter);
+
+        // let user send comment under expense
+        ivProfile = findViewById(R.id.ivProfile);
+        ParseFile image = ParseUser.getCurrentUser().getParseFile("image");
+        if (image != null) {
+            Glide.with(this).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile);
+        }
+        etComment = findViewById(R.id.etComment);
+        ivSend = findViewById(R.id.ivSend);
+        ivSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(etComment.getText().toString().isEmpty()){
+                    return;
+                }
+                sendComment(expense, etComment.getText().toString(), comments, adapter);
+                etComment.setText("");
+            }
+        });
 
         // set expense title
         tvExpenseReason.setText(expense.getName() + " $" + String.format("%.2f", expense.getTotal()));
