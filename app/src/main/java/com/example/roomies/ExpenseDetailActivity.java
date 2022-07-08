@@ -245,6 +245,14 @@ public class ExpenseDetailActivity extends AppCompatActivity {
 
         btnDetailMarkPaid.setVisibility(View.GONE);
         btnDetailEdit.setVisibility(View.VISIBLE);
+        btnDetailEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ExpenseDetailActivity.this, EditExpenseActivity.class);
+                i.putExtra("expense", expense);
+                startActivity(i);
+            }
+        });
         btnDetailCancel.setVisibility(View.VISIBLE);
         btnDetailCancel.setOnClickListener(new View.OnClickListener() {
             @Override

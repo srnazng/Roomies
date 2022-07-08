@@ -155,6 +155,9 @@ public class ExpenseFragment extends Fragment {
         if(expenseList != null){
             expenseList.clear();
         }
+        else{
+            return;
+        }
 
         if(adapter != null){
             adapter.clear();

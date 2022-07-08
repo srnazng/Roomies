@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roomies.EditExpenseActivity;
 import com.example.roomies.ExpenseDetailActivity;
 import com.example.roomies.ExpenseFragment;
 import com.example.roomies.R;
@@ -190,6 +191,14 @@ public class ExpenseAdapter extends
                     }
                 });
                 btnEdit.setVisibility(View.VISIBLE);
+                btnEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(context, EditExpenseActivity.class);
+                        i.putExtra("expense", expense);
+                        context.startActivity(i);
+                    }
+                });
                 btnMarkPaid.setVisibility(View.GONE);
                 tvTotal.setVisibility(View.GONE);
 

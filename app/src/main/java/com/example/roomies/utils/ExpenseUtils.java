@@ -700,4 +700,19 @@ public class ExpenseUtils {
         });
     }
 
+    /**
+     * Update Expense object
+     * @param expense
+     * @param name
+     * @param total
+     */
+    public static void editExpense(Expense expense, String name, Float total){
+        expense.setName(name);
+        expense.setTotal(total);
+        expense.saveInBackground(e -> {
+            if (e==null){
+                initExpenses();
+            } }
+        );
+    }
 }
