@@ -139,7 +139,7 @@ public class ManageAccountFragment extends Fragment {
             currentUser.put("venmo", etVenmoInput.getText().toString());
 
             String cashApp = etCashAppInput.getText().toString();
-            if(cashApp.charAt(0) != '$'){
+            if(!cashApp.isEmpty() && cashApp.charAt(0) != '$'){
                 cashApp = "$" + cashApp;
             }
             currentUser.put("cashApp", cashApp);
