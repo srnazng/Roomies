@@ -2,6 +2,7 @@ package com.example.roomies;
 
 import static com.example.roomies.model.Recurrence.*;
 import static com.example.roomies.utils.ChoreUtils.addCircleChore;
+import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
 import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
 import static com.example.roomies.utils.Utils.getMonthForInt;
 
@@ -184,7 +185,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
         Chore entity = new Chore();
 
-        entity.put("circle", CircleUtils.getCurrentCircle());
+        entity.put("circle", getCurrentCircle());
         entity.put("creator", ParseUser.getCurrentUser());
         entity.put("title", etChoreName.getText().toString());
         entity.put("description", etChoreDescription.getText().toString());
@@ -226,6 +227,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
             entity.put("user", assignedUsers.get(i));
             entity.put("chore", chore);
+            entity.put("circle", getCurrentCircle());
 
             // Saves the new object.
             entity.saveInBackground(e -> {
@@ -234,6 +236,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                 }else{
                     //Something went wrong
                     Toast.makeText(this, "Error assigning chore", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, e.getMessage());
                     return;
                 }
             });

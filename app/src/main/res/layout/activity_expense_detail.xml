@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
-        android:clickable="false"
+        android:clickable="true"
         android:focusable="true"
         app:cardElevation="0dp"
         app:layout_constraintStart_toStartOf="parent"

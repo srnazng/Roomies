@@ -80,13 +80,6 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         rvComments = findViewById(R.id.rvComments);
         ivProof = findViewById(R.id.ivProof);
 
-        ivProof.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showImage(ExpenseDetailActivity.this, Uri.parse(expense.getProof().getUrl()));
-            }
-        });
-
         // set up comments Recycler View
         comments = new ArrayList<>();
         adapter = new ExpenseCommentsAdapter(this, comments);

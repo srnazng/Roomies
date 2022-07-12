@@ -138,12 +138,12 @@ public class Utils {
     }
 
     /**
-     * compare calendar objects ignoring time
+     * compareDates calendar objects ignoring time
      * @param c1
      * @param c2
      * @return  difference in time
      */
-    public static int compare(Calendar c1, Calendar c2) {
+    public static int compareDates(Calendar c1, Calendar c2) {
         if (c1.get(Calendar.YEAR) != c2.get(Calendar.YEAR))
             return c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR);
         if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH))

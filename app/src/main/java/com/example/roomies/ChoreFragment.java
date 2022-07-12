@@ -53,7 +53,7 @@ public class ChoreFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize chores
-        choreList = ChoreUtils.getCircleChores();
+        choreList = ChoreUtils.getMyChoresToday();
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ChoreFragment extends Fragment {
 
     // query database for circle's list of chores
     public void updateChoreList(){
-        choreList = ChoreUtils.getCircleChores();
+        choreList = ChoreUtils.getMyChoresToday();
         adapter.notifyDataSetChanged();
     }
 }

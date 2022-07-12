@@ -1,9 +1,9 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.ChoreUtils.getMyChoresToday;
 import static com.example.roomies.utils.ExpenseUtils.*;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -15,21 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.roomies.model.Chore;
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.Expense;
 import com.example.roomies.model.UserCircle;
 import com.example.roomies.utils.CircleUtils;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -210,6 +205,7 @@ public class HomeFragment extends Fragment {
      * update home screen expense and chore stats
      */
     private void updateStats(){
+        // expense stats
         List<Expense> paymentList = getMyPendingPayments();
         if(paymentList != null){
             tvPendingPaymentsNum.setText("" + paymentList.size());
@@ -220,6 +216,26 @@ public class HomeFragment extends Fragment {
             tvPendingRequestsNum.setText("" + requestList.size());
         }
 
-        // TODO: chore stats
+        // chores today stats
+        List<Chore> choresToday = getMyChoresToday();
+        if(choresToday != null){
+            int numHigh = 0;
+            int numMed = 0;
+            int numLow = 0;
+            for(int i=0; i<choresToday.size(); i++){
+                if(choresToday.get(i).getPriority().equals(Chore.PRIORITY_HIGH)){
+                    numHigh++;
+                }
+                else if(choresToday.get(i).getPriority().equals(Chore.PRIORITY_MED)){
+                    numMed++;
+                }
+                else if(choresToday.get(i).getPriority().equals(Chore.PRIORITY_LOW)){
+                    numLow++;
+                }
+            }
+            tvHighNum.setText(numHigh + "");
+            tvMedNum.setText(numMed + "");
+            tvLowNum.setText(numLow + "");
+        }
     }
 }

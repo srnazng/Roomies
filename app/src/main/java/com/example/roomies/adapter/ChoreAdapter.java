@@ -1,5 +1,8 @@
 package com.example.roomies.adapter;
 
+import static com.example.roomies.utils.ChoreUtils.findChoreCompleted;
+import static com.example.roomies.utils.ChoreUtils.markCompleted;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.roomies.R;
 import com.example.roomies.model.Chore;
+import com.google.android.material.card.MaterialCardView;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class ChoreAdapter extends
@@ -55,14 +60,15 @@ public class ChoreAdapter extends
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView tvTitle;
-        public TextView tvDescription;
-        public TextView tvDue;
-        public com.google.android.material.card.MaterialCardView card;
-        public Button messageButton;
+        private TextView tvTitle;
+        private TextView tvDescription;
+        private TextView tvDue;
+        public static MaterialCardView card;
+        private Button messageButton;
+        private Button btnCompleted;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -75,19 +81,56 @@ public class ChoreAdapter extends
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvDue = itemView.findViewById(R.id.tvDue);
             card = itemView.findViewById(R.id.card);
-            card.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    card.setChecked(!card.isChecked());
-                    return true;
-                }
-            });
+            btnCompleted = itemView.findViewById(R.id.btnCompleted);
         }
 
         public void bind(Chore chore){
             tvTitle.setText(chore.getTitle());
             tvDescription.setText(chore.getDescription());
-            tvDue.setText(chore.getDue().toString());
+            tvDue.setText(formatDue(chore));
+            card.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    markCompleted(chore, !card.isChecked());
+                    card.setChecked(!card.isChecked());
+                    return true;
+                }
+            });
+            findChoreCompleted(chore, card);
+            btnCompleted.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    markCompleted(chore, !card.isChecked());
+                    card.setChecked(!card.isChecked());
+                }
+            });
+        }
+
+        public String formatDue(Chore chore){
+            if(chore.getAllDay()){
+                return "Due today";
+            }
+
+            Calendar time = Calendar.getInstance();
+            time.setTime(chore.getDue());
+
+            String due = "Due ";
+            String minutes = time.get(Calendar.MINUTE) + "";
+            if(time.get(Calendar.MINUTE) < 10) {
+                minutes = "0" + minutes;
+            }
+
+            int hour = time.get(Calendar.HOUR_OF_DAY);
+
+            if(hour > 12){
+                hour -= 12;
+                due = due + hour + ":" + minutes + " PM today";
+            }
+            else{
+                due = due + hour + ":" + minutes + " AM today";
+            }
+
+            return due;
         }
     }
 }
