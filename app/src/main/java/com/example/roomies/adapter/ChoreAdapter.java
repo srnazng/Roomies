@@ -68,7 +68,9 @@ public class ChoreAdapter extends
         private TextView tvDue;
         public static MaterialCardView card;
         private Button messageButton;
-        private Button btnCompleted;
+        private static Chore chore;
+
+        public static Chore getChore() { return chore; };
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -81,29 +83,14 @@ public class ChoreAdapter extends
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvDue = itemView.findViewById(R.id.tvDue);
             card = itemView.findViewById(R.id.card);
-            btnCompleted = itemView.findViewById(R.id.btnCompleted);
         }
 
         public void bind(Chore chore){
+            this.chore = chore;
             tvTitle.setText(chore.getTitle());
             tvDescription.setText(chore.getDescription());
             tvDue.setText(formatDue(chore));
-            card.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    markCompleted(chore, !card.isChecked());
-                    card.setChecked(!card.isChecked());
-                    return true;
-                }
-            });
-            findChoreCompleted(chore, card);
-            btnCompleted.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    markCompleted(chore, !card.isChecked());
-                    card.setChecked(!card.isChecked());
-                }
-            });
+            card.setLongClickable(false);
         }
 
         public String formatDue(Chore chore){
@@ -126,11 +113,31 @@ public class ChoreAdapter extends
                 hour -= 12;
                 due = due + hour + ":" + minutes + " PM today";
             }
+            else if(hour == 12){
+                due = due + hour + ":" + minutes + " PM today";
+            }
             else{
                 due = due + hour + ":" + minutes + " AM today";
             }
 
             return due;
         }
+    }
+
+    // get chores list
+    public List<Chore> getData() {
+        return chores;
+    }
+
+    // remove from list
+    public void removeItem(int position) {
+        chores.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    // restore item to list
+    public void restoreItem(Chore item, int position) {
+        chores.add(position, item);
+        notifyItemInserted(position);
     }
 }

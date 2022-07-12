@@ -1,5 +1,6 @@
 package com.example.roomies.utils;
 
+import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
 import static com.example.roomies.utils.Utils.clearTime;
 import static com.example.roomies.utils.Utils.compareDates;
 import static com.example.roomies.utils.Utils.occursToday_dayFreq;
@@ -27,6 +28,9 @@ import java.util.List;
 public class ChoreUtils {
     private static List<Chore> myChores;
     private static List<Chore> myChoresToday;
+    private static List<Chore> myCompletedChoresToday;
+    private static List<Chore> myPendingChoresToday;
+    private static List<ChoreCompleted> completionsToday;
     private static List<ChoreAssignment> myChoreAssignments;
     private static List<Chore> circleChores;
     private static List<Chore> circleChoresToday;
@@ -42,6 +46,8 @@ public class ChoreUtils {
     public static List<Chore> getCircleChores(){
         return circleChores;
     }
+
+    public static List<Chore> getMyPendingChoresToday() { return myPendingChoresToday; }
 
     /**
      * Add chore to circleChores list
@@ -79,8 +85,17 @@ public class ChoreUtils {
         if(myChoresToday == null){
             myChoresToday = new ArrayList<>();
         }
+        if(myPendingChoresToday == null){
+            myPendingChoresToday = new ArrayList<>();
+        }
+        if(myCompletedChoresToday == null){
+            myCompletedChoresToday = new ArrayList<>();
+        }
         if(myChoreAssignments == null){
             myChoreAssignments = new ArrayList<>();
+        }
+        if(completionsToday == null){
+            completionsToday = new ArrayList<>();
         }
 
         // only get chore assignments of current user
@@ -103,22 +118,99 @@ public class ChoreUtils {
                     Log.i(TAG, "No assigned chores");
                 }
                 else{
-                    // save received chore assignments in this circle to list
-                    myChores.clear();
-                    myChoresToday.clear();
-                    for(int i=0; i<choreAssignments.size(); i++) {
-                        ChoreAssignment c = choreAssignments.get(i);
-                        if(c.getChore().getCircle().getObjectId().equals(CircleUtils.getCurrentCircle().getObjectId())){
-                            myChores.add(c.getChore());
-                            myChoreAssignments.add(c);
-                            if(occursOnDay(Calendar.getInstance(), c)){
-                                myChoresToday.add(c.getChore());
-                            }
-                        }
-                    }
+                    updateCompletions(choreAssignments);
                 }
             }
         });
+    }
+
+    /**
+     * Mark cards as completed
+     * @param choreAssignments
+     */
+    private static void updateCompletions(List<ChoreAssignment> choreAssignments){
+        if(completionsToday == null){
+            completionsToday = new ArrayList<>();
+        }
+
+        completionsToday.clear();
+
+        // save received chore assignments in this circle to list
+        Calendar today = Calendar.getInstance();
+        clearTime(today);
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        clearTime(tomorrow);
+        ParseQuery<ChoreCompleted> query = ParseQuery.getQuery(ChoreCompleted.class)
+                .whereEqualTo(ChoreCompleted.KEY_CIRCLE, getCurrentCircle())
+                .whereGreaterThanOrEqualTo("date", today.getTime())
+                .whereLessThan("date", tomorrow.getTime());
+        query.include(ChoreCompleted.KEY_CHORE_ASSIGNMENT);
+        // start an asynchronous call for Chore objects
+        query.findInBackground(new FindCallback<ChoreCompleted>() {
+            @Override
+            public void done(List<ChoreCompleted> choreCompletedList, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting choreCompleted", e);
+                    return;
+                }
+
+                // no chores
+                if(!choreCompletedList.isEmpty()){
+                    completionsToday.addAll(choreCompletedList);
+                }
+
+                if(choreAssignments != null){
+                    categorizeChores(choreAssignments);
+                }
+            }
+        });
+
+    }
+
+    /**
+     * filter chores into respective lists
+     * @param choreAssignments
+     */
+    private static void categorizeChores(List<ChoreAssignment> choreAssignments){
+        myChores.clear();
+        myChoresToday.clear();
+        myPendingChoresToday.clear();
+        myCompletedChoresToday.clear();
+        myChoreAssignments.clear();
+        for(int i=0; i<choreAssignments.size(); i++) {
+            ChoreAssignment c = choreAssignments.get(i);
+            if(c.getChore().getCircle().getObjectId().equals(getCurrentCircle().getObjectId())){
+                myChores.add(c.getChore());
+                myChoreAssignments.add(c);
+                if(occursOnDay(Calendar.getInstance(), c)){
+                    myChoresToday.add(c.getChore());
+                    if(isCompleted(c)){
+                        myCompletedChoresToday.add(c.getChore());
+                    }
+                    else{
+                        myPendingChoresToday.add(c.getChore());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * return whether ChoreAssignment is completed
+     * @param choreAssignment
+     * @return
+     */
+    private static boolean isCompleted(ChoreAssignment choreAssignment){
+        for(int i=0; i<completionsToday.size(); i++){
+            if(completionsToday.get(i).getChoreAssignment().getObjectId()
+                    .equals(choreAssignment.getObjectId())
+                    && completionsToday.get(i).getCompleted()){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -130,7 +222,7 @@ public class ChoreUtils {
         }
 
         // only get chores for user's current circle
-        ParseQuery<Chore> query = ParseQuery.getQuery(Chore.class).whereEqualTo(Chore.KEY_CIRCLE, CircleUtils.getCurrentCircle());
+        ParseQuery<Chore> query = ParseQuery.getQuery(Chore.class).whereEqualTo(Chore.KEY_CIRCLE, getCurrentCircle());
         // include data referred by user key
         query.include(UserCircle.KEY_USER);
         // start an asynchronous call for Chore objects
@@ -255,15 +347,17 @@ public class ChoreUtils {
                 if(chores.isEmpty()){
                     ChoreCompleted entity = new ChoreCompleted();
 
-                    entity.put("date", Calendar.getInstance().getTime());
+                    entity.put("date", Calendar.getInstance().getTime()); // date due
                     entity.put("choreAssignment", choreAssignment);
                     entity.put("completed", completed);
+                    entity.put("circle", getCurrentCircle());
 
                     // Saves the new object.
                     // Notice that the SaveCallback is totally optional!
                     entity.saveInBackground(e2 -> {
                         if (e2==null){
                             //Save was done
+                            updateCompletions(null);
                         }else{
                             //Something went wrong
                             Log.e(TAG, e2.getMessage());
@@ -300,7 +394,7 @@ public class ChoreUtils {
             public void done(List<ChoreCompleted> chores, ParseException e) {
                 // check for errors
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting userCircles", e);
+                    Log.e(TAG, "Issue with getting ChoreCompleted objects", e);
                     return;
                 }
 
