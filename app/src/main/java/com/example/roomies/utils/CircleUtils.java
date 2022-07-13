@@ -163,6 +163,11 @@ public class CircleUtils {
                 object.deleteInBackground(e2 -> {
                     if(e2==null){
                         Toast.makeText(context, "You have left circle " + circle.getName(), Toast.LENGTH_SHORT).show();
+
+                        // user no longer registered to previous circle notifications
+                        ParseUser.getCurrentUser().put("registerCircleNotifs", false);
+                        ParseUser.getCurrentUser().saveInBackground();
+
                         Intent i = new Intent(context, AddCircleActivity.class);
                         context.startActivity(i);
                         ((Activity)context).finish();
@@ -180,9 +185,13 @@ public class CircleUtils {
     }
 
     public static void logout(Context context){
+        Messaging.clearFirebaseInstance(true);
+    }
+
+    public static void parseLogout(Context context){
         ParseUser.logOut();
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
-        SessionUtils.endSession();
+        Session.endSession();
 
         if(currentUser == null){
             Intent i = new Intent(context, LoginActivity.class);

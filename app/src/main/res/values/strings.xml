@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Roomies</string>
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
-    <!-- Paste BOTH strings as required -->
     <string name="back4app_app_id">i7qhE7MtKIC4myDP8p0Nzvhb8aL3CQf6gWCQC87W</string>
     <string name="back4app_client_key">PzLuqc9DPhNsZKRuT0YLgPc4Ob7HoMllAWe0cJTE</string>
+    <string name="firebase_server_key">key=AAAADHJjfrw:APA91bG6Y5jOVPc0nOuOfWENFFPYacNjoBkxvRNxgKTCsa_SrXcI-SsZs8sKGpM_57nnDrvTDCpmEahQzTr3FaL2gpfpEH0eZkcXaRI2vAg2aIn1PpDsF80Mlm0qxeXf0d8mee-G804f</string>
+    <string name="firebase_sender_id">53458730684</string>
     <string name="title_activity_join_circle">JoinCircleActivity</string>
     <string name="pref_name">Roomies</string>
     <string-array name="frequency_array">

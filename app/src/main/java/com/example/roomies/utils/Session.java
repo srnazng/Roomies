@@ -7,9 +7,13 @@ import android.content.Intent;
 
 import com.example.roomies.SplashScreenActivity;
 
-import java.util.Calendar;
+public class Session {
+    private Messaging messaging;
 
-public class SessionUtils {
+    public Session(Context context) {
+        messaging = new Messaging(context);
+    }
+
     public static void startSession(Context context){
         Intent i = new Intent(context, SplashScreenActivity.class);
         context.startActivity(i);

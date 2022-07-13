@@ -1,6 +1,5 @@
 package com.example.roomies;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,20 +12,24 @@ import android.view.MenuItem;
 
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
-import com.example.roomies.utils.CircleUtils;
+import com.example.roomies.utils.Session;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    List<Circle> circles;
+    private List<Circle> circles;
+    private Session session;
 
     public static final String TAG = "MainActivity";
 
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        session = new Session(MainActivity.this);
 
         // all circles which user has joined
         // currently user can only join 1 circle
