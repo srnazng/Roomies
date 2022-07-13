@@ -366,12 +366,12 @@ public class Messaging extends FirebaseMessagingService {
     }
 
     /**
-     * Send notification to user
-     * @param user
+     * Send notification to device group
+     * @param groupKey
      * @param title
      * @param body
      */
-    public static void sendToUser(ParseUser user, String title, String body){
+    public static void sendToDeviceGroup(String groupKey, String title, String body){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -379,7 +379,7 @@ public class Messaging extends FirebaseMessagingService {
                     OkHttpClient client = new OkHttpClient().newBuilder()
                             .build();
                     MediaType mediaType = MediaType.parse("application/json");
-                    String content = "{\n  \"to\":\"" + user.getString("notificationKey") + "\"," +
+                    String content = "{\n  \"to\":\"" + groupKey + "\"," +
                             "\n  \"content_available\": true,\n  \"priority\": \"high\",\n  \"notification\": {\n      " +
                             "\"title\": \"" + title + "\",\n      " +
                             "\"body\": \"" + body + "\"\n   }\n}";
@@ -393,6 +393,7 @@ public class Messaging extends FirebaseMessagingService {
                     Response response = client.newCall(request).execute();
                     Log.i(TAG, title + " - " + body + " sent success");
                 } catch (Exception e) {
+                    Log.e(TAG, "send reminder failure ");
                     e.printStackTrace();
                 }
             }

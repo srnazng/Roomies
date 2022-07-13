@@ -3,6 +3,7 @@ package com.example.roomies.utils;
 import static com.example.roomies.ExpenseFragment.getFilterInt;
 import static com.example.roomies.ExpenseFragment.updateExpenseList;
 import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
+import static com.example.roomies.utils.Messaging.sendToDeviceGroup;
 import static com.example.roomies.utils.Utils.conversionBitmapParseFile;
 
 import android.app.Activity;
@@ -595,6 +596,22 @@ public class ExpenseUtils {
         else{
             Log.i(TAG, "No transaction found");
         }
+    }
+
+    /**
+     * send reminder to all users assigned to pay expense but have not
+     * @param context
+     * @param expense
+     */
+    public static void sendReminder(Context context, Expense expense){
+        List<Transaction> transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+        for(int i=0; i<transactions.size(); i++){
+            Transaction t = transactions.get(i);
+            if(!t.getCompleted()){
+                sendToDeviceGroup(t.getPayer().getString("notificationKey"), "House expense reminder!", "Pending request for " + expense.getName());
+            }
+        }
+        Toast.makeText(context, "Reminders sent!", Toast.LENGTH_SHORT).show();
     }
 
 

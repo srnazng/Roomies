@@ -53,6 +53,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     private com.google.android.material.card.MaterialCardView expenseDetailCard;
 
     private Button btnDetailMarkPaid;
+    private Button btnDetailRemind;
     private Button btnDetailEdit;
     private Button btnDetailCancel;
     private ImageButton btnVenmo;
@@ -65,6 +66,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         expense = getIntent().getParcelableExtra("expense");
 
         // bind with views
+        btnDetailRemind = findViewById(R.id.btnDetailRemind);
         btnDetailCancel = findViewById(R.id.btnDetailCancel);
         btnDetailMarkPaid = findViewById(R.id.btnDetailMarkPaid);
         btnDetailEdit = findViewById(R.id.btnDetailEditExpense);
@@ -208,6 +210,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         btnDetailMarkPaid.setVisibility(View.VISIBLE);
         btnDetailEdit.setVisibility(View.GONE);
         btnDetailCancel.setVisibility(View.GONE);
+        btnDetailRemind.setVisibility(View.GONE);
 
         btnDetailMarkPaid.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,6 +280,13 @@ public class ExpenseDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+        btnDetailRemind.setVisibility(View.VISIBLE);
+        btnDetailRemind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendReminder(ExpenseDetailActivity.this, expense);
+            }
+        });
     }
 
     private void setDefaultView(){
@@ -298,5 +308,6 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         btnDetailMarkPaid.setVisibility(View.GONE);
         btnDetailEdit.setVisibility(View.GONE);
         btnDetailCancel.setVisibility(View.GONE);
+        btnDetailRemind.setVisibility(View.GONE);
     }
 }

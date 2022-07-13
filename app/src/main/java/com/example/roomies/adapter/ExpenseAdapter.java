@@ -4,6 +4,7 @@ import static com.example.roomies.utils.ExpenseUtils.changeTransactionStatus;
 import static com.example.roomies.utils.ExpenseUtils.getAllExpenseTransactions;
 import static com.example.roomies.utils.ExpenseUtils.getCircleTransactions;
 import static com.example.roomies.utils.ExpenseUtils.getMyExpenseTransaction;
+import static com.example.roomies.utils.ExpenseUtils.sendReminder;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import com.example.roomies.ExpenseFragment;
 import com.example.roomies.R;
 import com.example.roomies.model.Expense;
 import com.example.roomies.model.Transaction;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseUser;
@@ -74,13 +76,17 @@ public class ExpenseAdapter extends
         private TextView tvExpenseName;
         private TextView tvPayTo;
         private TextView tvTotal;
-        private com.google.android.material.card.MaterialCardView card;
+        private MaterialCardView card;
         private Button btnComment;
         private Button btnMarkPaid;
         private Button btnEdit;
+        private Button btnRemind;
         private Button btnCancel;
         private ChipGroup assigneeChips;
         private HorizontalScrollView chipScroll;
+
+        private Expense expense;
+        private List<Transaction> transactions;
 
         // Constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -99,6 +105,7 @@ public class ExpenseAdapter extends
             btnEdit = itemView.findViewById(R.id.btnEditExpense);
             btnCancel = itemView.findViewById(R.id.btnCancelTransaction);
             btnComment = itemView.findViewById(R.id.btnComment);
+            btnRemind = itemView.findViewById(R.id.btnRemind);
         }
 
         // bind expense
@@ -106,6 +113,8 @@ public class ExpenseAdapter extends
             if(expense == null){
                 return;
             }
+
+            this.expense = expense;
 
             // expense title
             tvExpenseName.setText(expense.getName() + " $" + String.format("%.2f", expense.getTotal()));
@@ -143,7 +152,10 @@ public class ExpenseAdapter extends
                 card.setLongClickable(false);
 
                 // determine if card should be marked completed
-                List<Transaction> transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+                if(transactions != null){
+                    transactions.clear();
+                }
+                transactions = getAllExpenseTransactions(expense, getCircleTransactions());
                 for(int i=0; i<transactions.size(); i++){
                     if(!transactions.get(i).getCompleted()){
                         card.setChecked(false);
@@ -155,6 +167,7 @@ public class ExpenseAdapter extends
                 btnCancel.setVisibility(View.GONE);
                 btnMarkPaid.setVisibility(View.GONE);
                 btnEdit.setVisibility(View.GONE);
+                btnRemind.setVisibility(View.GONE);
                 tvTotal.setVisibility(View.GONE);
 
                 // initialize chips of users assigned to pay expense
@@ -199,6 +212,13 @@ public class ExpenseAdapter extends
                         context.startActivity(i);
                     }
                 });
+                btnRemind.setVisibility(View.VISIBLE);
+                btnRemind.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendReminder(context, expense);
+                    }
+                });
                 btnMarkPaid.setVisibility(View.GONE);
                 tvTotal.setVisibility(View.GONE);
 
@@ -235,6 +255,7 @@ public class ExpenseAdapter extends
                 // set custom visibilities
                 tvTotal.setVisibility(View.VISIBLE);
                 btnCancel.setVisibility(View.GONE);
+                btnRemind.setVisibility(View.GONE);
                 btnMarkPaid.setVisibility(View.VISIBLE);
                 btnEdit.setVisibility(View.GONE);
                 btnMarkPaid.setOnClickListener(new View.OnClickListener() {

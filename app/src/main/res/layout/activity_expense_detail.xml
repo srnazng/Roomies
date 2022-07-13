@@ -128,7 +128,22 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Mark Paid" />
+                    android:contentDescription="mark paid"
+                    android:tooltipText="Mark as paid"
+                    app:icon="@drawable/done"
+                    app:iconSize="25dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDetailRemind"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:contentDescription="remind"
+                    android:tooltipText="Send reminders"
+                    app:icon="@drawable/remind"
+                    app:iconSize="25dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnDetailEditExpense"
@@ -137,7 +152,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Edit" />
+                    android:contentDescription="edit"
+                    android:tooltipText="Edit expense"
+                    app:icon="@drawable/edit"
+                    app:iconSize="25dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnDetailCancel"
@@ -146,7 +164,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Cancel" />
+                    android:contentDescription="delete"
+                    android:tooltipText="Delete expense"
+                    app:icon="@drawable/delete"
+                    app:iconSize="25dp" />
 
             </LinearLayout>
 

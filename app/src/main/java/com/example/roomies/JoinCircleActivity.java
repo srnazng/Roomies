@@ -1,5 +1,7 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.Messaging.sendToDeviceGroup;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -71,6 +73,13 @@ public class JoinCircleActivity extends AppCompatActivity {
                 userCircle.saveInBackground(e1 -> {
                     if (e1==null){
                         Toast.makeText(JoinCircleActivity.this, "Circle join success", Toast.LENGTH_SHORT).show();
+
+                        // notify other members in circle
+                        if(circle.getNotificationKey() != null
+                                && !circle.getNotificationKey().isEmpty()){
+                            sendToDeviceGroup(circle.getNotificationKey(), "New member!", ParseUser.getCurrentUser().getString("name") + " joined your circle");
+                        }
+
                         Session.startSession(JoinCircleActivity.this);
                     }else{
                         //Something went wrong
