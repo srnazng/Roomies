@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -12,11 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.CircleUtils;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -33,8 +36,6 @@ public class HomeFragment extends Fragment {
     public static final String TAG = "HomeFragment";
     public static final int NUM_PROFILES_SHOWN = 5;
 
-    private Circle circle;
-    private List<UserCircle> userCircleList;
     private ImageView ivCirclePhoto;
     private TextView tvCircleName;
 
@@ -70,9 +71,6 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // initialize list of all UserCircles related to current circle
-        userCircleList = new ArrayList<>();
-
         // bind layout
         ivCirclePhoto = view.findViewById(R.id.ivCirclePhoto);
         tvCircleName = view.findViewById(R.id.tvCircleName);
@@ -90,44 +88,34 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        CircleUtils.initCircle(false);
+        updateCircle(getActivity(), getView());
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        updateCircle(getActivity(), view);
+    }
+
     /**
      * Query UserCircle objects that contain current user to get circles that user has joined
-     * TODO: return circle, add to utils
      */
     public void updateCircle(Context context, View view){
+        if(CircleUtils.getInCircle()){
+            Circle currentCircle = CircleUtils.getCurrentCircle();
 
-        // specify what type of data we want to query - UserCircle.class
-        ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());
-        // include data referred by circle key
-        query.include(UserCircle.KEY_CIRCLE);
-        // start an asynchronous call for UserCircle objects that include current user
-        query.findInBackground(new FindCallback<UserCircle>() {
-            @Override
-            public void done(List<UserCircle> userCircles, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting userCircles", e);
-                    return;
-                }
+            // fill image and text on home screen
+            Glide.with(context).load(currentCircle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCirclePhoto);
+            tvCircleName.setText(currentCircle.getName());
 
-                // user has not joined a circle
-                if(userCircles.isEmpty()){
-                    // go to AddCircleActivity
-                    Intent i = new Intent(getActivity(), AddCircleActivity.class);
-                    startActivity(i);
-                    getActivity().finish();
-                }
-
-                // save received posts to list and notify adapter of new data
-                circle = userCircles.get(0).getCircle();
-
-                // fill image and text on home screen
-                Glide.with(context).load(circle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCirclePhoto);
-                tvCircleName.setText(circle.getName());
-
-                updateAllProfiles(view);
-            }
-        });
+            updateAllProfiles(view);
+        }
+        else{
+            Log.e(TAG, "error loading circle");
+        }
     }
 
     /**
@@ -135,36 +123,10 @@ public class HomeFragment extends Fragment {
      * TODO: return list
      */
     private void updateAllProfiles(View view){
-        // find profile of all users in current circle - query UserCircle.class
-        ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_CIRCLE, circle);
-        // include data referred by user key
-        query.include(UserCircle.KEY_USER);
-        // start an asynchronous call for UserCircle objects that include current circle
-        query.findInBackground(new FindCallback<UserCircle>() {
-            @Override
-            public void done(List<UserCircle> userCircles, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting userCircles", e);
-                    return;
-                }
-
-                // user has not joined a circle
-                if(userCircles.isEmpty()){
-                    // go to AddCircleActivity
-                    Intent i = new Intent(getActivity(), AddCircleActivity.class);
-                    startActivity(i);
-                    getActivity().finish();
-                }
-
-                // update userCircleList
-                userCircleList.clear();
-                userCircleList.addAll(userCircles);
-                if(userCircleList.size() > 0){
-                    fillProfileImages(view);
-                }
-            }
-        });
+        List<UserCircle> userCircleList = CircleUtils.getUserCircleList();
+        if( userCircleList != null && userCircleList.size() > 0){
+            fillProfileImages(view);
+        }
     }
 
     /**
@@ -173,6 +135,12 @@ public class HomeFragment extends Fragment {
      */
     public void fillProfileImages(View view){
         // TODO: use for loop
+        if(getActivity() == null){
+            return;
+        }
+
+        List<UserCircle> userCircleList = CircleUtils.getUserCircleList();
+
         ParseFile image;
         if(userCircleList.size() > 0 && (image = userCircleList.get(0).getUser().getParseFile("image")) != null){
             Glide.with(getActivity()).load(image.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile1);

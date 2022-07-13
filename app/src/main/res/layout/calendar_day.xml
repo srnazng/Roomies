@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/turquoise"
+        app:layout_constraintBottom_toTopOf="@+id/chipDayOfMonth"
+        app:layout_constraintEnd_toEndOf="@+id/chipDayOfMonth"
+        app:layout_constraintStart_toStartOf="@+id/chipDayOfMonth"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/turquoise"
+        app:layout_constraintBottom_toBottomOf="@+id/rvEvents"
+        app:layout_constraintEnd_toEndOf="@+id/chipDayOfMonth"
+        app:layout_constraintStart_toStartOf="@+id/chipDayOfMonth"
+        app:layout_constraintTop_toBottomOf="@+id/chipDayOfMonth" />
+
+    <TextView
+        android:id="@+id/tvDayOfWeek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Tues"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chipDayOfMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:clickable="false"
+        android:text="28"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDayOfWeek"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvDayOfWeek"
+        app:layout_constraintVertical_bias="0.482" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEvents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chipDayOfMonth"
+        app:layout_constraintTop_toTopOf="@+id/chipDayOfMonth" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
