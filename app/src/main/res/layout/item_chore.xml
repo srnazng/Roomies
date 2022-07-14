@@ -68,12 +68,26 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGoogleCalendar"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Add to google calendar"
+                    android:tooltipText="Add to Google Calendar"
+                    app:icon="@drawable/google_calendar"
+                    app:iconSize="25dp"
+                    app:iconTint="@android:color/transparent"
+                    app:iconTintMode="add" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEdit"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="Edit" />
+                    android:text="Edit"
+                    android:visibility="gone" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancel"
@@ -81,7 +95,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="Cancel" />
+                    android:text="Cancel"
+                    android:visibility="gone" />
             </LinearLayout>
 
         </LinearLayout>

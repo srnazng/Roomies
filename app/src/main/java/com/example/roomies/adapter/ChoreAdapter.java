@@ -1,9 +1,7 @@
 package com.example.roomies.adapter;
 
-import static com.example.roomies.utils.ChoreUtils.findChoreCompleted;
-import static com.example.roomies.utils.ChoreUtils.markCompleted;
-
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roomies.GoogleOauthActivity;
 import com.example.roomies.R;
 import com.example.roomies.model.Chore;
 import com.google.android.material.card.MaterialCardView;
@@ -24,6 +23,7 @@ public class ChoreAdapter extends
         RecyclerView.Adapter<ChoreAdapter.ViewHolder> {
 
     private List<Chore> chores;
+    private static Context context;
 
     // Pass in the chore array into the constructor
     public ChoreAdapter(List<Chore> chores) {
@@ -33,7 +33,7 @@ public class ChoreAdapter extends
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
@@ -68,6 +68,7 @@ public class ChoreAdapter extends
         private TextView tvDue;
         public static MaterialCardView card;
         private Button messageButton;
+        private Button btnGoogleCalendar;
         private static Chore chore;
 
         public static Chore getChore() { return chore; };
@@ -83,6 +84,7 @@ public class ChoreAdapter extends
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvDue = itemView.findViewById(R.id.tvDue);
             card = itemView.findViewById(R.id.card);
+            btnGoogleCalendar = itemView.findViewById(R.id.btnGoogleCalendar);
         }
 
         public void bind(Chore chore){
@@ -91,6 +93,13 @@ public class ChoreAdapter extends
             tvDescription.setText(chore.getDescription());
             tvDue.setText(formatDue(chore));
             card.setLongClickable(false);
+            btnGoogleCalendar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(context, GoogleOauthActivity.class);
+                    context.startActivity(i);
+                }
+            });
         }
 
         public String formatDue(Chore chore){

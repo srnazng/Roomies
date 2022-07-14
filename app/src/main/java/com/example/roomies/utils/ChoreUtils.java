@@ -8,7 +8,6 @@ import static com.example.roomies.utils.Utils.occursToday_monthFreq;
 import static com.example.roomies.utils.Utils.occursToday_weekFreq;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
@@ -179,6 +178,11 @@ public class ChoreUtils {
         myPendingChoresToday.clear();
         myCompletedChoresToday.clear();
         myChoreAssignments.clear();
+
+        if(getCurrentCircle() == null){
+            return;
+        }
+
         for(int i=0; i<choreAssignments.size(); i++) {
             ChoreAssignment c = choreAssignments.get(i);
             if(c.getChore().getCircle().getObjectId().equals(getCurrentCircle().getObjectId())){
