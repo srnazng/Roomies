@@ -1,5 +1,7 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.GoogleCalendar.createEvent;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.roomies.model.Chore;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,10 +24,13 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+
 public class GoogleOauthActivity extends AppCompatActivity {
 
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = "GoogleOauthActivity";
     private static final int RC_SIGN_IN = 9001;
+    private static final String PREF_ACCOUNT_NAME = "accountName";
 
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mStatusTextView;
@@ -32,7 +38,9 @@ public class GoogleOauthActivity extends AppCompatActivity {
     private SignInButton  btnSignIn;
     private Button btnAccountContinue;
 
-    private String token;
+    private GoogleSignInAccount account;
+
+    private Chore chore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,8 @@ public class GoogleOauthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_google_oauth);
         // Views
         mStatusTextView = findViewById(R.id.status);
+
+        chore = getIntent().getParcelableExtra("chore");
 
         // Configure sign-in to request the user's ID, email address, and basic profile
         // Request Google Calendar scope
@@ -87,11 +97,16 @@ public class GoogleOauthActivity extends AppCompatActivity {
     // get token
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            token = account.getIdToken();
+            account = completedTask.getResult(ApiException.class);
 
             // Signed in successfully, show authenticated UI.
             updateUI(account);
+
+            try {
+                addEvent(account);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -113,7 +128,6 @@ public class GoogleOauthActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         updateUI(null);
-                        addEvent();
                     }
                 });
     }
@@ -137,7 +151,11 @@ public class GoogleOauthActivity extends AppCompatActivity {
             btnAccountContinue.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    addEvent();
+                    try {
+                        addEvent(account);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
@@ -153,7 +171,7 @@ public class GoogleOauthActivity extends AppCompatActivity {
         }
     }
 
-    public void addEvent(){
-        // TODO: add calendar event
+    public void addEvent(GoogleSignInAccount account) throws IOException {
+        createEvent(this, account, chore);
     }
 }

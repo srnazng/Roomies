@@ -166,31 +166,43 @@
     </RadioGroup>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/points"
+        android:id="@+id/duration"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
         android:clipToPadding="false"
         android:elevation="1dp"
         app:boxBackgroundColor="@color/white"
         app:boxCollapsedPaddingTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/spDuration"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioPriority">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPoints"
+            android:id="@+id/etDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="1dp"
-            android:hint="Number of Points"
+            android:hint="Estimated time"
             android:inputType="number"
             android:text="1"
             android:textColor="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/spDuration"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:entries="@array/duration_array"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/duration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/duration" />
 
     <Button
         android:id="@+id/btnAdd"
@@ -209,12 +221,13 @@
 
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/btnAdd"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAssignTo">
+        app:layout_constraintTop_toBottomOf="@+id/tvAssignTo"
+        app:layout_constraintVertical_bias="0.0">
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipUsers"
@@ -243,7 +256,7 @@
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/points" />
+        app:layout_constraintTop_toBottomOf="@+id/duration" />
 
     <TextView
         android:id="@+id/tvRepeat"

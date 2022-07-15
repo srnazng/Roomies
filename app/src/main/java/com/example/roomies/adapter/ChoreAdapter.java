@@ -97,6 +97,7 @@ public class ChoreAdapter extends
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(context, GoogleOauthActivity.class);
+                    i.putExtra("chore", chore);
                     context.startActivity(i);
                 }
             });

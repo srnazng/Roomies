@@ -24,4 +24,12 @@
         <item>My Requests</item>
         <item>Circle Expenses</item>
     </string-array>
+    <string-array name="duration_array">
+        <item>hour</item>
+        <item>minute</item>
+    </string-array>
+    <string-array name="duration_array_plural">
+        <item>hours</item>
+        <item>minutes</item>
+    </string-array>
 </resources>

@@ -15,15 +15,19 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -50,7 +54,8 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     private EditText etChoreDescription;
     private Switch switchAllDay;
     private RadioGroup radioPriority;
-    private EditText etPoints;
+    private EditText etDuration;
+    private Spinner spDuration;
     private static TextView tvTime;
     private static TextView tvDate;
     private ChipGroup chipUsers;
@@ -81,7 +86,6 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         etChoreName = findViewById(R.id.etChoreName);
         etChoreDescription = findViewById(R.id.etChoreDescription);
         radioPriority = findViewById(R.id.radioPriority);
-        etPoints = findViewById(R.id.etPoints);
 
         // get current time
         final Calendar c = Calendar.getInstance();
@@ -173,6 +177,33 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                 }
             }
         });
+
+        // duration
+        spDuration = findViewById(R.id.spDuration);
+        etDuration = findViewById(R.id.etDuration);
+        // set plurality of frequency items
+        etDuration.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if(etDuration.getText().toString().equals("1")){
+                    int pos = spDuration.getSelectedItemPosition();
+                    ArrayAdapter<String> freqTypeAdapter = new ArrayAdapter<String>(AddChoreActivity.this,android.R.layout.simple_spinner_dropdown_item,
+                            getResources().getStringArray(R.array.duration_array));
+                    spDuration.setAdapter(freqTypeAdapter);
+                    spDuration.setSelection(pos);
+                }
+                else{
+                    int pos = spDuration.getSelectedItemPosition();
+                    ArrayAdapter<String> freqTypeAdapter = new ArrayAdapter<String>(AddChoreActivity.this,android.R.layout.simple_spinner_dropdown_item,
+                            getResources().getStringArray(R.array.duration_array_plural));
+                    spDuration.setAdapter(freqTypeAdapter);
+                    spDuration.setSelection(pos);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
     }
 
     // create chore object and add to database
@@ -189,7 +220,14 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         entity.put("creator", ParseUser.getCurrentUser());
         entity.put("title", etChoreName.getText().toString());
         entity.put("description", etChoreDescription.getText().toString());
-        entity.put("points", Integer.parseInt(etPoints.getText().toString()));
+
+        int duration = Integer.parseInt(etDuration.getText().toString());
+        if(spDuration.getSelectedItem().toString().equals("hours") ||
+                spDuration.getSelectedItem().toString().equals("hour")){
+            duration *= 60;
+        }
+        entity.put("duration", duration);
+
         entity.put("dueDatetime", date.getTime());
         entity.put("allDay", switchAllDay.isChecked());
 
