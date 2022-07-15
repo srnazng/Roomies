@@ -2,6 +2,7 @@ package com.example.roomies;
 
 import static com.example.roomies.utils.ChoreUtils.markCompleted;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,10 +15,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.roomies.adapter.ChoreAdapter;
 import com.example.roomies.model.Chore;
 import com.example.roomies.utils.ChoreUtils;
@@ -37,6 +40,7 @@ public class ChoreFragment extends Fragment {
     private RecyclerView rvChores;
     private ChoreAdapter adapter;
     private ConstraintLayout choreListLayout;
+    private static LottieAnimationView checkAnimation;
 
     public static List<Chore> choreList;
 
@@ -68,6 +72,9 @@ public class ChoreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chore, container, false);
+
+        checkAnimation = view.findViewById(R.id.checkAnimation);
+        checkAnimation.setVisibility(View.GONE);
 
         // Bind to recycler view
         rvChores = view.findViewById(R.id.rvChores);
@@ -139,6 +146,7 @@ public class ChoreFragment extends Fragment {
                 final Chore item = adapter.getData().get(position);
                 markCompleted(item, true);
                 adapter.removeItem(position);
+                showCheck();
 
                 Snackbar snackbar = Snackbar
                         .make(choreListLayout, "Chore marked completed.", Snackbar.LENGTH_LONG);
@@ -157,5 +165,26 @@ public class ChoreFragment extends Fragment {
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
         itemTouchhelper.attachToRecyclerView(rvChores);
+    }
+
+    // show check mark animation
+    public static void showCheck(){
+        checkAnimation.setVisibility(View.VISIBLE);
+        checkAnimation.setProgress(0);
+        checkAnimation.pauseAnimation();
+        checkAnimation.playAnimation();
+        checkAnimation.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) { checkAnimation.setVisibility(View.VISIBLE); }
+
+            @Override
+            public void onAnimationEnd(Animator animation) { checkAnimation.setVisibility(View.GONE);}
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
     }
 }

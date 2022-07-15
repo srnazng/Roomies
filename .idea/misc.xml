@@ -21,6 +21,7 @@
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.17534637451171875" />
         <entry key="app/src/main/res/layout/calendar_day.xml" value="0.5283459945284854" />
         <entry key="app/src/main/res/layout/calendar_event.xml" value="0.8770801624104019" />
+        <entry key="app/src/main/res/layout/completed_animation.xml" value="0.34117144078666095" />
         <entry key="app/src/main/res/layout/dialog_custom_recurrence.xml" value="0.9520833333333333" />
         <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.43162901307966706" />
         <entry key="app/src/main/res/layout/fragment_chore.xml" value="0.23853820598006645" />
