@@ -14,6 +14,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,6 +54,8 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     private EditText etChoreName;
     private EditText etChoreDescription;
     private Switch switchAllDay;
+    private Switch switchGoogleCalendar;
+    private Switch switchInvite;
     private RadioGroup radioPriority;
     private EditText etDuration;
     private Spinner spDuration;
@@ -64,6 +67,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     private TextView tvRepeat;
 
     private List<ParseUser> assignedUsers;
+    private ArrayList<String> assignedEmails;
     private static Calendar date;
     private Chore chore;
 
@@ -86,6 +90,24 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         etChoreName = findViewById(R.id.etChoreName);
         etChoreDescription = findViewById(R.id.etChoreDescription);
         radioPriority = findViewById(R.id.radioPriority);
+
+        // add chore to Google Calendar
+        switchGoogleCalendar = findViewById(R.id.switchGoogleCalendar);
+        switchGoogleCalendar.setChecked(false);
+        switchGoogleCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(switchGoogleCalendar.isChecked()){
+                    switchInvite.setClickable(true);
+                }
+                else{
+                    switchInvite.setClickable(false);
+                    switchInvite.setChecked(false);
+                }
+            }
+        });
+        switchInvite = findViewById(R.id.switchInvite);
+        switchInvite.setChecked(false);
 
         // get current time
         final Calendar c = Calendar.getInstance();
@@ -162,6 +184,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         // ChipGroup of users to assign chore to
         chipUsers = findViewById(R.id.chipUsers);
         assignedUsers = new ArrayList<>();
+        assignedEmails = new ArrayList<>();
         initializeChips();
 
         // submit chore
@@ -259,6 +282,8 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
     // create ChoreAssignment object for each user assigned chore and add to database
     public void assignChores(){
+        boolean sendInvites = switchInvite.isChecked();
+
         // loop through all assigned users
         for(int i=0; i<assignedUsers.size(); i++){
             ChoreAssignment entity = new ChoreAssignment();
@@ -283,6 +308,17 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
         addCircleChore(chore);
         ChoreUtils.initChores();
+
+        // create Google Calendar event
+        // send Google Calendar invites if needed
+        if(switchGoogleCalendar.isChecked()){
+            Intent i = new Intent(context, GoogleSignInActivity.class);
+            i.putExtra("chore", chore);
+            Log.i(TAG, "final emails: " + assignedEmails.toString());
+            i.putStringArrayListExtra("emails", assignedEmails);
+            context.startActivity(i);
+        }
+
         finish();
     }
 
@@ -395,10 +431,22 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                         if(chip.isChecked()){
                             // user selected to be assigned chore
                             assignedUsers.add(userCircleList.get(userNum).getUser());
+                            String email = userCircleList.get(userNum).getUser().getString("username");
+
+                            if(email != null && !email.isEmpty()){
+                                assignedEmails.add(email);
+                                Log.i(TAG, assignedEmails.toString());
+                            }
                         }
                         else{
                             // user deselected to be assigned chore
                             assignedUsers.remove(userCircleList.get(userNum).getUser());
+                            String email = userCircleList.get(userNum).getUser().getString("username");
+
+                            if(email != null && !email.isEmpty()){
+                                assignedEmails.removeIf(e -> e.equals(email));
+                                Log.i(TAG, assignedEmails.toString());
+                            }
                         }
                     }
                 });

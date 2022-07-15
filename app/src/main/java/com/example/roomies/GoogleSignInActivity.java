@@ -25,10 +25,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class GoogleOauthActivity extends AppCompatActivity {
+public class GoogleSignInActivity extends AppCompatActivity {
 
-    private static final String TAG = "GoogleOauthActivity";
+    private static final String TAG = "GoogleSignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private static final String PREF_ACCOUNT_NAME = "accountName";
 
@@ -41,15 +42,14 @@ public class GoogleOauthActivity extends AppCompatActivity {
     private GoogleSignInAccount account;
 
     private Chore chore;
+    private ArrayList<String> emails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google_oauth);
+        setContentView(R.layout.activity_google_sign_in);
         // Views
         mStatusTextView = findViewById(R.id.status);
-
-        chore = getIntent().getParcelableExtra("chore");
 
         // Configure sign-in to request the user's ID, email address, and basic profile
         // Request Google Calendar scope
@@ -75,6 +75,13 @@ public class GoogleOauthActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+
+        // get chore and email
+        chore = getIntent().getParcelableExtra("chore");
+        emails = getIntent().getStringArrayListExtra("emails");
+        if(emails != null){
+            Log.i(TAG, "final emails: " + emails.toString());
+        }
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
@@ -172,6 +179,8 @@ public class GoogleOauthActivity extends AppCompatActivity {
     }
 
     public void addEvent(GoogleSignInAccount account) throws IOException {
-        createEvent(this, account, chore);
+        Log.i(TAG, "addEvent");
+        createEvent(this, account, chore, emails);
+        finish();
     }
 }

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.roomies.GoogleOauthActivity;
+import com.example.roomies.GoogleSignInActivity;
 import com.example.roomies.R;
 import com.example.roomies.model.Chore;
 import com.google.android.material.card.MaterialCardView;
@@ -92,11 +92,12 @@ public class ChoreAdapter extends
             tvTitle.setText(chore.getTitle());
             tvDescription.setText(chore.getDescription());
             tvDue.setText(formatDue(chore));
+            card.setClickable(false);
             card.setLongClickable(false);
             btnGoogleCalendar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(context, GoogleOauthActivity.class);
+                    Intent i = new Intent(context, GoogleSignInActivity.class);
                     i.putExtra("chore", chore);
                     context.startActivity(i);
                 }

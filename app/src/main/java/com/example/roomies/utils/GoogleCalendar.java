@@ -22,6 +22,7 @@ import com.google.api.services.calendar.model.*;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +46,12 @@ public class GoogleCalendar {
      * @param account
      * @param chore
      */
-    public static void createEvent(Activity activity, GoogleSignInAccount account, Chore chore){
+    public static void createEvent(Activity activity,
+                                   GoogleSignInAccount account,
+                                   Chore chore,
+                                   ArrayList<String> emails){
+
+        Log.i(TAG, "Create Google Calendar event");
 
         credential = GoogleAccountCredential.usingOAuth2(
                         activity, Arrays.asList(SCOPES))
@@ -64,10 +70,24 @@ public class GoogleCalendar {
             public void run() {
                 try {
                     // create event
+                    String description = "";
+                    if(chore.getDescription() != null && !chore.getDescription().isEmpty()){
+                        description = description + chore.getDescription();
+                    }
+                    if(chore.getPriority() != null){
+                        description = description + "\nPriority: " + chore.getPriority();
+                    }
+                    if(emails != null && !emails.isEmpty()){
+                        description = description + "\nAssigned to:\n";
+                        for(int i=0; i<emails.size(); i++){
+                            description = description + emails.get(i) + "\n";
+                        }
+                    }
+
                     final Event event = new Event()
                             .setSummary(chore.getTitle() != null ? chore.getTitle() : "")
                             .setLocation(getCurrentCircle() != null ? getCurrentCircle().getName() : "")
-                            .setDescription(chore.getDescription() != null ? chore.getDescription() : "");
+                            .setDescription(description);
 
                     // all day event
                     if(chore.getAllDay()){
@@ -153,18 +173,15 @@ public class GoogleCalendar {
                         event.setRecurrence(Arrays.asList(recurrence));
                     }
 
-
-                    // TODO: add attendees
-//                    EventAttendee[] attendees = new EventAttendee[] {
-//                            new EventAttendee().setEmail("lpage@example.com"),
-//                            new EventAttendee().setEmail("sbrin@example.com"),
-//                    };
-//                    event.setAttendees(Arrays.asList(attendees));
-//
-//                    EventReminder[] reminderOverrides = new EventReminder[] {
-//                            new EventReminder().setMethod("email").setMinutes(24 * 60),
-//                            new EventReminder().setMethod("popup").setMinutes(10),
-//                    };
+                    // add attendees
+                    if(emails != null && !emails.isEmpty()){
+                        Log.i(TAG, emails.toString());
+                        List<EventAttendee> attendees = new ArrayList<>();
+                        for(int i=0; i<emails.size(); i++){
+                            attendees.add(new EventAttendee().setEmail(emails.get(i)));
+                        }
+                        event.setAttendees(attendees);
+                    }
 
                     String calendarId = "primary";
 

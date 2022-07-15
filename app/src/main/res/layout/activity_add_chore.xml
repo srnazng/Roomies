@@ -220,11 +220,11 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
+        app:layout_constraintBottom_toTopOf="@+id/switchGoogleCalendar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAssignTo"
         app:layout_constraintVertical_bias="0.0">
@@ -251,7 +251,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:text="Assign to"
         android:textColor="@color/black"
         android:textSize="15sp"
@@ -268,5 +268,51 @@
         app:layout_constraintBottom_toBottomOf="@+id/ivRepeat"
         app:layout_constraintStart_toEndOf="@+id/ivRepeat"
         app:layout_constraintTop_toTopOf="@+id/ivRepeat" />
+
+    <Switch
+        android:id="@+id/switchGoogleCalendar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:minHeight="48dp"
+        android:text="Create Google Calendar Event"
+        app:layout_constraintBottom_toTopOf="@+id/switchInvite"
+        app:layout_constraintEnd_toEndOf="@+id/spDuration"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imageView9" />
+
+    <Switch
+        android:id="@+id/switchInvite"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
+        android:minHeight="48dp"
+        android:text="Invite Assignees to Google Calendar Event"
+        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
+        app:layout_constraintEnd_toEndOf="@+id/spDuration"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imageView10" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/switchGoogleCalendar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/switchGoogleCalendar"
+        app:srcCompat="@drawable/google_calendar" />
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/switchInvite"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switchGoogleCalendar"
+        app:srcCompat="@drawable/invite"
+        app:tint="@color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
