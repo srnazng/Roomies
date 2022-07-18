@@ -1,7 +1,5 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.ExpenseUtils.initExpenses;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -122,7 +120,6 @@ public class ExpenseFragment extends Fragment {
         expenseType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                initExpenses();
                 updateExpenseList(position);
             }
 
@@ -142,7 +139,6 @@ public class ExpenseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ExpenseUtils.initExpenses();
         updateExpenseList(expenseType.getSelectedItemPosition());
     }
 

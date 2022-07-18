@@ -22,12 +22,14 @@ import android.view.ViewGroup;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.roomies.adapter.ChoreAdapter;
+import com.example.roomies.adapter.CompletedChoreAdapter;
 import com.example.roomies.model.Chore;
 import com.example.roomies.utils.ChoreUtils;
 import com.example.roomies.utils.SwipeToDeleteCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -38,11 +40,14 @@ public class ChoreFragment extends Fragment {
     private FloatingActionButton btnToCalendar;
     private FloatingActionButton btnAddChore;
     private RecyclerView rvChores;
-    private ChoreAdapter adapter;
+    private RecyclerView rvCompletedChores;
+    private static ChoreAdapter adapter;
+    private static CompletedChoreAdapter completedAdapter;
     private ConstraintLayout choreListLayout;
     private static LottieAnimationView checkAnimation;
 
     public static List<Chore> choreList;
+    public static List<Chore> completedChoreList;
 
     public static final String TAG = "ChoreFragment";
 
@@ -65,6 +70,7 @@ public class ChoreFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Initialize chores
         choreList = ChoreUtils.getMyPendingChoresToday();
+        completedChoreList = ChoreUtils.getMyCompletedChoresToday();
     }
 
     @Override
@@ -78,15 +84,19 @@ public class ChoreFragment extends Fragment {
 
         // Bind to recycler view
         rvChores = view.findViewById(R.id.rvChores);
+        rvCompletedChores = view.findViewById(R.id.rvDone);
 
         // Create adapter passing in the chore data
         adapter = new ChoreAdapter(choreList);
+        completedAdapter = new CompletedChoreAdapter(completedChoreList);
         updateChoreList();
 
         // Attach the adapter to the recyclerview to populate items
         rvChores.setAdapter(adapter);
+        rvCompletedChores.setAdapter(completedAdapter);
         // Set layout manager to position the items
         rvChores.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvCompletedChores.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // Set swipe to delete for list
         choreListLayout = view.findViewById(R.id.choreListLayout);
@@ -117,7 +127,6 @@ public class ChoreFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ChoreUtils.initChores();
         updateChoreList();
     }
 
@@ -130,9 +139,16 @@ public class ChoreFragment extends Fragment {
     }
 
     // query database for circle's list of chores
-    public void updateChoreList(){
+    public static void updateChoreList(){
+        if(adapter == null || completedAdapter == null){
+            return;
+        }
+
         choreList = ChoreUtils.getMyPendingChoresToday();
         adapter.notifyDataSetChanged();
+
+        completedChoreList = ChoreUtils.getMyCompletedChoresToday();
+        completedAdapter.notifyDataSetChanged();
     }
 
     // attach SwipeToDeleteCallback
@@ -144,8 +160,9 @@ public class ChoreFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
                 final Chore item = adapter.getData().get(position);
-                markCompleted(item, true);
+                markCompleted(item, true, Calendar.getInstance());
                 adapter.removeItem(position);
+                completedAdapter.restoreItem(item, completedAdapter.getItemCount());
                 showCheck();
 
                 Snackbar snackbar = Snackbar
@@ -153,14 +170,16 @@ public class ChoreFragment extends Fragment {
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        markCompleted(item, false);
+                        markCompleted(item, false, Calendar.getInstance());
                         adapter.restoreItem(item, position);
+                        completedAdapter.removeItem(completedAdapter.getItemCount() - 1);
                         rvChores.scrollToPosition(position);
                     }
                 });
 
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
+                updateChoreList();
             }
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);

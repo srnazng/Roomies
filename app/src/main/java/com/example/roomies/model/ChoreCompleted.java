@@ -12,4 +12,6 @@ public class ChoreCompleted extends ParseObject {
     public ChoreAssignment getChoreAssignment() { return (ChoreAssignment) getParseObject(KEY_CHORE_ASSIGNMENT); }
 
     public boolean getCompleted() { return getBoolean(KEY_COMPLETED); }
+
+    public void setCompleted(boolean completed) { put(KEY_COMPLETED, completed); }
 }

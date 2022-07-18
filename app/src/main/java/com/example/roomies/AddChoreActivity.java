@@ -1,6 +1,8 @@
 package com.example.roomies;
 
+import static com.example.roomies.ChoreFragment.updateChoreList;
 import static com.example.roomies.model.Recurrence.*;
+import static com.example.roomies.utils.ChoreUtils.addChoreAssignment;
 import static com.example.roomies.utils.ChoreUtils.addCircleChore;
 import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
 import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
@@ -38,7 +40,6 @@ import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
 import com.example.roomies.model.UserCircle;
-import com.example.roomies.utils.ChoreUtils;
 import com.example.roomies.utils.CircleUtils;
 import com.example.roomies.utils.Utils;
 import com.google.android.material.chip.Chip;
@@ -292,10 +293,14 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
             entity.put("chore", chore);
             entity.put("circle", getCurrentCircle());
 
-            // Saves the new object.
+            int finalI = i;
             entity.saveInBackground(e -> {
                 if (e==null){
-                    //Save was done
+                    // Saves the new object.
+                    addChoreAssignment(entity);
+                    if(finalI == assignedUsers.size() - 1){
+                        updateChoreList();
+                    }
                 }else{
                     //Something went wrong
                     Toast.makeText(this, "Error assigning chore", Toast.LENGTH_SHORT).show();
@@ -307,7 +312,6 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         //done
         Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
         addCircleChore(chore);
-        ChoreUtils.initChores();
 
         // create Google Calendar event
         // send Google Calendar invites if needed

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -186,6 +187,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
             chip.setClickable(false);
             chip.setCheckable(true);
             chip.setChecked(t.getCompleted());
+            chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.yellow)));
             assigneeChipGroup.addView(chip);
         }
     }

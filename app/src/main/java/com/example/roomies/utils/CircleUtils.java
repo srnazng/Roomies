@@ -63,7 +63,7 @@ public class CircleUtils {
      * @param firstInit     true if also want to update chores and expenses
      */
     public static void initCircle(boolean firstInit){
-        Log.i(TAG, "initCircle");
+        Log.i(TAG, "INIT CIRCLE");
 
         // specify what type of data we want to query - UserCircle.class
         ParseQuery<UserCircle> query = ParseQuery.getQuery(UserCircle.class).whereEqualTo(UserCircle.KEY_USER, ParseUser.getCurrentUser());

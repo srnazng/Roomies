@@ -115,7 +115,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        initCircle(false);
     }
 
     private void setClipboard(Context context, String text) {

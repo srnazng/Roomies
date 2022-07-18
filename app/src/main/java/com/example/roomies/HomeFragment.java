@@ -100,7 +100,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        CircleUtils.initCircle(false);
         updateCircle(getActivity(), getView());
     }
 

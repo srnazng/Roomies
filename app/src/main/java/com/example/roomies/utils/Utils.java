@@ -13,6 +13,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.roomies.model.Chore;
 import com.parse.ParseFile;
 
 import java.io.ByteArrayOutputStream;
@@ -27,6 +28,50 @@ import java.util.Date;
 public class Utils {
     public static final String TAG = "Utils";
     public static final int GET_FROM_GALLERY = 3;
+
+    // format chore due date
+    public static String formatDue(Chore chore, Calendar day){
+        boolean isToday = (compareDates(day, Calendar.getInstance()) == 0);
+
+        if(chore.getAllDay() && isToday){
+            return "Due today";
+        }
+
+        Calendar time = Calendar.getInstance();
+        time.setTime(chore.getDue());
+
+        String due = "Due ";
+
+        if(!chore.getAllDay()){
+            String minutes = time.get(Calendar.MINUTE) + "";
+            if(time.get(Calendar.MINUTE) < 10) {
+                minutes = "0" + minutes;
+            }
+
+            int hour = time.get(Calendar.HOUR_OF_DAY);
+
+            if(hour > 12){
+                hour -= 12;
+                due = due + hour + ":" + minutes + " PM ";
+            }
+            else if(hour == 12){
+                due = due + hour + ":" + minutes + " PM ";
+            }
+            else{
+                due = due + hour + ":" + minutes + " AM ";
+            }
+        }
+
+        if(isToday){
+            due = due + "today";
+        }
+        else{
+            due = due + "on " + getMonthForInt(day.get(Calendar.MONTH)) + " "
+                + day.get(Calendar.DAY_OF_MONTH) + ", " + day.get(Calendar.YEAR);
+        }
+
+        return due;
+    }
 
     /**
      *

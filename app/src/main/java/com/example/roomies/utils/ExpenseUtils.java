@@ -79,9 +79,23 @@ public class ExpenseUtils {
      * Initialize all lists of expenses
      */
     public static void initExpenses(){
-        Log.i(TAG, "initialize expenses");
-        initCircleExpenses();
-        initCircleTransactions();
+        Log.i(TAG, "INIT EXPENSES");
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initCircleExpenses();
+            }
+        });
+
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                initCircleTransactions();
+            }
+        });
+
+        thread1.start();
+        thread2.start();
     }
 
     /**
