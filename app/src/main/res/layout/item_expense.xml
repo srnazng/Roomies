@@ -17,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@android:color/secondary_text_dark">
-        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,8 +36,10 @@
                     android:id="@+id/tvExpenseName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/proxima_nova_reg"
                     android:text="My expense"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
+                    android:textColor="@color/black"
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tvPayTo"

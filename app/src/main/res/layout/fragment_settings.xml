@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".SettingsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -83,8 +82,8 @@
             android:layout_marginTop="25dp"
             android:text="My Account"
             android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/proxima_nova_bold"
+            android:textSize="26sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -95,8 +94,8 @@
             android:layout_marginStart="25dp"
             android:text="Circle"
             android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/proxima_nova_bold"
+            android:textSize="26sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnLogOut"
