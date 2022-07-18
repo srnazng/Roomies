@@ -1,5 +1,6 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.ChoreUtils.initChores;
 import static com.example.roomies.utils.ChoreUtils.markCompleted;
 
 import android.animation.Animator;
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,11 +46,12 @@ public class ChoreFragment extends Fragment {
     private static ChoreAdapter adapter;
     private static CompletedChoreAdapter completedAdapter;
     private ConstraintLayout choreListLayout;
+    private SwipeRefreshLayout choreSwipeContainer;
+
     private static LottieAnimationView checkAnimation;
 
     public static List<Chore> choreList;
     public static List<Chore> completedChoreList;
-
     public static final String TAG = "ChoreFragment";
 
     public ChoreFragment() {
@@ -120,6 +123,19 @@ public class ChoreFragment extends Fragment {
                 startActivity(i);
             }
         });
+
+        // pull down to refresh
+        choreSwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.choreSwipeContainer);
+        // Setup refresh listener which triggers new data loading
+        choreSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // refresh chore list
+                initChores();
+                choreSwipeContainer.setRefreshing(false);
+            }
+        });
+
         return view;
     }
 

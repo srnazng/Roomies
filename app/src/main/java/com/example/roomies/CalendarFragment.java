@@ -49,7 +49,6 @@ public class CalendarFragment extends Fragment {
     /**
      * @return A new instance of fragment CalendarFragment.
      */
-
     public static CalendarFragment newInstance() {
         CalendarFragment fragment = new CalendarFragment();
         Bundle args = new Bundle();

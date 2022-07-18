@@ -1,5 +1,7 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.ExpenseUtils.initExpenses;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -7,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +37,7 @@ public class ExpenseFragment extends Fragment {
     private static CheckBox checkPending;
     private static CheckBox checkCompleted;
     private static ConstraintLayout layoutFilter;
+    private SwipeRefreshLayout swipeContainer;
 
     private static Filters filter;
     public enum Filters {MY_PAYMENTS, MY_REQUESTS, CIRCLE_EXPENSES};
@@ -87,6 +91,17 @@ public class ExpenseFragment extends Fragment {
         rvExpenses.setAdapter(adapter);
         // Set layout manager to position the items
         rvExpenses.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // Pull down to refresh
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh expense lists
+                initExpenses();
+                swipeContainer.setRefreshing(false);
+            }
+        });
 
         btnAddExpense = view.findViewById(R.id.btnAddExpense);
         btnAddExpense.setOnClickListener(new View.OnClickListener() {

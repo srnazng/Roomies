@@ -476,7 +476,7 @@ public class ChoreUtils {
                             break;
                         }
                     }
-                    updateCompletions(null);
+                    categorizeChores(myChoreAssignments);
                 }
             }
         });
