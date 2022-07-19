@@ -1,5 +1,7 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.Utils.loginUser;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,11 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.roomies.utils.Session;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
 import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -52,27 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i(TAG, "onClick login button");
                 String username = etEmailInput.getText().toString();
                 String password = etPasswordInput.getText().toString();
-                loginUser(username, password);
-            }
-        });
-    }
-
-
-    private void loginUser(String username, String password){
-        Log.i(TAG, "attempt login");
-
-        // login in background thread
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if(e != null){
-                    // issue
-                    Log.e(TAG, "Issue with login", e);
-                    Toast.makeText(LoginActivity.this, "Incorrect login credentials", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Log.e(TAG, "login success");
-                Session.startSession(LoginActivity.this);
+                loginUser(LoginActivity.this, username, password);
             }
         });
     }

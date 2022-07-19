@@ -273,6 +273,9 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         entity.saveInBackground(e -> {
             if (e==null){
                 //Save was done
+                List<Chore> list = new ArrayList<>();
+                list.add(chore);
+                Chore.pinAllInBackground(list);
                 assignChores();
             }else{
                 //Something went wrong
@@ -298,6 +301,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                 if (e==null){
                     // Saves the new object.
                     addChoreAssignment(entity);
+
                     if(finalI == assignedUsers.size() - 1){
                         updateChoreList();
                     }

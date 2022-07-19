@@ -14,7 +14,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // load database data
-        CircleUtils.initCircle(true);
+        CircleUtils.initCircle(true, SplashScreenActivity.this);
 
         setContentView(R.layout.activity_splash_screen);
         new Handler().postDelayed(new Runnable() {

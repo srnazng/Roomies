@@ -6,203 +6,314 @@
     android:layout_height="match_parent"
     tools:context=".AddChoreActivity">
 
-    <TextView
-        android:id="@+id/tvChoreTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Add Chore"
-        android:textColor="@color/black"
-        android:fontFamily="@font/proxima_nova_bold"
-        android:textSize="26sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/choreName"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        android:clipToPadding="false"
-        android:elevation="1dp"
-        android:textAlignment="textStart"
-        app:boxBackgroundColor="@color/white"
-        app:boxCollapsedPaddingTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvChoreTitle">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etChoreName"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            android:hint="Name"
-            android:textColor="@color/black" />
+            android:layout_height="0dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/tvChoreTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/proxima_nova_bold"
+                android:text="Add Chore"
+                android:textColor="@color/black"
+                android:textSize="26sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/choreDescription"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        android:clipToPadding="false"
-        android:elevation="1dp"
-        app:boxBackgroundColor="@color/white"
-        app:boxCollapsedPaddingTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choreName">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/choreName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:clipToPadding="false"
+                android:elevation="1dp"
+                android:textAlignment="textStart"
+                app:boxBackgroundColor="@color/white"
+                app:boxCollapsedPaddingTop="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvChoreTitle">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etChoreDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            android:hint="Description"
-            android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:textAlignment="textStart"
-            android:textColor="@color/black" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etChoreName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="1dp"
+                    android:hint="Name"
+                    android:textColor="@color/black" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/choreDescription"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:clipToPadding="false"
+                android:elevation="1dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCollapsedPaddingTop="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choreName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etChoreDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="1dp"
+                    android:hint="Description"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-    <Switch
-        android:id="@+id/switchAllDay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="10dp"
-        android:minHeight="48dp"
-        android:text="All day"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choreDescription" />
+            <Switch
+                android:id="@+id/switchAllDay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:minHeight="48dp"
+                android:text="All day"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choreDescription" />
 
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
-        tools:text="Thu Jun 16, 2022" />
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
+                tools:text="Thu Jun 16, 2022" />
 
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
-        tools:text="3:00 PM" />
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
+                tools:text="3:00 PM" />
 
-    <ImageView
-        android:id="@+id/ivRepeat"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginVertical="20dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate"
-        app:srcCompat="@drawable/repeat"
-        app:tint="@color/black" />
+            <ImageView
+                android:id="@+id/ivRepeat"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginVertical="20dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDate"
+                app:srcCompat="@drawable/repeat"
+                app:tint="@color/black" />
 
-    <TextView
-        android:id="@+id/tvPriority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="23dp"
-        android:text="Priority"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivRepeat" />
+            <TextView
+                android:id="@+id/tvPriority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="23dp"
+                android:text="Priority"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivRepeat" />
 
-    <RadioGroup
-        android:id="@+id/radioPriority"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/switchAllDay"
-        app:layout_constraintStart_toEndOf="@+id/tvPriority"
-        app:layout_constraintTop_toBottomOf="@+id/ivRepeat">
+            <RadioGroup
+                android:id="@+id/radioPriority"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/switchAllDay"
+                app:layout_constraintStart_toEndOf="@+id/tvPriority"
+                app:layout_constraintTop_toBottomOf="@+id/ivRepeat">
 
-        <RadioButton
-            android:id="@+id/rbHigh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="High" />
+                <RadioButton
+                    android:id="@+id/rbHigh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="High" />
 
-        <RadioButton
-            android:id="@+id/rbMed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:checked="true"
-            android:text="Medium" />
+                <RadioButton
+                    android:id="@+id/rbMed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="Medium" />
 
-        <RadioButton
-            android:id="@+id/rbLow"
-            android:layout_width="86dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Low" />
+                <RadioButton
+                    android:id="@+id/rbLow"
+                    android:layout_width="86dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Low" />
 
-    </RadioGroup>
+            </RadioGroup>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/duration"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:clipToPadding="false"
-        android:elevation="1dp"
-        app:boxBackgroundColor="@color/white"
-        app:boxCollapsedPaddingTop="5dp"
-        app:layout_constraintEnd_toStartOf="@+id/spDuration"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioPriority">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/duration"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
+                android:clipToPadding="false"
+                android:elevation="1dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCollapsedPaddingTop="5dp"
+                app:layout_constraintEnd_toStartOf="@+id/spDuration"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioPriority">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDuration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            android:hint="Estimated time"
-            android:inputType="number"
-            android:text="1"
-            android:textColor="@color/black" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDuration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="1dp"
+                    android:hint="Estimated time"
+                    android:inputType="number"
+                    android:text="1"
+                    android:textColor="@color/black" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <Spinner
-        android:id="@+id/spDuration"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="30dp"
-        android:entries="@array/duration_array"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="@+id/duration"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/duration" />
+            <Spinner
+                android:id="@+id/spDuration"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:entries="@array/duration_array"
+                android:minHeight="48dp"
+                app:layout_constraintBottom_toBottomOf="@+id/duration"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/duration" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                app:layout_constraintBottom_toTopOf="@+id/switchGoogleCalendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAssignTo"
+                app:layout_constraintVertical_bias="0.0">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipUsers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="Serena Zeng"
+                        android:visibility="gone"
+                        app:chipIcon="@mipmap/ic_launcher"
+                        tools:visibility="visible" />
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/tvAssignTo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:text="Assign to"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/duration" />
+
+            <TextView
+                android:id="@+id/tvRepeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:text="Does not repeat"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/ivRepeat"
+                app:layout_constraintStart_toEndOf="@+id/ivRepeat"
+                app:layout_constraintTop_toTopOf="@+id/ivRepeat" />
+
+            <Switch
+                android:id="@+id/switchGoogleCalendar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:minHeight="48dp"
+                android:text="Create Google Calendar Event"
+                app:layout_constraintEnd_toEndOf="@+id/spDuration"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView9"
+                app:layout_constraintTop_toBottomOf="@id/horizontalScrollView" />
+
+            <Switch
+                android:id="@+id/switchInvite"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:minHeight="48dp"
+                android:text="Invite Assignees to Google Calendar Event"
+                app:layout_constraintEnd_toEndOf="@+id/spDuration"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView10"
+                app:layout_constraintTop_toBottomOf="@id/switchGoogleCalendar" />
+
+            <ImageView
+                android:id="@+id/imageView9"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="30dp"
+                app:layout_constraintBottom_toBottomOf="@+id/switchGoogleCalendar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/switchGoogleCalendar"
+                app:srcCompat="@drawable/google_calendar" />
+
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="30dp"
+                app:layout_constraintBottom_toBottomOf="@+id/switchInvite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switchGoogleCalendar"
+                app:srcCompat="@drawable/invite"
+                app:tint="@color/black" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/btnAdd"
@@ -210,7 +321,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="25dp"
         android:backgroundTint="@color/turquoise"
         android:elevation="1dp"
         android:text="Add Chore"
@@ -219,100 +330,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/switchGoogleCalendar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAssignTo"
-        app:layout_constraintVertical_bias="0.0">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipUsers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checkable="true"
-                android:text="Serena Zeng"
-                android:visibility="gone"
-                app:chipIcon="@mipmap/ic_launcher" />
-
-        </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
-
-    <TextView
-        android:id="@+id/tvAssignTo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
-        android:text="Assign to"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/duration" />
-
-    <TextView
-        android:id="@+id/tvRepeat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:paddingStart="5dp"
-        android:text="Does not repeat"
-        app:layout_constraintBottom_toBottomOf="@+id/ivRepeat"
-        app:layout_constraintStart_toEndOf="@+id/ivRepeat"
-        app:layout_constraintTop_toTopOf="@+id/ivRepeat" />
-
-    <Switch
-        android:id="@+id/switchGoogleCalendar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:minHeight="48dp"
-        android:text="Create Google Calendar Event"
-        app:layout_constraintBottom_toTopOf="@+id/switchInvite"
-        app:layout_constraintEnd_toEndOf="@+id/spDuration"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView9" />
-
-    <Switch
-        android:id="@+id/switchInvite"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="10dp"
-        android:minHeight="48dp"
-        android:text="Invite Assignees to Google Calendar Event"
-        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
-        app:layout_constraintEnd_toEndOf="@+id/spDuration"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView10" />
-
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/switchGoogleCalendar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/switchGoogleCalendar"
-        app:srcCompat="@drawable/google_calendar" />
-
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="30dp"
-        app:layout_constraintBottom_toBottomOf="@+id/switchInvite"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchGoogleCalendar"
-        app:srcCompat="@drawable/invite"
-        app:tint="@color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

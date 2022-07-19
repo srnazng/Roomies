@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.roomies.R;
 import com.example.roomies.adapter.ExpenseCommentsAdapter;
@@ -78,19 +79,19 @@ public class ExpenseUtils {
     /**
      * Initialize all lists of expenses
      */
-    public static void initExpenses(){
+    public static void initExpenses(Context context){
         Log.i(TAG, "INIT EXPENSES");
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                initCircleExpenses();
+                initCircleExpenses(context);
             }
         });
 
         Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                initCircleTransactions();
+                initCircleTransactions(context);
             }
         });
 
@@ -113,7 +114,7 @@ public class ExpenseUtils {
     /**
      * Query expenses belonging to current circle
      */
-    public static void initCircleExpenses(){
+    public static void initCircleExpenses(Context context){
         // initialize circleExpenses
         if(circleExpenses == null){
             circleExpenses = new ArrayList<>();
@@ -129,47 +130,53 @@ public class ExpenseUtils {
         // include receiver object
         query.include(Expense.KEY_CREATOR);
         // start an asynchronous call for Expense objects
-        query.findInBackground(new FindCallback<Expense>() {
-            @Override
-            public void done(List<Expense> expenses, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting expenses", e);
-                    return;
-                }
-
-                // no expenses
-                if(expenses.isEmpty()){
-                    Log.i(TAG, "No circle expenses");
-                }
-
-                // save received expenses to list and notify adapter of new data
-                circleExpenses.clear();
-                circleExpenses.addAll(expenses);
-                updateExpenseList(getFilterInt());
+        // call from local datastore then network
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting expenses", e);
             }
-        });
+            else{
+                Log.i(TAG, "Retrieved expenses locally");
+                setExpenses(task.getResult());
+            }
+            return query.fromNetwork().findInBackground();
+        }, ContextCompat.getMainExecutor(context)).continueWithTask((task) -> {
+            // Update UI with results from Network ...
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting expenses", e);
+            }
+            else{
+                Log.i(TAG, "Retrieved expenses from network");
+                setExpenses(task.getResult());
+                Expense.pinAllInBackground(task.getResult());
+            }
+            return task;
+        }, ContextCompat.getMainExecutor(context));;
+    }
+
+    public static void setExpenses(List<Expense> expenses){
+        // no expenses
+        if(expenses.isEmpty()){
+            Log.i(TAG, "No circle expenses");
+        }
+
+        // save received expenses to list and notify adapter of new data
+        circleExpenses.clear();
+        circleExpenses.addAll(expenses);
+        updateExpenseList(getFilterInt());
     }
 
     /**
      * Query transactions belonging to current circle
      */
-    public static void initCircleTransactions(){
-        if(circleTransactions == null){
-            circleTransactions = new ArrayList<>();
-        }
-        if(myCompletedPayments == null){
-            myCompletedPayments = new ArrayList<>();
-        }
-        if(myPendingPayments == null){
-            myPendingPayments = new ArrayList<>();
-        }
-        if(myPendingRequests == null){
-            myPendingRequests = new ArrayList<>();
-        }
-        if(myCompletedRequests == null){
-            myCompletedRequests = new ArrayList<>();
-        }
+    public static void initCircleTransactions(Context context){
+        if(circleTransactions == null){ circleTransactions = new ArrayList<>(); }
+        if(myCompletedPayments == null){ myCompletedPayments = new ArrayList<>(); }
+        if(myPendingPayments == null){ myPendingPayments = new ArrayList<>(); }
+        if(myPendingRequests == null){ myPendingRequests = new ArrayList<>(); }
+        if(myCompletedRequests == null){ myCompletedRequests = new ArrayList<>(); }
 
         // no current circle
         if(CircleUtils.getCurrentCircle() == null){
@@ -185,58 +192,76 @@ public class ExpenseUtils {
         query.include(Transaction.KEY_EXPENSE + "." + Expense.KEY_CREATOR);
 
         // start an asynchronous call for Transaction objects
-        query.findInBackground(new FindCallback<Transaction>() {
-            @Override
-            public void done(List<Transaction> transactions, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting expenses", e);
-                    return;
-                }
-
-                // no expenses
-                if(transactions.isEmpty()){
-                    Log.i(TAG, "No expenses");
-                }
-
-                // clear lists
-                circleTransactions.clear();
-                myPendingRequests.clear();
-                myPendingPayments.clear();
-                myCompletedRequests.clear();
-                myCompletedPayments.clear();
-
-                // save received expenses to list
-                for(int i=0; i<transactions.size(); i++){
-                    Transaction t = transactions.get(i);
-                    circleTransactions.add(t);
-
-                    // transactions where current user pays money
-                    if(t.getPayer().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-                        if(t.getCompleted()){
-                            myCompletedPayments.add(t.getExpense());
-                        }
-                        else{
-                            myPendingPayments.add(t.getExpense());
-                        }
-                    }
-
-                    // transaction where current user receives money
-                    if(t.getReceiver().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
-                        if(!t.getCompleted() && !expenseExists(t.getExpense(), myPendingRequests)){
-                            myPendingRequests.add(t.getExpense());
-                            myCompletedRequests.removeIf(exp -> exp.getObjectId().equals(t.getExpense().getObjectId()));
-                        }
-                        else if(t.getCompleted()
-                                && !expenseExists(t.getExpense(), myCompletedRequests)
-                                && !expenseExists(t.getExpense(), myPendingRequests)){
-                            myCompletedRequests.add(t.getExpense());
-                        }
-                    }
-                }
-                updateExpenseList(getFilterInt());
+        // query from local datastore then network
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            ParseException e = (ParseException) task.getError();
+            if(e != null){
+                Log.e(TAG, "Issue with getting expenses locally", e);
             }
-        });
+            else{
+                setTransactions(task.getResult());
+            }
+            // Now query the network:
+            return query.fromNetwork().findInBackground();
+        }, ContextCompat.getMainExecutor(context)).continueWithTask((task) -> {
+            // Update UI with results from Network ...
+            ParseException e = (ParseException) task.getError();
+            if(e != null){
+                Log.e(TAG, "Issue with getting expenses from network", e);
+            }
+            else{
+                setTransactions(task.getResult());
+                Transaction.pinAllInBackground(task.getResult());
+            }
+            return task;
+        }, ContextCompat.getMainExecutor(context));
+    }
+
+    public static void setTransactions(List<Transaction> transactions){
+        // no expenses
+        if(transactions.isEmpty()){
+            Log.i(TAG, "No expenses");
+        }
+        else{
+            Log.i(TAG, "has transactions " + transactions);
+        }
+
+        // clear lists
+        circleTransactions.clear();
+        myPendingRequests.clear();
+        myPendingPayments.clear();
+        myCompletedRequests.clear();
+        myCompletedPayments.clear();
+
+        // save received expenses to list
+        for(int i=0; i<transactions.size(); i++){
+            Transaction t = transactions.get(i);
+            circleTransactions.add(t);
+
+            // transactions where current user pays money
+            if(t.getPayer().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                if(t.getCompleted()){
+                    myCompletedPayments.add(t.getExpense());
+                }
+                else{
+                    myPendingPayments.add(t.getExpense());
+                }
+            }
+
+            // transaction where current user receives money
+            if(t.getReceiver().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                if(!t.getCompleted() && !expenseExists(t.getExpense(), myPendingRequests)){
+                    myPendingRequests.add(t.getExpense());
+                    myCompletedRequests.removeIf(exp -> exp.getObjectId().equals(t.getExpense().getObjectId()));
+                }
+                else if(t.getCompleted()
+                        && !expenseExists(t.getExpense(), myCompletedRequests)
+                        && !expenseExists(t.getExpense(), myPendingRequests)){
+                    myCompletedRequests.add(t.getExpense());
+                }
+            }
+        }
+        updateExpenseList(getFilterInt());
     }
 
     /**
@@ -464,7 +489,7 @@ public class ExpenseUtils {
                     Toast.makeText(context, "Added expense", Toast.LENGTH_SHORT).show();
                     circleExpenses.add(expense);
                     myPendingRequests.add(expense);
-                    initExpenses();
+                    initExpenses(context);
                     ((Activity) context).finish();
                 }
             }else{
@@ -522,7 +547,7 @@ public class ExpenseUtils {
                             Toast.makeText(context, "Added expense", Toast.LENGTH_SHORT).show();
                             circleExpenses.add(expense);
                             myPendingRequests.add(expense);
-                            initExpenses();
+                            initExpenses(context);
                             ((Activity) context).finish();
                         }
                     }else{
@@ -537,7 +562,7 @@ public class ExpenseUtils {
                 Toast.makeText(context, "Added expense", Toast.LENGTH_SHORT).show();
                 circleExpenses.add(expense);
                 myPendingRequests.add(expense);
-                initExpenses();
+                initExpenses(context);
                 ((Activity) context).finish();
             }
         }
@@ -585,7 +610,8 @@ public class ExpenseUtils {
      * @param completed
      * @param card
      */
-    public static void changeTransactionStatus(Expense expense,
+    public static void changeTransactionStatus(Context context,
+                                               Expense expense,
                                                boolean completed,
                                                com.google.android.material.card.MaterialCardView card){
         Transaction t = getMyExpenseTransaction(expense, circleTransactions);
@@ -599,7 +625,7 @@ public class ExpenseUtils {
                     if(card != null){
                         card.setChecked(!card.isChecked());
                     }
-                    initExpenses();
+                    initExpenses(context);
                     updateExpenseList(getFilterInt());
                 }
                 else{
@@ -627,7 +653,6 @@ public class ExpenseUtils {
         }
         Toast.makeText(context, "Reminders sent!", Toast.LENGTH_SHORT).show();
     }
-
 
     public static void cancelExpense(Expense expense){
         circleExpenses.remove(expense);
@@ -749,7 +774,7 @@ public class ExpenseUtils {
      * @param name
      * @param total
      */
-    public static void editExpense(Expense expense, String name, Float total, Bitmap bitmap){
+    public static void editExpense(Context context, Expense expense, String name, Float total, Bitmap bitmap){
         expense.setName(name);
         expense.setTotal(total);
         if(bitmap != null){
@@ -757,7 +782,7 @@ public class ExpenseUtils {
         }
         expense.saveInBackground(e -> {
             if (e==null){
-                initExpenses();
+                initExpenses(context);
             } }
         );
     }

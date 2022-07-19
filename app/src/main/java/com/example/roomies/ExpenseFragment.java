@@ -98,7 +98,7 @@ public class ExpenseFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // Refresh expense lists
-                initExpenses();
+                initExpenses(getActivity());
                 swipeContainer.setRefreshing(false);
             }
         });

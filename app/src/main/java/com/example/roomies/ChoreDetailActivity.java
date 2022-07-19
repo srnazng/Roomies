@@ -117,7 +117,7 @@ public class ChoreDetailActivity extends AppCompatActivity {
                 chip.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        markCompleted(chore, chip.isChecked(), day);
+                        markCompleted(ChoreDetailActivity.this, chore, chip.isChecked(), day);
                         Log.i(TAG, "checked: " + chip.isChecked());
                         card.setChecked(chip.isChecked());
                     }

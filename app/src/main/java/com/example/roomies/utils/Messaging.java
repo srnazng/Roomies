@@ -406,35 +406,34 @@ public class Messaging extends FirebaseMessagingService {
      * Check if user's token in Parse is the same as actual token
      */
     public void checkUserTokenUpdate(){
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                    return;
+                }
+
+                Log.i(TAG, "check notificationToken");
+
+                // Get new FCM registration token
+                String token = task.getResult();
+                Log.i(TAG, "\n" + token + "\n" + ParseUser.getCurrentUser().getString("notificationToken"));
+
+                if(!token.equals(ParseUser.getCurrentUser().getString("notificationToken"))){
+                    ParseUser user = ParseUser.getCurrentUser();
+                    user.put("notificationToken", token);
+                    user.saveInBackground(e -> {
+                            if(e == null){
+                                // Log and toast
+                                Log.d(TAG, "updated token for " + ParseUser.getCurrentUser().getString("name") + ": " + token);
+                                addToUserGroup();
+                                addToCircle();
+                            }
                         }
-
-                        Log.i(TAG, "check notificationToken");
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-                        Log.i(TAG, "\n" + token + "\n" + ParseUser.getCurrentUser().getString("notificationToken"));
-
-                        if(!token.equals(ParseUser.getCurrentUser().getString("notificationToken"))){
-                            ParseUser user = ParseUser.getCurrentUser();
-                            user.put("notificationToken", token);
-                            user.saveInBackground(e -> {
-                                    if(e == null){
-                                        // Log and toast
-                                        Log.d(TAG, "updated token for " + ParseUser.getCurrentUser().getString("name") + ": " + token);
-                                        addToUserGroup();
-                                        addToCircle();
-                                    }
-                                }
-                            );
-                        }
-                    }
-                });
+                    );
+                }
+            }
+        });
     }
 }

@@ -5,11 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 
 import android.view.View;
 
-import com.example.roomies.model.Expense;
-import com.example.roomies.model.Transaction;
-import com.parse.Parse;
+import com.parse.ParseException;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -69,15 +66,15 @@ public class ExpenseTest {
 
     // init circle expenses
     @Test
-    public void testInitCircleExpenses(){
-        initCircleExpenses();
+    public void testInitCircleExpenses() throws ParseException {
+        initCircleExpenses(null);
         assertNotEquals(null, getCircleExpenses());
     }
 
     // init circle expenses
     @Test
     public void testInitCircleTransactions(){
-        initCircleTransactions();
+        initCircleTransactions(null);
         assertNotEquals(null, getCircleTransactions());
         assertNotEquals(null, getMyCompletedPayments());
         assertNotEquals(null, getMyPendingPayments());

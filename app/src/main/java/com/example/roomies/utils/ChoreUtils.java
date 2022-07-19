@@ -81,6 +81,10 @@ public class ChoreUtils {
             }
         }
         circleChoreAssignments.add(c);
+
+        List<ChoreAssignment> assignments = new ArrayList<>();
+        assignments.add(c);
+        ChoreAssignment.pinAllInBackground(assignments);
     }
 
     /**
@@ -104,12 +108,12 @@ public class ChoreUtils {
     /**
      * Initialize all chore lists
      */
-    public static void initChores(){
+    public static void initChores(Context context){
         Log.i(TAG, "INIT CHORES");
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                initCircleChores();
+                initCircleChores(context);
             }
         });
         thread.start();
@@ -129,7 +133,7 @@ public class ChoreUtils {
      * Mark cards as completed
      * @param choreAssignments
      */
-    private static void updateCompletions(List<ChoreAssignment> choreAssignments){
+    private static void updateCompletions(Context context, List<ChoreAssignment> choreAssignments){
         if(completionsToday == null){
             completionsToday = new ArrayList<>();
         }
@@ -147,29 +151,52 @@ public class ChoreUtils {
                 .whereGreaterThanOrEqualTo("date", today.getTime())
                 .whereLessThan("date", tomorrow.getTime());
         query.include(ChoreCompleted.KEY_CHORE_ASSIGNMENT);
+
         // start an asynchronous call for Chore objects
-        query.findInBackground(new FindCallback<ChoreCompleted>() {
-            @Override
-            public void done(List<ChoreCompleted> choreCompletedList, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting choreCompleted", e);
-                    return;
-                }
-
-                // no chores
-                if(!choreCompletedList.isEmpty()){
-                    completionsToday.addAll(choreCompletedList);
-                }
-
-                if(choreAssignments != null){
-                    categorizeChores(choreAssignments);
-                }
-                else{
-                    categorizeChores(myChoreAssignments);
-                }
+        // retrieve from local datastore and then from network
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting choreCompleted locally", e);
             }
-        });
+            else{
+                Log.i(TAG, "ChoreCompleted retrieved locally" + task.getResult().toString());
+                setCompletions(task.getResult(), choreAssignments);
+            }
+            return query.fromNetwork().findInBackground();
+        }, ContextCompat.getMainExecutor(context)).continueWithTask((task) -> {
+            // Update UI with results from Network ...
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting choreCompleted from network", e);
+            }
+            else{
+                Log.i(TAG, "ChoreCompleted retrieved from network" + task.getResult().toString());
+                setCompletions(task.getResult(), choreAssignments);
+                ChoreCompleted.pinAllInBackground(task.getResult());
+                ChoreCompleted.pinAllInBackground(choreAssignments);
+            }
+            return task;
+        }, ContextCompat.getMainExecutor(context));
+    }
+
+    /**
+     * Update lists based on chore completion
+     * @param choreCompletedList
+     * @param choreAssignments
+     */
+    public static void setCompletions(List<ChoreCompleted> choreCompletedList,
+                                      List<ChoreAssignment> choreAssignments){
+        // no chores
+        if(!choreCompletedList.isEmpty()){
+            completionsToday.addAll(choreCompletedList);
+        }
+        if(choreAssignments != null){
+            categorizeChores(choreAssignments);
+        }
+        else{
+            categorizeChores(myChoreAssignments);
+        }
     }
 
     /**
@@ -262,75 +289,82 @@ public class ChoreUtils {
     /**
      * Initialize list of all chores for current circle
      */
-    public static void initCircleChores(){
-        if(circleChores == null){
-            circleChores = new ArrayList<>();
-        }
-        if(circleChoreAssignments == null){
-            circleChoreAssignments = new ArrayList<>();
-        }
-        if(myChores == null){
-            myChores = new ArrayList<>();
-        }
-        if(myChoresToday == null){
-            myChoresToday = new ArrayList<>();
-        }
-        if(myPendingChoresToday == null){
-            myPendingChoresToday = new ArrayList<>();
-        }
-        if(myCompletedChoresToday == null){
-            myCompletedChoresToday = new ArrayList<>();
-        }
-        if(myChoreAssignments == null){
-            myChoreAssignments = new ArrayList<>();
-        }
-        if(completionsToday == null){
-            completionsToday = new ArrayList<>();
-        }
+    public static void initCircleChores(Context context){
+        if(circleChores == null){ circleChores = new ArrayList<>();}
+        if(circleChoreAssignments == null){ circleChoreAssignments = new ArrayList<>(); }
+        if(myChores == null){ myChores = new ArrayList<>(); }
+        if(myChoresToday == null){ myChoresToday = new ArrayList<>();}
+        if(myPendingChoresToday == null){ myPendingChoresToday = new ArrayList<>();}
+        if(myCompletedChoresToday == null){ myCompletedChoresToday = new ArrayList<>(); }
+        if(myChoreAssignments == null){ myChoreAssignments = new ArrayList<>(); }
+        if(completionsToday == null){ completionsToday = new ArrayList<>(); }
 
         // only get chore assignments for user's current circle
         ParseQuery<ChoreAssignment> query = ParseQuery.getQuery(ChoreAssignment.class).whereEqualTo(ChoreAssignment.KEY_CIRCLE, getCurrentCircle());
+
         // include objects
         query.include(ChoreAssignment.KEY_USER);
         query.include(ChoreAssignment.KEY_CHORE);
         query.include(ChoreAssignment.KEY_CHORE + "." + Chore.KEY_RECURRENCE);
 
         // start an asynchronous call for ChoreAssignment objects
-        query.findInBackground(new FindCallback<ChoreAssignment>() {
-            @Override
-            public void done(List<ChoreAssignment> chores, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting ChoreAssignments", e);
-                    return;
-                }
-
-                // no chores
-                if(chores.isEmpty()){
-                    Log.i(TAG, "No chores");
-                }
-
-                circleChores.clear();
-                circleChoreAssignments.clear();
-                myChoreAssignments.clear();
-                myChores.clear();
-
-                // add to lists
-                String myObjectId = ParseUser.getCurrentUser().getObjectId();
-                for(int i=0; i<chores.size(); i++){
-                    ChoreAssignment c = chores.get(i);
-                    circleChoreAssignments.add(c);
-                    if(!choreExists(c.getChore(), circleChores)){
-                        circleChores.add(c.getChore());
-                    }
-                    if(c.getUser().getObjectId().equals(myObjectId)){
-                        myChoreAssignments.add(c);
-                        myChores.add(c.getChore());
-                    }
-                }
-                updateCompletions(myChoreAssignments);
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting ChoreAssignments locally", e);
             }
-        });
+            else{
+                Log.i(TAG, "ChoreAssignments retrieved locally");
+                setChoreLists(context, task.getResult(), false);
+            }
+            return query.fromNetwork().findInBackground();
+        }, ContextCompat.getMainExecutor(context)).continueWithTask((task) -> {
+            // Update UI with results from Network ...
+            Log.i(TAG, "FROM NETWORK");
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting ChoreAssignments from network", e);
+            }
+            else{
+                Log.i(TAG, "ChoreAssignments retrieved from network");
+                setChoreLists(context, task.getResult(), true);
+            }
+            return task;
+        }, ContextCompat.getMainExecutor(context));
+    }
+
+    public static void setChoreLists(Context context,
+                                     List<ChoreAssignment> chores,
+                                     boolean fromNetwork){
+        // no chores
+        if(chores.isEmpty()){
+            Log.i(TAG, "No chores");
+        }
+
+        circleChores.clear();
+        circleChoreAssignments.clear();
+        myChoreAssignments.clear();
+        myChores.clear();
+
+        // add to lists
+        String myObjectId = ParseUser.getCurrentUser().getObjectId();
+        for(int i=0; i<chores.size(); i++){
+            ChoreAssignment c = chores.get(i);
+            circleChoreAssignments.add(c);
+            if(!choreExists(c.getChore(), circleChores)){
+                circleChores.add(c.getChore());
+            }
+            if(c.getUser().getObjectId().equals(myObjectId)){
+                myChoreAssignments.add(c);
+                myChores.add(c.getChore());
+            }
+        }
+        updateCompletions(context, myChoreAssignments);
+
+        if(fromNetwork){
+            ChoreAssignment.pinAllInBackground(circleChoreAssignments);
+            Chore.pinAllInBackground(circleChores);
+        }
     }
 
     /**
@@ -424,7 +458,7 @@ public class ChoreUtils {
      * @param chore
      * @param completed
      */
-    public static void markCompleted(Chore chore, boolean completed, Calendar day){
+    public static void markCompleted(Context context, Chore chore, boolean completed, Calendar day){
         ChoreAssignment choreAssignment = getChoreAssignment(chore);
 
         if(choreAssignment == null){
@@ -435,51 +469,73 @@ public class ChoreUtils {
         ParseQuery<ChoreCompleted> query = ParseQuery.getQuery(ChoreCompleted.class).whereEqualTo(ChoreCompleted.KEY_CHORE_ASSIGNMENT, choreAssignment);
 
         // start an asynchronous call for ChoreCompleted objects
-        query.findInBackground(new FindCallback<ChoreCompleted>() {
-            @Override
-            public void done(List<ChoreCompleted> chores, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting ChoreCompleted objects", e);
-                    return;
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting ChoreCompleted objects", e);
+            }
+            else{
+                setNewCompletion(task.getResult(), choreAssignment, day, completed);
+            }
+            return query.fromNetwork().findInBackground();
+        }, ContextCompat.getMainExecutor(context)).continueWithTask((task) -> {
+            // Update UI with results from Network ...
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting ChoreCompleted objects", e);
+            }
+            else{
+                setNewCompletion(task.getResult(), choreAssignment, day, completed);
+            }
+            return task;
+        }, ContextCompat.getMainExecutor(context));
+    }
+
+    public static void setNewCompletion(List<ChoreCompleted> chores,
+                                        ChoreAssignment choreAssignment,
+                                        Calendar day,
+                                        boolean completed){
+        // no ChoreCompleted objects for ChoreAssignment
+        if(chores.isEmpty()){
+            ChoreCompleted entity = new ChoreCompleted();
+
+            entity.put("date", day.getTime()); // date due
+            entity.put("choreAssignment", choreAssignment);
+            entity.put("completed", completed);
+            entity.put("circle", getCurrentCircle());
+
+            // Saves the new object.
+            // Notice that the SaveCallback is totally optional!
+            entity.saveInBackground(e2 -> {
+                if (e2==null){
+                    //Save was done
+                }else{
+                    //Something went wrong
+                    Log.e(TAG, e2.getMessage());
                 }
+            });
 
-                // no ChoreCompleted objects for ChoreAssignment
-                if(chores.isEmpty()){
-                    ChoreCompleted entity = new ChoreCompleted();
+            List<ChoreCompleted> list = new ArrayList<>();
+            list.add(entity);
 
-                    entity.put("date", day.getTime()); // date due
-                    entity.put("choreAssignment", choreAssignment);
-                    entity.put("completed", completed);
-                    entity.put("circle", getCurrentCircle());
+            ChoreCompleted.pinAllInBackground(list);
+        }
+        else{
+            ChoreCompleted c = chores.get(0);
+            c.setCompleted(completed);
+            c.saveInBackground();
 
-                    // Saves the new object.
-                    // Notice that the SaveCallback is totally optional!
-                    entity.saveInBackground(e2 -> {
-                        if (e2==null){
-                            //Save was done
-                        }else{
-                            //Something went wrong
-                            Log.e(TAG, e2.getMessage());
-                        }
-                    });
-                }
-                else{
-                    ChoreCompleted c = chores.get(0);
+            // mark ChoreCompleted as completed
+            for(int i=0; i<completionsToday.size(); i++){
+                if(completionsToday.get(i).getObjectId().equals(c.getObjectId())){
                     c.setCompleted(completed);
-                    c.saveInBackground();
-
-                    // mark ChoreCompleted as completed
-                    for(int i=0; i<completionsToday.size(); i++){
-                        if(completionsToday.get(i).getObjectId().equals(c.getObjectId())){
-                            c.setCompleted(completed);
-                            break;
-                        }
-                    }
-                    categorizeChores(myChoreAssignments);
+                    break;
                 }
             }
-        });
+            categorizeChores(myChoreAssignments);
+
+            ChoreCompleted.pinAllInBackground(completionsToday);
+        }
     }
 
     public static ChoreAssignment getChoreAssignment(Chore chore){

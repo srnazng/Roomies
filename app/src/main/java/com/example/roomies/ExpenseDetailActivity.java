@@ -3,7 +3,6 @@ package com.example.roomies;
 import static com.example.roomies.ExpenseFragment.getFilterInt;
 import static com.example.roomies.ExpenseFragment.updateExpenseList;
 import static com.example.roomies.utils.ExpenseUtils.*;
-import static com.example.roomies.utils.Utils.showImage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -202,7 +201,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         expenseDetailCard.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                changeTransactionStatus(expense, !expenseDetailCard.isChecked(), expenseDetailCard);
+                changeTransactionStatus(ExpenseDetailActivity.this, expense, !expenseDetailCard.isChecked(), expenseDetailCard);
                 return true;
             }
         });
@@ -217,7 +216,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         btnDetailMarkPaid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeTransactionStatus(expense, !expenseDetailCard.isChecked(), expenseDetailCard);
+                changeTransactionStatus(ExpenseDetailActivity.this, expense, !expenseDetailCard.isChecked(), expenseDetailCard);
             }
         });
 
@@ -249,7 +248,8 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     }
 
     private void setRequestView(){
-        tvCreator.setText("Created by " + expense.getCreator().getString("name"));
+        String createdBy = "Created by " + expense.getCreator().getString("name");
+        tvCreator.setText(createdBy);
         tvAmount.setVisibility(View.GONE);
 
         // determine if card should be marked completed
@@ -292,7 +292,8 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     }
 
     private void setDefaultView(){
-        tvCreator.setText("Created by " + expense.getCreator().getString("name"));
+        String createdBy = "Created by " + expense.getCreator().getString("name");
+        tvCreator.setText(createdBy);
         tvAmount.setVisibility(View.GONE);
 
         // card settings

@@ -131,7 +131,7 @@ public class ChoreFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // refresh chore list
-                initChores();
+                initChores(getActivity());
                 choreSwipeContainer.setRefreshing(false);
             }
         });
@@ -176,7 +176,7 @@ public class ChoreFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
                 final Chore item = adapter.getData().get(position);
-                markCompleted(item, true, Calendar.getInstance());
+                markCompleted(getActivity(), item, true, Calendar.getInstance());
                 adapter.removeItem(position);
                 completedAdapter.restoreItem(item, completedAdapter.getItemCount());
                 showCheck();
@@ -186,7 +186,7 @@ public class ChoreFragment extends Fragment {
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        markCompleted(item, false, Calendar.getInstance());
+                        markCompleted(getActivity(), item, false, Calendar.getInstance());
                         adapter.restoreItem(item, position);
                         completedAdapter.removeItem(completedAdapter.getItemCount() - 1);
                         rvChores.scrollToPosition(position);

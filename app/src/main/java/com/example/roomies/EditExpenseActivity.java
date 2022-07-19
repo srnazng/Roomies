@@ -61,7 +61,8 @@ public class EditExpenseActivity extends AppCompatActivity {
         btnUpdateExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editExpense(expense,
+                editExpense(EditExpenseActivity.this,
+                        expense,
                         etEditExpenseName.getText().toString(),
                         Float.parseFloat(removeDollar(etEditTotal.getText().toString())),
                         bitmap);
@@ -137,8 +138,6 @@ public class EditExpenseActivity extends AppCompatActivity {
                 tvEditedFileName.setVisibility(View.VISIBLE);
                 tvViewEditedImage.setVisibility(View.VISIBLE);
                 tvDeleteEdited.setVisibility(View.VISIBLE);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

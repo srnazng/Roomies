@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
      * Query UserCircle objects that contain current user to get circles that user has joined
      */
     public void updateCircle(Context context, View view){
-        if(CircleUtils.getInCircle()){
+        if(CircleUtils.getCurrentCircle() != null){
             Circle currentCircle = CircleUtils.getCurrentCircle();
 
             // fill image and text on home screen

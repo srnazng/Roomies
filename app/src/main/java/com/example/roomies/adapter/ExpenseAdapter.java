@@ -234,7 +234,7 @@ public class ExpenseAdapter extends
                 card.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        changeTransactionStatus(expense, !card.isChecked(), card);
+                        changeTransactionStatus(context, expense, !card.isChecked(), card);
                         return true;
                     }
                 });
@@ -249,8 +249,10 @@ public class ExpenseAdapter extends
                 }
 
                 // set card body
-                tvPayTo.setText("Pay to " + receiver.getString("name"));
-                tvTotal.setText("You owe: $" + String.format("%.2f", transaction.getAmount()));
+                String payTo = "Pay to " + receiver.getString("name");
+                tvPayTo.setText(payTo);
+                String oweAmount = "You owe: $" + String.format("%.2f", transaction.getAmount());
+                tvTotal.setText(oweAmount);
 
                 // set custom visibilities
                 tvTotal.setVisibility(View.VISIBLE);
@@ -261,7 +263,7 @@ public class ExpenseAdapter extends
                 btnMarkPaid.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        changeTransactionStatus(expense, !card.isChecked(), card);
+                        changeTransactionStatus(context, expense, !card.isChecked(), card);
                     }
                 });
                 chipScroll.setVisibility(View.GONE);

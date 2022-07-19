@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.roomies.AddCircleActivity;
 import com.example.roomies.LoginActivity;
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.UserCircle;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -18,9 +19,10 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import bolts.Task;
+
 public class CircleUtils {
     private static Circle currentCircle;
-    private static boolean inCircle;
     private static List<UserCircle> userCircleList;
     private static UserCircle myUserCircle;
 
@@ -31,13 +33,6 @@ public class CircleUtils {
      */
     public static Circle getCurrentCircle(){
         return currentCircle;
-    }
-
-    /**
-     * @return whether current user is in a circle
-     */
-    public static boolean getInCircle(){
-        return inCircle;
     }
 
     /**
@@ -54,7 +49,6 @@ public class CircleUtils {
      */
     public static void clearAll(){
         currentCircle = null;
-        inCircle = false;
         userCircleList.clear();
     }
 
@@ -62,7 +56,7 @@ public class CircleUtils {
      * Query UserCircle objects that contain current user to get circles that user has joined
      * @param firstInit     true if also want to update chores and expenses
      */
-    public static void initCircle(boolean firstInit){
+    public static void initCircle(boolean firstInit, Context context){
         Log.i(TAG, "INIT CIRCLE");
 
         // specify what type of data we want to query - UserCircle.class
@@ -71,41 +65,55 @@ public class CircleUtils {
         query.include(UserCircle.KEY_CIRCLE);
         // start an asynchronous call for UserCircle objects that include current user
 
-        query.findInBackground(new FindCallback<UserCircle>() {
-            @Override
-            public void done(List<UserCircle> userCircles, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting userCircles", e);
-                    inCircle = false;
-                    return;
-                }
-
-                // user has not joined a circle
-                if(userCircles.isEmpty()){
-                    inCircle = false;
-                    return;
-                }
-
-                // save received posts to list and notify adapter of new data
-                currentCircle = userCircles.get(0).getCircle();
-                inCircle = true;
-
-                if(firstInit){
-                    ChoreUtils.initChores();
-                    ExpenseUtils.initExpenses();
-                    CalendarDayUtils.initCalendar();
-                }
-
-                initUserCircleList();
+        // query from local datastore then network
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            // local results
+            ParseException e = (ParseException) task.getError();
+            if(e == null){
+                userCircleSetup(context, firstInit, task.getResult());
             }
-        });
+            else{
+                Log.e(TAG, "Issue with getting userCircles locally", e);
+            }
+            return query.fromNetwork().findInBackground();
+        }, Task.UI_THREAD_EXECUTOR).continueWithTask((task) -> {
+            // network results
+            ParseException e = (ParseException) task.getError();
+            if(e == null){
+                List<UserCircle> userCircles = task.getResult();
+                userCircleSetup(context, firstInit, userCircles);
+            }
+            else{
+                Log.e(TAG, "Issue with getting userCircles from network", e);
+            }
+            return task;
+        }, ContextCompat.getMainExecutor(context));
+    }
+
+    /**
+     * Called once UserCircles retrieved
+     * @param firstInit
+     * @param userCircles
+     */
+    public static void userCircleSetup(Context context, boolean firstInit, List<UserCircle> userCircles) throws ParseException {
+        // user has not joined a circle
+        if(!userCircles.isEmpty()){
+            Log.i(TAG, "userCircleSetup " + userCircles.get(0).getCircle().getName());
+            // save received posts to list and notify adapter of new data
+            currentCircle = userCircles.get(0).getCircle();
+            if(firstInit){
+                ChoreUtils.initChores(context);
+                ExpenseUtils.initExpenses(context);
+                CalendarDayUtils.initCalendar();
+            }
+            initUserCircleList(context);
+        }
     }
 
     /**
      * Query UserCircle objects related to current circle
      */
-    private static void initUserCircleList(){
+    private static void initUserCircleList(Context context){
         if(userCircleList == null){
             userCircleList = new ArrayList<>();
         }
@@ -115,41 +123,53 @@ public class CircleUtils {
         // include data referred by user key
         query.include(UserCircle.KEY_USER);
         // start an asynchronous call for UserCircle objects that include current circle
-        query.findInBackground(new FindCallback<UserCircle>() {
-            @Override
-            public void done(List<UserCircle> userCircles, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting userCircles", e);
-                    inCircle = false;
-                    return;
-                }
-
-                // user has not joined a circle
-                if(userCircles.isEmpty()){
-                    inCircle = false;
-                }
-
-                // update userCircleList
-                userCircleList.clear();
-                userCircleList.addAll(userCircles);
-
-                for(int i=0; i<userCircles.size(); i++){
-                    String myObjectId = ParseUser.getCurrentUser().getObjectId();
-                    if(userCircles.get(i).getUser().getObjectId().equals(myObjectId)){
-                        myUserCircle = userCircles.get(i);
-                        break;
-                    }
-                }
+        query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting userCircles locally", e);
             }
-        });
+            else{
+                userCircleListSetup(task.getResult());
+            }
+            return query.fromNetwork().findInBackground();
+        }, Task.UI_THREAD_EXECUTOR).continueWithTask((task) -> {
+            // Update UI with results from Network ...
+            Log.i(TAG, "GET CIRCLE FROM NETWORK");
+            ParseException e = (ParseException) task.getError();
+            if (e != null) {
+                Log.e(TAG, "Issue with getting userCircles from network", e);
+            }
+            else{
+                userCircleListSetup(task.getResult());
+                UserCircle.pinAllInBackground(task.getResult());
+            }
+            return task;
+        }, ContextCompat.getMainExecutor(context));
     }
 
+    private static void userCircleListSetup(List<UserCircle> userCircles) throws ParseException {
+        // user has not joined a circle
+        if(!userCircles.isEmpty()){
+            Log.i(TAG, "userCircleListSetup: " + userCircles.toString());
+
+            // update userCircleList
+            userCircleList.clear();
+            userCircleList.addAll(userCircles);
+
+            for(int i=0; i<userCircles.size(); i++){
+                String myObjectId = ParseUser.getCurrentUser().getObjectId();
+                if(userCircles.get(i).getUser().getObjectId().equals(myObjectId)){
+                    myUserCircle = userCircles.get(i);
+                    break;
+                }
+            }
+        }
+    }
 
     // delete userCircle object connection current user and their current circle
     public static void leaveCircle(Context context){
         // get userCircle object
-        initCircle(false);
+        initCircle(false, context);
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("UserCircle");
         UserCircle userCircle = getMyUserCircle();
