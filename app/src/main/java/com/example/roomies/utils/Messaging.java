@@ -78,6 +78,9 @@ public class Messaging extends FirebaseMessagingService {
             if(e == null && withLogout){
                 parseLogout(context);
             }
+            else{
+                Log.e(TAG, e.getMessage());
+            }
         });
     }
 
