@@ -176,8 +176,7 @@ public class ChoreFragment extends Fragment {
                 final int position = viewHolder.getAdapterPosition();
                 final Chore item = adapter.getData().get(position);
                 markCompleted(getActivity(), item, true, Calendar.getInstance());
-                adapter.removeItem(position);
-                completedAdapter.restoreItem(item, completedAdapter.getItemCount());
+                markCompleteAdapter(position, item);
                 showCheck();
 
                 Snackbar snackbar = Snackbar
@@ -186,9 +185,9 @@ public class ChoreFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         markCompleted(getActivity(), item, false, Calendar.getInstance());
-                        adapter.restoreItem(item, position);
-                        completedAdapter.removeItem(completedAdapter.getItemCount() - 1);
+                        markIncompleteAdapter(position, item);
                         rvChores.scrollToPosition(position);
+                        updateChoreList();
                     }
                 });
 
@@ -199,6 +198,16 @@ public class ChoreFragment extends Fragment {
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
         itemTouchhelper.attachToRecyclerView(rvChores);
+    }
+
+    public static void markCompleteAdapter(int position, Chore item){
+        adapter.removeItem(position);
+        completedAdapter.restoreItem(item, completedAdapter.getItemCount());
+    }
+
+    public static void markIncompleteAdapter(int position, Chore item){
+        adapter.restoreItem(item, position);
+        completedAdapter.removeItem(completedAdapter.getItemCount() - 1);
     }
 
     // show check mark animation

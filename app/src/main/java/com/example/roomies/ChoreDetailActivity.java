@@ -1,5 +1,6 @@
 package com.example.roomies;
 
+import static com.example.roomies.ChoreFragment.updateChoreList;
 import static com.example.roomies.utils.ChoreUtils.chipCompleted;
 import static com.example.roomies.utils.ChoreUtils.getAllChoreAssignments;
 import static com.example.roomies.utils.ChoreUtils.getChoreAssignment;
@@ -137,6 +138,7 @@ public class ChoreDetailActivity extends AppCompatActivity {
                         markCompleted(ChoreDetailActivity.this, chore, chip.isChecked(), day);
                         Log.i(TAG, "checked: " + chip.isChecked());
                         card.setChecked(chip.isChecked());
+                        updateChoreList();
                     }
                 });
             }

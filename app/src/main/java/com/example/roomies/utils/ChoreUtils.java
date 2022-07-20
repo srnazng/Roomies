@@ -205,6 +205,8 @@ public class ChoreUtils {
      * @param choreAssignments
      */
     private static void categorizeChores(List<ChoreAssignment> choreAssignments){
+        Log.i(TAG, "CATEGORIZE CHORES");
+
         myChoresToday.clear();
         myPendingChoresToday.clear();
         myCompletedChoresToday.clear();
@@ -236,6 +238,9 @@ public class ChoreUtils {
      * @return
      */
     public static boolean isCompleted(ChoreAssignment choreAssignment){
+        if(choreAssignment == null){
+            return false;
+        }
         for(int i=0; i<completionsToday.size(); i++){
             if(completionsToday.get(i).getChoreAssignment().getObjectId()
                     .equals(choreAssignment.getObjectId())
@@ -307,6 +312,7 @@ public class ChoreUtils {
         query.include(ChoreAssignment.KEY_USER);
         query.include(ChoreAssignment.KEY_CHORE);
         query.include(ChoreAssignment.KEY_CHORE + "." + Chore.KEY_RECURRENCE);
+        query.orderByDescending(ChoreAssignment.KEY_UPDATED_AT);
 
         // start an asynchronous call for ChoreAssignment objects
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
@@ -533,10 +539,9 @@ public class ChoreUtils {
                     break;
                 }
             }
-            categorizeChores(myChoreAssignments);
-
             ChoreCompleted.pinAllInBackground(completionsToday);
         }
+        categorizeChores(myChoreAssignments);
     }
 
     public static ChoreAssignment getChoreAssignment(Chore chore){

@@ -131,7 +131,7 @@ public class CalendarFragment extends Fragment {
             // create each day item in calendar
             updateCalendar(getActivity(), ChoreUtils.getCircleChores(), getFirstOfMonth(), adapter ,rvCalendar);
         }
-        else if(myChores.isEmpty()){
+        else if(myChores != null && myChores.isEmpty()){
             Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();
         }
         else { Log.e(TAG, "Error retrieving chores"); }

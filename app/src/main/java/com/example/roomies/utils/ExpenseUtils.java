@@ -129,6 +129,7 @@ public class ExpenseUtils {
         ParseQuery<Expense> query = ParseQuery.getQuery(Expense.class).whereEqualTo(Chore.KEY_CIRCLE, CircleUtils.getCurrentCircle());
         // include receiver object
         query.include(Expense.KEY_CREATOR);
+        query.orderByDescending(Expense.KEY_CREATED_AT);
         // start an asynchronous call for Expense objects
         // call from local datastore then network
         query.fromLocalDatastore().findInBackground().continueWithTask((task) -> {
@@ -190,6 +191,8 @@ public class ExpenseUtils {
         query.include(Transaction.KEY_RECEIVER);
         query.include(Transaction.KEY_PAYER);
         query.include(Transaction.KEY_EXPENSE + "." + Expense.KEY_CREATOR);
+
+        query.orderByDescending(Transaction.KEY_CREATED_AT);
 
         // start an asynchronous call for Transaction objects
         // query from local datastore then network

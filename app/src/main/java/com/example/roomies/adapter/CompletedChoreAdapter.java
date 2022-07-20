@@ -86,12 +86,12 @@ public class CompletedChoreAdapter extends
             ivCompletedPriority = itemView.findViewById(R.id.ivCompletedPriority);
         }
 
-        public void bind(Chore chore){
-            this.chore = chore;
+        public void bind(Chore c){
+            this.chore = c;
 
             // bind to layout
-            tvCompletedTitle.setText(chore.getTitle());
-            tvCompletedDue.setText(formatDue(chore, Calendar.getInstance()));
+            tvCompletedTitle.setText(c.getTitle());
+            tvCompletedDue.setText(formatDue(c, Calendar.getInstance()));
             completedCard.setLongClickable(false);
             completedCard.setChecked(true);
             completedCard.setCheckable(true);
@@ -99,10 +99,10 @@ public class CompletedChoreAdapter extends
             completedCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    toDetail(context, chore, Calendar.getInstance());
+                    toDetail(context, c, Calendar.getInstance());
                 }
             });
-            setPriorityColors(context, ivCompletedPriority, chore);
+            setPriorityColors(context, ivCompletedPriority, c);
         }
     }
 

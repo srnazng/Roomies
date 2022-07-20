@@ -95,15 +95,15 @@ public class ChoreAdapter extends
             ivPriorityCircle = itemView.findViewById(R.id.ivPriorityCircle);
         }
 
-        public void bind(Chore chore){
-            this.chore = chore;
-            tvTitle.setText(chore.getTitle());
-            tvDescription.setText(chore.getDescription());
-            tvDue.setText(formatDue(chore, Calendar.getInstance()));
+        public void bind(Chore c){
+            this.chore = c;
+            tvTitle.setText(c.getTitle());
+            tvDescription.setText(c.getDescription());
+            tvDue.setText(formatDue(c, Calendar.getInstance()));
             card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    toDetail(context, chore, Calendar.getInstance());
+                    toDetail(context, c, Calendar.getInstance());
                 }
             });
             card.setLongClickable(false);
@@ -111,12 +111,12 @@ public class ChoreAdapter extends
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(context, GoogleSignInActivity.class);
-                    i.putExtra("chore", chore);
+                    i.putExtra("chore", c);
                     context.startActivity(i);
                 }
             });
 
-            setPriorityColors(context, ivPriorityCircle, chore);
+            setPriorityColors(context, ivPriorityCircle, c);
         }
     }
 

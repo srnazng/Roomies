@@ -22,6 +22,8 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormatSymbols;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -191,14 +193,10 @@ public class Utils {
      * @return      Number of weeks between d1 and d2
      */
     public static long getWeeksDifference(Calendar d1, Calendar d2){
+        int daysDiff = getDaysDifference(d1.getTime(), d2.getTime());
 
-        Instant d1i = Instant.ofEpochMilli(d1.getTimeInMillis());
-        Instant d2i = Instant.ofEpochMilli(d2.getTimeInMillis());
-
-        LocalDateTime startDate = LocalDateTime.ofInstant(d1i, ZoneId.systemDefault());
-        LocalDateTime endDate = LocalDateTime.ofInstant(d2i, ZoneId.systemDefault());
-
-        return ChronoUnit.WEEKS.between(startDate, endDate);
+        BigDecimal weeksDiff = new BigDecimal(daysDiff).divide(BigDecimal.valueOf(7), 0, RoundingMode.CEILING);
+        return weeksDiff.intValue();
     }
 
     /**
@@ -207,7 +205,6 @@ public class Utils {
      * @return      Number of months between d1 and d2
      */
     public static long getMonthsDifference(Calendar d1, Calendar d2){
-
         Instant d1i = Instant.ofEpochMilli(d1.getTimeInMillis());
         Instant d2i = Instant.ofEpochMilli(d2.getTimeInMillis());
 
