@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.example.roomies.SplashScreenActivity;
 import com.example.roomies.model.ScheduledNotification;
+import com.parse.ParseUser;
 
 import java.util.Calendar;
 import java.util.Timer;
@@ -45,6 +46,7 @@ public class Session {
         CircleUtils.clearAll();
         setFirstOfMonth(null);
         clearCalendarCache();
+        ParseUser.unpinAllInBackground();
     }
 
     public void scheduleNotifications(){
