@@ -75,11 +75,11 @@ public class Messaging extends FirebaseMessagingService {
         ParseUser.getCurrentUser().put("registerCircleNotifs", false);
         ParseUser.getCurrentUser().put("notificationToken", "");
         ParseUser.getCurrentUser().saveInBackground(e -> {
-            if(e == null && withLogout){
-                parseLogout(context);
-            }
-            else{
+            if(e != null ){
                 Log.e(TAG, e.getMessage());
+            }
+            else if(withLogout){
+                parseLogout(context);
             }
         });
     }

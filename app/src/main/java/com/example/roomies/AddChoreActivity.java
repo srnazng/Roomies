@@ -4,6 +4,7 @@ import static com.example.roomies.ChoreFragment.updateChoreList;
 import static com.example.roomies.model.Recurrence.*;
 import static com.example.roomies.utils.ChoreUtils.addChoreAssignment;
 import static com.example.roomies.utils.ChoreUtils.addCircleChore;
+import static com.example.roomies.utils.ChoreUtils.getRepeatMessage;
 import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
 import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
 import static com.example.roomies.utils.Utils.getMonthForInt;
@@ -232,6 +233,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
     // create chore object and add to database
     public void addChore(){
+        Log.i(TAG, "addChore");
         // check a user has been assigned to chore
         if(assignedUsers.size() < 1){
             Toast.makeText(this, "No one assigned to chore", Toast.LENGTH_SHORT).show();
@@ -476,38 +478,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         this.recurrence = r;
         this.endDate = endDate;
         this.numOccurrences = numOccurrences;
-        getRepeatMessage();
-    }
-
-    // set text of repeat button
-    public void getRepeatMessage(){
-        if(recurrence == null){
-            tvRepeat.setText("Does not repeat");
-            return;
-        }
-
-        String message = "Repeats every ";
-        if(recurrence.getFrequency() > 1){
-            message = message + recurrence.getFrequency() + " ";
-        }
-
-        message = message + recurrence.getFrequencyType();
-
-        if(recurrence.getFrequency() > 1){
-            message = message + "s";
-        }
-
-        if(endDate != null){
-            int month = endDate.get(Calendar.MONTH);
-            int day = endDate.get(Calendar.DAY_OF_MONTH);
-            int year = endDate.get(Calendar.YEAR);
-            message = message + " until " + getMonthForInt(month) + " " + day + ", " + year;
-        }
-        else if(numOccurrences != null){
-            message = message + " until " + numOccurrences + " occurrences";
-        }
-
-        tvRepeat.setText(message);
+        tvRepeat.setText(getRepeatMessage(r, endDate, numOccurrences));
     }
 
     // time picker dialog

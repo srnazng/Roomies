@@ -70,6 +70,7 @@ public class CircleUtils {
             // local results
             ParseException e = (ParseException) task.getError();
             if(e == null){
+                Log.i(TAG, "circle from local storage");
                 userCircleSetup(context, firstInit, task.getResult());
             }
             else{
@@ -80,6 +81,7 @@ public class CircleUtils {
             // network results
             ParseException e = (ParseException) task.getError();
             if(e == null){
+                Log.i(TAG, "circle from network");
                 List<UserCircle> userCircles = task.getResult();
                 userCircleSetup(context, firstInit, userCircles);
             }
@@ -107,6 +109,9 @@ public class CircleUtils {
                 CalendarDayUtils.initCalendar();
             }
             initUserCircleList(context);
+        }
+        else{
+            Log.e(TAG, "No user circle");
         }
     }
 
@@ -209,6 +214,7 @@ public class CircleUtils {
     }
 
     public static void parseLogout(Context context){
+        Log.i(TAG, "parse logout");
         ParseUser.logOut();
         ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
         Session.endSession();

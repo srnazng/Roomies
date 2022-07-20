@@ -3,6 +3,7 @@ package com.example.roomies;
 import static com.example.roomies.utils.ChoreUtils.chipCompleted;
 import static com.example.roomies.utils.ChoreUtils.getAllChoreAssignments;
 import static com.example.roomies.utils.ChoreUtils.getChoreAssignment;
+import static com.example.roomies.utils.ChoreUtils.getRepeatMessage;
 import static com.example.roomies.utils.ChoreUtils.isCompleted;
 import static com.example.roomies.utils.ChoreUtils.markCompleted;
 import static com.example.roomies.utils.ChoreUtils.setPriorityColors;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
+import com.example.roomies.model.Recurrence;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -34,6 +36,8 @@ public class ChoreDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private TextView tvDescription;
     private TextView tvDue;
+    private TextView tvRecurrence;
+    private ImageView ivRecurrence;
     public static MaterialCardView card;
     private Button messageButton;
     private Button btnGoogleCalendar;
@@ -58,6 +62,19 @@ public class ChoreDetailActivity extends AppCompatActivity {
         // add chore details to card
         tvTitle = findViewById(R.id.tvDetailTitle);
         tvTitle.setText(chore.getTitle());
+
+        tvRecurrence = findViewById(R.id.tvRecurrence);
+        ivRecurrence = findViewById(R.id.ivRecurrence);
+        if(chore.getRecurrence() == null){
+            tvRecurrence.setVisibility(View.GONE);
+            ivRecurrence.setVisibility(View.GONE);
+        }
+        else{
+            Recurrence r = chore.getRecurrence();
+            Calendar end = Calendar.getInstance();
+            end.setTime(r.getEndDate());
+            tvRecurrence.setText(getRepeatMessage(r, end, r.getNumOccurrences()));
+        }
 
         tvDescription = findViewById(R.id.tvDetailDescription);
         tvDescription.setText(chore.getDescription());

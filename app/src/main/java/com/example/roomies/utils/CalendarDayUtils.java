@@ -302,6 +302,8 @@ public class CalendarDayUtils {
      * Clear stored CalendarMonths
      */
     public static void clearCalendarCache(){
-        calendarCache.clear();
+        if(calendarCache != null){
+            calendarCache.clear();
+        }
     }
 }

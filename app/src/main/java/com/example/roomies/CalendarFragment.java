@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class CalendarFragment extends Fragment {
     private RecyclerView rvCalendar;
     private CalendarAdapter adapter;
 
+    private Switch switchFilter;
     private TextView tvMonth;
     private ImageView ivPrevMonth;
     private ImageView ivNextMonth;
@@ -74,6 +76,15 @@ public class CalendarFragment extends Fragment {
         myChores = ChoreUtils.getMyChores();
         allChores = ChoreUtils.getCircleChores();
 
+        // switch
+        switchFilter = view.findViewById(R.id.switchFilter);
+        switchFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateMyChores();
+            }
+        });
+
         // Create adapter
         adapter = new CalendarAdapter(getCalendarList());
         // Attach the adapter to the recyclerview to populate items
@@ -112,9 +123,13 @@ public class CalendarFragment extends Fragment {
 
     // get chores that are assigned to current user
     public void updateMyChores(){
-        if(ChoreUtils.getMyChores() != null){
+        if(switchFilter.isChecked() && ChoreUtils.getMyChores() != null){
             // create each day item in calendar
             updateCalendar(getActivity(), ChoreUtils.getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
+        }
+        else if(!switchFilter.isChecked() && ChoreUtils.getCircleChores() != null){
+            // create each day item in calendar
+            updateCalendar(getActivity(), ChoreUtils.getCircleChores(), getFirstOfMonth(), adapter ,rvCalendar);
         }
         else if(myChores.isEmpty()){
             Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();

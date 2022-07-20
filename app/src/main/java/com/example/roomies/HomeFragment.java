@@ -3,7 +3,9 @@ package com.example.roomies;
 import static com.example.roomies.utils.ChoreUtils.getMyChoresToday;
 import static com.example.roomies.utils.ExpenseUtils.*;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -123,7 +125,9 @@ public class HomeFragment extends Fragment {
             updateAllProfiles(view);
         }
         else{
-            Log.e(TAG, "error loading circle");
+            Intent i = new Intent(context, AddCircleActivity.class);
+            startActivity(i);
+            ((Activity)context).finish();
         }
     }
 

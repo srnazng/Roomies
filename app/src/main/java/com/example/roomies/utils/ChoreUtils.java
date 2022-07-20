@@ -4,6 +4,7 @@ import static com.example.roomies.ChoreFragment.updateChoreList;
 import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
 import static com.example.roomies.utils.Utils.clearTime;
 import static com.example.roomies.utils.Utils.compareDates;
+import static com.example.roomies.utils.Utils.getMonthForInt;
 import static com.example.roomies.utils.Utils.occursToday_dayFreq;
 import static com.example.roomies.utils.Utils.occursToday_monthFreq;
 import static com.example.roomies.utils.Utils.occursToday_weekFreq;
@@ -606,5 +607,37 @@ public class ChoreUtils {
         i.putExtra("chore", chore);
         i.putExtra("day", day);
         context.startActivity(i);
+    }
+
+    // set text of repeat button
+    public static String getRepeatMessage(Recurrence recurrence,
+                                          Calendar endDate,
+                                          Integer numOccurrences){
+        if(recurrence == null){
+            return "Does not repeat";
+        }
+
+        String message = "Repeats every ";
+        if(recurrence.getFrequency() > 1){
+            message = message + recurrence.getFrequency() + " ";
+        }
+
+        message = message + recurrence.getFrequencyType();
+
+        if(recurrence.getFrequency() > 1){
+            message = message + "s";
+        }
+
+        if(endDate != null){
+            int month = endDate.get(Calendar.MONTH);
+            int day = endDate.get(Calendar.DAY_OF_MONTH);
+            int year = endDate.get(Calendar.YEAR);
+            message = message + " until " + getMonthForInt(month) + " " + day + ", " + year;
+        }
+        else if(numOccurrences != null){
+            message = message + " until " + numOccurrences + " occurrences";
+        }
+
+        return message;
     }
 }
