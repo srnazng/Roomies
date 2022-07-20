@@ -38,7 +38,6 @@ import java.util.List;
  * Fragment for chore list and related actions
  */
 public class ChoreFragment extends Fragment {
-
     private FloatingActionButton btnToCalendar;
     private FloatingActionButton btnAddChore;
     private RecyclerView rvChores;

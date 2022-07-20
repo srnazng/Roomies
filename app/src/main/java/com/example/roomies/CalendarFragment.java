@@ -93,7 +93,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 getFirstOfMonth().add(Calendar.MONTH, 1);
                 tvMonth.setText(getMonthForInt(getFirstOfMonth().get(Calendar.MONTH)) + " " + getFirstOfMonth().get(Calendar.YEAR));
-                updateCalendar(myChores, getFirstOfMonth(), adapter, rvCalendar);
+                updateCalendar(getActivity(), myChores, getFirstOfMonth(), adapter, rvCalendar);
             }
         });
 
@@ -104,7 +104,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 getFirstOfMonth().add(Calendar.MONTH, -1);
                 tvMonth.setText(getMonthForInt(getFirstOfMonth().get(Calendar.MONTH)) + " " + getFirstOfMonth().get(Calendar.YEAR));
-                updateCalendar(myChores, getFirstOfMonth(), adapter, rvCalendar);
+                updateCalendar(getActivity(), myChores, getFirstOfMonth(), adapter, rvCalendar);
             }
         });
         return view;
@@ -114,7 +114,7 @@ public class CalendarFragment extends Fragment {
     public void updateMyChores(){
         if(ChoreUtils.getMyChores() != null){
             // create each day item in calendar
-            updateCalendar(ChoreUtils.getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
+            updateCalendar(getActivity(), ChoreUtils.getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
         }
         else if(myChores.isEmpty()){
             Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();

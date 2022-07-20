@@ -1,11 +1,13 @@
 package com.example.roomies.utils;
 
+import static com.example.roomies.utils.CalendarDayUtils.clearCalendarCache;
 import static com.example.roomies.utils.CalendarDayUtils.setFirstOfMonth;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
 import com.example.roomies.SplashScreenActivity;
@@ -42,6 +44,7 @@ public class Session {
         ExpenseUtils.clearAll();
         CircleUtils.clearAll();
         setFirstOfMonth(null);
+        clearCalendarCache();
     }
 
     public void scheduleNotifications(){
@@ -81,5 +84,16 @@ public class Session {
             editor.putBoolean(SHARED_PREF_EXPENSE_KEY, true);
             editor.apply();
         }
+    }
+
+    /**
+     * Determine if connected to network
+     * @param context
+     * @return
+     */
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 }
