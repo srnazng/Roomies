@@ -6,7 +6,7 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.roomies.utils.CircleUtils;
+import com.example.roomies.model.CircleManager;
 
 public class SplashScreenActivity extends AppCompatActivity {
     @Override
@@ -14,7 +14,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // load database data
-        CircleUtils.initCircle(true, SplashScreenActivity.this);
+        CircleManager.initCircle(true, SplashScreenActivity.this);
 
         setContentView(R.layout.activity_splash_screen);
         new Handler().postDelayed(new Runnable() {

@@ -1,9 +1,7 @@
 package com.example.roomies.adapter;
-import static com.example.roomies.utils.ExpenseUtils.cancelExpense;
-import static com.example.roomies.utils.ExpenseUtils.changeTransactionStatus;
-import static com.example.roomies.utils.ExpenseUtils.getAllExpenseTransactions;
-import static com.example.roomies.utils.ExpenseUtils.getCircleTransactions;
-import static com.example.roomies.utils.ExpenseUtils.getMyExpenseTransaction;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
+import static com.example.roomies.model.ExpenseCollection.getAllExpenseTransactions;
+import static com.example.roomies.model.ExpenseCollection.getMyExpenseTransaction;
 import static com.example.roomies.utils.ExpenseUtils.sendReminder;
 
 import android.content.Context;
@@ -155,7 +153,7 @@ public class ExpenseAdapter extends
                 if(transactions != null){
                     transactions.clear();
                 }
-                transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+                transactions = getAllExpenseTransactions(expense, getExpenseCollection().getCircleTransactions());
                 for(int i=0; i<transactions.size(); i++){
                     if(!transactions.get(i).getCompleted()){
                         card.setChecked(false);
@@ -184,7 +182,7 @@ public class ExpenseAdapter extends
                 card.setChecked(true);
 
                 // determine if card should be marked completed
-                List<Transaction> transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+                List<Transaction> transactions = getAllExpenseTransactions(expense, getExpenseCollection().getCircleTransactions());
 
                 for(int i=0; i<transactions.size(); i++){
                     if(!transactions.get(i).getCompleted()){
@@ -198,7 +196,7 @@ public class ExpenseAdapter extends
                 btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        cancelExpense(expense);
+                        getExpenseCollection().cancelExpense(expense);
                         expenses.remove(expense);
                         notifyDataSetChanged();
                     }
@@ -234,13 +232,13 @@ public class ExpenseAdapter extends
                 card.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        changeTransactionStatus(context, expense, !card.isChecked(), card);
+                        getExpenseCollection().changeTransactionStatus(context, expense, !card.isChecked(), card);
                         return true;
                     }
                 });
 
                 // determine if card should be marked completed
-                Transaction transaction = getMyExpenseTransaction(expense, getCircleTransactions());
+                Transaction transaction = getMyExpenseTransaction(expense, getExpenseCollection().getCircleTransactions());
                 if(transaction != null){
                     card.setChecked(transaction.getCompleted());
                 }
@@ -263,7 +261,7 @@ public class ExpenseAdapter extends
                 btnMarkPaid.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        changeTransactionStatus(context, expense, !card.isChecked(), card);
+                        getExpenseCollection().changeTransactionStatus(context, expense, !card.isChecked(), card);
                     }
                 });
                 chipScroll.setVisibility(View.GONE);

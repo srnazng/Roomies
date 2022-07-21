@@ -1,12 +1,9 @@
 package com.example.roomies;
 
 import static com.example.roomies.ChoreFragment.updateChoreList;
+import static com.example.roomies.model.CircleManager.getChoreCollection;
 import static com.example.roomies.utils.ChoreUtils.chipCompleted;
-import static com.example.roomies.utils.ChoreUtils.getAllChoreAssignments;
-import static com.example.roomies.utils.ChoreUtils.getChoreAssignment;
 import static com.example.roomies.utils.ChoreUtils.getRepeatMessage;
-import static com.example.roomies.utils.ChoreUtils.isCompleted;
-import static com.example.roomies.utils.ChoreUtils.markCompleted;
 import static com.example.roomies.utils.ChoreUtils.setPriorityColors;
 import static com.example.roomies.utils.Utils.formatDue;
 
@@ -89,7 +86,7 @@ public class ChoreDetailActivity extends AppCompatActivity {
         card = findViewById(R.id.detailCard);
         card.setLongClickable(false);
         card.setCheckable(true);
-        card.setChecked(isCompleted(getChoreAssignment(chore)));
+        card.setChecked(getChoreCollection().isCompleted(getChoreCollection().getChoreAssignment(chore)));
 
         btnGoogleCalendar = findViewById(R.id.btnDetailGoogleCalendar);
         btnGoogleCalendar.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +107,7 @@ public class ChoreDetailActivity extends AppCompatActivity {
 
     // set chips to all users assigned chore
     public void initializeChips(){
-        List<ChoreAssignment> assignees = getAllChoreAssignments(chore);
+        List<ChoreAssignment> assignees = getChoreCollection().getAllChoreAssignments(chore);
 
         if(assigneeChips == null){
             return;
@@ -135,7 +132,7 @@ public class ChoreDetailActivity extends AppCompatActivity {
                 chip.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        markCompleted(ChoreDetailActivity.this, chore, chip.isChecked(), day);
+                        getChoreCollection().markCompleted(ChoreDetailActivity.this, chore, chip.isChecked(), day);
                         Log.i(TAG, "checked: " + chip.isChecked());
                         card.setChecked(chip.isChecked());
                         updateChoreList();

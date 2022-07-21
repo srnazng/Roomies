@@ -1,4 +1,5 @@
-package com.example.roomies.utils;
+package com.example.roomies.model;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -8,9 +9,7 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.example.roomies.AddCircleActivity;
-import com.example.roomies.LoginActivity;
-import com.example.roomies.model.Circle;
-import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.CalendarDayUtils;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -21,28 +20,30 @@ import java.util.List;
 
 import bolts.Task;
 
-public class CircleUtils {
+public class CircleManager {
     private static Circle currentCircle;
     private static List<UserCircle> userCircleList;
     private static UserCircle myUserCircle;
 
-    public static final String TAG = "CircleUtils";
+    private static ChoreCollection choreCollection;
+    private static ExpenseCollection expenseCollection;
 
-    /**
-     * @return current Circle object
-     */
+    public static final String TAG = "CircleManager";
+
+
     public static Circle getCurrentCircle(){
         return currentCircle;
     }
 
-    /**
-     * @return list of UserCircle objects related to current circle
-     */
     public static List<UserCircle> getUserCircleList(){
         return userCircleList;
     }
 
     public static UserCircle getMyUserCircle() { return myUserCircle; }
+
+    public static ChoreCollection getChoreCollection() { return choreCollection; }
+
+    public static ExpenseCollection getExpenseCollection() { return expenseCollection; }
 
     /**
      * clear locally stored circle information
@@ -104,8 +105,8 @@ public class CircleUtils {
             // save received posts to list and notify adapter of new data
             currentCircle = userCircles.get(0).getCircle();
             if(firstInit){
-                ChoreUtils.initChores(context);
-                ExpenseUtils.initExpenses(context);
+                choreCollection = new ChoreCollection(context);
+                expenseCollection = new ExpenseCollection(context);
                 CalendarDayUtils.initCalendar();
             }
             initUserCircleList(context);
@@ -207,22 +208,5 @@ public class CircleUtils {
             }
         });
         clearAll();
-    }
-
-    public static void logout(Context context){
-        Messaging.clearFirebaseInstance(true);
-    }
-
-    public static void parseLogout(Context context){
-        Log.i(TAG, "parse logout");
-        ParseUser.logOut();
-        ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
-        Session.endSession();
-
-        if(currentUser == null){
-            Intent i = new Intent(context, LoginActivity.class);
-            context.startActivity(i);
-            ((Activity)context).finish();
-        }
     }
 }

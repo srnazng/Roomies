@@ -38,34 +38,6 @@ public class Utils {
     public static final String TAG = "Utils";
     public static final int GET_FROM_GALLERY = 3;
 
-    /**
-     * Sign in
-     * @param context
-     * @param username
-     * @param password
-     */
-    public static void loginUser(Context context, String username, String password){
-        Log.i(TAG, "attempt login");
-
-        // login in background thread
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if(e != null){
-                    // issue
-                    List<ParseUser> userList = new ArrayList<>();
-                    userList.add(user);
-                    ParseUser.pinAllInBackground(userList);
-                    Log.e(TAG, "Issue with login", e);
-                    Toast.makeText(context, "Incorrect login credentials", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Log.e(TAG, "login success");
-                Session.startSession(context);
-            }
-        });
-    }
-
     // format chore due date
     public static String formatDue(Chore chore, Calendar day){
         boolean isToday = (compareDates(day, Calendar.getInstance()) == 0);

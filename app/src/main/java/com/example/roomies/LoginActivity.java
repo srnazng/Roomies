@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.Utils.loginUser;
+import static com.example.roomies.utils.UserUtils.loginUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 

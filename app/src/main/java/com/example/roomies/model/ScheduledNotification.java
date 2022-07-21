@@ -1,7 +1,7 @@
 package com.example.roomies.model;
 
-import static com.example.roomies.utils.ChoreUtils.getMyPendingChoresToday;
-import static com.example.roomies.utils.ExpenseUtils.getMyPendingPayments;
+import static com.example.roomies.model.CircleManager.getChoreCollection;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
 import static com.example.roomies.utils.Messaging.sendToDeviceGroup;
 
 import android.util.Log;
@@ -33,8 +33,8 @@ public class ScheduledNotification extends TimerTask {
 
         // get device group key of user
         String notificationKey = ParseUser.getCurrentUser().getString("notificationKey");
-        if(type.equals(TYPE_CHORE) && getMyPendingChoresToday() != null){
-            numChoresPending = getMyPendingChoresToday().size();
+        if(type.equals(TYPE_CHORE) && getChoreCollection().getMyPendingChoresToday() != null){
+            numChoresPending = getChoreCollection().getMyPendingChoresToday().size();
 
             // send notification
             if(numChoresPending > 0){
@@ -42,8 +42,9 @@ public class ScheduledNotification extends TimerTask {
                 sendToDeviceGroup(notificationKey, "Chore reminder", "You have " + numChoresPending + " pending chores today!" );
             }
         }
-        else if(type.equals(TYPE_EXPENSE) && getMyPendingPayments() != null){
-            numPaymentsPending = getMyPendingPayments().size();
+        else if(type.equals(TYPE_EXPENSE) &&
+                getExpenseCollection().getMyPendingPayments() != null){
+            numPaymentsPending = getExpenseCollection().getMyPendingPayments().size();
 
             // send notification
             if(numPaymentsPending > 0){

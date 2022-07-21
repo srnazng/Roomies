@@ -2,7 +2,11 @@ package com.example.roomies;
 
 import static com.example.roomies.ExpenseFragment.getFilterInt;
 import static com.example.roomies.ExpenseFragment.updateExpenseList;
-import static com.example.roomies.utils.ExpenseUtils.*;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
+import static com.example.roomies.model.ExpenseCollection.*;
+import static com.example.roomies.utils.ExpenseUtils.initComments;
+import static com.example.roomies.utils.ExpenseUtils.sendComment;
+import static com.example.roomies.utils.ExpenseUtils.sendReminder;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -127,7 +131,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         // set expense title
         tvExpenseReason.setText(expense.getName() + " $" + String.format("%.2f", expense.getTotal()));
         // get all transactions relating to expense
-        transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+        transactions = getAllExpenseTransactions(expense, getExpenseCollection().getCircleTransactions());
         // show all users assigned expense
         initializeChips();
 
@@ -143,7 +147,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     // determine if current user is assigned to pay for expense
     private boolean isPayment(){
         if(transactions == null || transactions.isEmpty()){
-            transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+            transactions = getAllExpenseTransactions(expense, getExpenseCollection().getCircleTransactions());
         }
 
         for(int i = 0; i<transactions.size(); i++){
@@ -168,7 +172,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
     // set chips to all users in list of transactions
     public void initializeChips(){
         if(transactions == null || transactions.isEmpty()){
-            transactions = getAllExpenseTransactions(expense, getCircleTransactions());
+            transactions = getAllExpenseTransactions(expense, getExpenseCollection().getCircleTransactions());
         }
 
         if(assigneeChipGroup == null){
@@ -201,7 +205,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         expenseDetailCard.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                changeTransactionStatus(ExpenseDetailActivity.this, expense, !expenseDetailCard.isChecked(), expenseDetailCard);
+                getExpenseCollection().changeTransactionStatus(ExpenseDetailActivity.this, expense, !expenseDetailCard.isChecked(), expenseDetailCard);
                 return true;
             }
         });
@@ -216,7 +220,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
         btnDetailMarkPaid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeTransactionStatus(ExpenseDetailActivity.this, expense, !expenseDetailCard.isChecked(), expenseDetailCard);
+                getExpenseCollection().changeTransactionStatus(ExpenseDetailActivity.this, expense, !expenseDetailCard.isChecked(), expenseDetailCard);
             }
         });
 
@@ -277,7 +281,7 @@ public class ExpenseDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(ExpenseDetailActivity.this, "Cancel expense success", Toast.LENGTH_SHORT).show();
-                cancelExpense(expense);
+                getExpenseCollection().cancelExpense(expense);
                 updateExpenseList(getFilterInt());
                 finish();
             }

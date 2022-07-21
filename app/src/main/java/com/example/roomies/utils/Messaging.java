@@ -2,8 +2,8 @@ package com.example.roomies.utils;
 import com.example.roomies.R;
 import com.example.roomies.model.Circle;
 
-import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
-import static com.example.roomies.utils.CircleUtils.parseLogout;
+import static com.example.roomies.model.CircleManager.getCurrentCircle;
+import static com.example.roomies.utils.UserUtils.parseLogout;
 
 import android.content.Context;
 import android.util.Log;

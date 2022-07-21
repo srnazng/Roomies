@@ -1,11 +1,11 @@
 package com.example.roomies;
 
 import static com.example.roomies.ChoreFragment.updateChoreList;
+import static com.example.roomies.model.CircleManager.getChoreCollection;
+import static com.example.roomies.model.CircleManager.getUserCircleList;
 import static com.example.roomies.model.Recurrence.*;
-import static com.example.roomies.utils.ChoreUtils.addChoreAssignment;
-import static com.example.roomies.utils.ChoreUtils.addCircleChore;
 import static com.example.roomies.utils.ChoreUtils.getRepeatMessage;
-import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
+import static com.example.roomies.model.CircleManager.getCurrentCircle;
 import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
 import static com.example.roomies.utils.Utils.getMonthForInt;
 
@@ -41,7 +41,6 @@ import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
 import com.example.roomies.model.UserCircle;
-import com.example.roomies.utils.CircleUtils;
 import com.example.roomies.utils.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -271,65 +270,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
         chore = entity;
 
-        // Saves the new object.
-        entity.saveInBackground(e -> {
-            if (e==null){
-                //Save was done
-                List<Chore> list = new ArrayList<>();
-                list.add(chore);
-                Chore.pinAllInBackground(list);
-                assignChores();
-            }else{
-                //Something went wrong
-                Toast.makeText(this, "Could not add chore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // create ChoreAssignment object for each user assigned chore and add to database
-    public void assignChores(){
-        boolean sendInvites = switchInvite.isChecked();
-
-        // loop through all assigned users
-        for(int i=0; i<assignedUsers.size(); i++){
-            ChoreAssignment entity = new ChoreAssignment();
-
-            entity.put("user", assignedUsers.get(i));
-            entity.put("chore", chore);
-            entity.put("circle", getCurrentCircle());
-
-            int finalI = i;
-            entity.saveInBackground(e -> {
-                if (e==null){
-                    // Saves the new object.
-                    addChoreAssignment(entity);
-
-                    if(finalI == assignedUsers.size() - 1){
-                        updateChoreList();
-                    }
-                }else{
-                    //Something went wrong
-                    Toast.makeText(this, "Error assigning chore", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, e.getMessage());
-                    return;
-                }
-            });
-        }
-        //done
-        Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
-        addCircleChore(chore);
-
-        // create Google Calendar event
-        // send Google Calendar invites if needed
-        if(switchGoogleCalendar.isChecked()){
-            Intent i = new Intent(context, GoogleSignInActivity.class);
-            i.putExtra("chore", chore);
-            Log.i(TAG, "final emails: " + assignedEmails.toString());
-            i.putStringArrayListExtra("emails", assignedEmails);
-            context.startActivity(i);
-        }
-
-        finish();
+        getChoreCollection().submitChore(entity, switchInvite.isChecked(), assignedUsers, assignedEmails, this);
     }
 
     // create Recurrence object
@@ -347,7 +288,6 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         }
 
         // Saves the new object.
-        // Notice that the SaveCallback is totally optional!
         recurrence.saveInBackground(e -> {
             if (e==null){
                 //Save was done
@@ -426,7 +366,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
     // create chips for assigning chore to users
     public void initializeChips(){
-        List<UserCircle> userCircleList = CircleUtils.getUserCircleList();
+        List<UserCircle> userCircleList = getUserCircleList();
         if(userCircleList != null){
             // loop through users in circle
             for(int i=0; i<userCircleList.size(); i++){

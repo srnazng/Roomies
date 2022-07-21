@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
+import static com.example.roomies.model.CircleManager.getCurrentCircle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

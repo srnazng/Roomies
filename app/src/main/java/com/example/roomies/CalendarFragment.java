@@ -1,5 +1,6 @@
 package com.example.roomies;
 
+import static com.example.roomies.model.CircleManager.getChoreCollection;
 import static com.example.roomies.utils.CalendarDayUtils.*;
 import static com.example.roomies.utils.Utils.*;
 
@@ -20,7 +21,7 @@ import android.widget.Toast;
 
 import com.example.roomies.adapter.CalendarAdapter;
 import com.example.roomies.model.Chore;
-import com.example.roomies.utils.ChoreUtils;
+import com.example.roomies.model.ChoreCollection;
 
 import java.util.Calendar;
 import java.util.List;
@@ -73,8 +74,8 @@ public class CalendarFragment extends Fragment {
         rvCalendar = view.findViewById(R.id.rvCalendar);
 
         // Initialize
-        myChores = ChoreUtils.getMyChores();
-        allChores = ChoreUtils.getCircleChores();
+        myChores = getChoreCollection().getMyChores();
+        allChores = getChoreCollection().getCircleChores();
 
         // switch
         switchFilter = view.findViewById(R.id.switchFilter);
@@ -123,13 +124,13 @@ public class CalendarFragment extends Fragment {
 
     // get chores that are assigned to current user
     public void updateMyChores(){
-        if(switchFilter.isChecked() && ChoreUtils.getMyChores() != null){
+        if(switchFilter.isChecked() && getChoreCollection().getMyChores() != null){
             // create each day item in calendar
-            updateCalendar(getActivity(), ChoreUtils.getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
+            updateCalendar(getActivity(), getChoreCollection().getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
         }
-        else if(!switchFilter.isChecked() && ChoreUtils.getCircleChores() != null){
+        else if(!switchFilter.isChecked() && getChoreCollection().getCircleChores() != null){
             // create each day item in calendar
-            updateCalendar(getActivity(), ChoreUtils.getCircleChores(), getFirstOfMonth(), adapter ,rvCalendar);
+            updateCalendar(getActivity(), getChoreCollection().getCircleChores(), getFirstOfMonth(), adapter ,rvCalendar);
         }
         else if(myChores != null && myChores.isEmpty()){
             Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();

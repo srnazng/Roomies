@@ -1,6 +1,8 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.CircleUtils.*;
+import static com.example.roomies.model.CircleManager.getCurrentCircle;
+import static com.example.roomies.model.CircleManager.leaveCircle;
+import static com.example.roomies.utils.UserUtils.*;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,8 +19,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.roomies.model.Circle;
 
 /**
  * Settings page

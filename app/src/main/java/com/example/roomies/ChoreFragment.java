@@ -1,7 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.ChoreUtils.initChores;
-import static com.example.roomies.utils.ChoreUtils.markCompleted;
+import static com.example.roomies.model.CircleManager.getChoreCollection;
 
 import android.animation.Animator;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +24,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.example.roomies.adapter.ChoreAdapter;
 import com.example.roomies.adapter.CompletedChoreAdapter;
 import com.example.roomies.model.Chore;
-import com.example.roomies.utils.ChoreUtils;
+import com.example.roomies.model.ChoreCollection;
 import com.example.roomies.utils.SwipeToDeleteCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -71,8 +69,8 @@ public class ChoreFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize chores
-        choreList = ChoreUtils.getMyPendingChoresToday();
-        completedChoreList = ChoreUtils.getMyCompletedChoresToday();
+        choreList = getChoreCollection().getMyPendingChoresToday();
+        completedChoreList = getChoreCollection().getMyCompletedChoresToday();
     }
 
     @Override
@@ -130,7 +128,7 @@ public class ChoreFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // refresh chore list
-                initChores(getActivity());
+                getChoreCollection().initChores(getActivity());
                 choreSwipeContainer.setRefreshing(false);
             }
         });
@@ -159,10 +157,10 @@ public class ChoreFragment extends Fragment {
             return;
         }
 
-        choreList = ChoreUtils.getMyPendingChoresToday();
+        choreList = getChoreCollection().getMyPendingChoresToday();
         adapter.notifyDataSetChanged();
 
-        completedChoreList = ChoreUtils.getMyCompletedChoresToday();
+        completedChoreList = getChoreCollection().getMyCompletedChoresToday();
         completedAdapter.notifyDataSetChanged();
     }
 
@@ -175,7 +173,7 @@ public class ChoreFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
                 final Chore item = adapter.getData().get(position);
-                markCompleted(getActivity(), item, true, Calendar.getInstance());
+                getChoreCollection().markCompleted(getActivity(), item, true, Calendar.getInstance());
                 markCompleteAdapter(position, item);
                 showCheck();
 
@@ -184,7 +182,7 @@ public class ChoreFragment extends Fragment {
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        markCompleted(getActivity(), item, false, Calendar.getInstance());
+                        getChoreCollection().markCompleted(getActivity(), item, false, Calendar.getInstance());
                         markIncompleteAdapter(position, item);
                         rvChores.scrollToPosition(position);
                         updateChoreList();

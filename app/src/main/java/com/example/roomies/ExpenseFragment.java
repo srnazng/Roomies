@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.ExpenseUtils.initExpenses;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import android.widget.Spinner;
 
 import com.example.roomies.adapter.ExpenseAdapter;
 import com.example.roomies.model.Expense;
-import com.example.roomies.utils.ExpenseUtils;
+import com.example.roomies.model.ExpenseCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +98,7 @@ public class ExpenseFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // Refresh expense lists
-                initExpenses(getActivity());
+                getExpenseCollection().initExpenses(getActivity());
                 swipeContainer.setRefreshing(false);
             }
         });
@@ -176,25 +176,25 @@ public class ExpenseFragment extends Fragment {
 
         if(position == 0){
             layoutFilter.setVisibility(View.VISIBLE);
-            if(checkPending.isChecked() && ExpenseUtils.getMyPendingPayments() != null){
-                expenseList.addAll(ExpenseUtils.getMyPendingPayments());
+            if(checkPending.isChecked() && getExpenseCollection().getMyPendingPayments() != null){
+                expenseList.addAll(getExpenseCollection().getMyPendingPayments());
             }
-            if(checkCompleted.isChecked() && ExpenseUtils.getMyCompletedPayments() != null){
-                expenseList.addAll(ExpenseUtils.getMyCompletedPayments());
+            if(checkCompleted.isChecked() && getExpenseCollection().getMyCompletedPayments() != null){
+                expenseList.addAll(getExpenseCollection().getMyCompletedPayments());
             }
         }
         else if(position == 1){
             layoutFilter.setVisibility(View.VISIBLE);
-            if(checkPending.isChecked() && ExpenseUtils.getMyPendingRequests() != null){
-                expenseList.addAll(ExpenseUtils.getMyPendingRequests());
+            if(checkPending.isChecked() && getExpenseCollection().getMyPendingRequests() != null){
+                expenseList.addAll(getExpenseCollection().getMyPendingRequests());
             }
-            if(checkCompleted.isChecked() && ExpenseUtils.getMyCompletedRequests() != null){
-                expenseList.addAll(ExpenseUtils.getMyCompletedRequests());
+            if(checkCompleted.isChecked() && getExpenseCollection().getMyCompletedRequests() != null){
+                expenseList.addAll(getExpenseCollection().getMyCompletedRequests());
             }
         }
-        else if(ExpenseUtils.getCircleExpenses() != null){
+        else if(getExpenseCollection().getCircleExpenses() != null){
             layoutFilter.setVisibility(View.INVISIBLE);
-            expenseList.addAll(ExpenseUtils.getCircleExpenses());
+            expenseList.addAll(getExpenseCollection().getCircleExpenses());
         }
 
         filter = Filters.values()[expenseType.getSelectedItemPosition()];

@@ -1,5 +1,7 @@
 package com.example.roomies.utils;
 
+import static com.example.roomies.model.CircleManager.getChoreCollection;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
 import static com.example.roomies.utils.CalendarDayUtils.clearCalendarCache;
 import static com.example.roomies.utils.CalendarDayUtils.setFirstOfMonth;
 
@@ -11,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 
 import com.example.roomies.SplashScreenActivity;
+import com.example.roomies.model.CircleManager;
 import com.example.roomies.model.ScheduledNotification;
 import com.parse.ParseUser;
 
@@ -41,9 +44,9 @@ public class Session {
     }
 
     public static void endSession(){
-        ChoreUtils.clearAll();
-        ExpenseUtils.clearAll();
-        CircleUtils.clearAll();
+        getChoreCollection().clearAll();
+        getExpenseCollection().clearAll();
+        CircleManager.clearAll();
         setFirstOfMonth(null);
         clearCalendarCache();
         ParseUser.unpinAllInBackground();

@@ -1,5 +1,9 @@
 package com.example.roomies;
-import static com.example.roomies.utils.ExpenseUtils.*;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
+import static com.example.roomies.model.CircleManager.getUserCircleList;
+import static com.example.roomies.utils.ExpenseUtils.findAssignedSum;
+import static com.example.roomies.utils.ExpenseUtils.getNumAssigned;
+import static com.example.roomies.utils.ExpenseUtils.splitCost;
 import static com.example.roomies.utils.Utils.GET_FROM_GALLERY;
 import static com.example.roomies.utils.Utils.getPath;
 import static com.example.roomies.utils.Utils.showImage;
@@ -26,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.model.UserCircle;
-import com.example.roomies.utils.CircleUtils;
 import com.example.roomies.utils.NumberTextWatcher;
 import com.parse.ParseUser;
 
@@ -88,7 +91,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         btnSubmitExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitExpense(AddExpenseActivity.this, etExpenseName, etTotal,
+                getExpenseCollection().submitExpense(AddExpenseActivity.this, etExpenseName, etTotal,
                         checkSplit.isChecked(), transactionViews, bitmap, transactionUsers);
             }
         });
@@ -173,7 +176,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     // add views showing users that can be assigned to pay for expense
     public void fillUserTransactions(){
-        List<UserCircle> userCircleList = CircleUtils.getUserCircleList();
+        List<UserCircle> userCircleList = getUserCircleList();
         if(userCircleList == null){
             Toast.makeText(this, "Error accessing circle", Toast.LENGTH_SHORT).show();
         }
