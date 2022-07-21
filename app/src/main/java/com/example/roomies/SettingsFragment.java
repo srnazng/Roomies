@@ -78,7 +78,9 @@ public class SettingsFragment extends Fragment {
 
         // join code to share circle
         tvJoinCode = view.findViewById(R.id.tvJoinCode);
-        tvJoinCode.setText(getCurrentCircle().getObjectId());
+        if(getCurrentCircle() != null){
+            tvJoinCode.setText(getCurrentCircle().getObjectId());
+        }
 
         // copy join code to clipboard
         ivClipboard = view.findViewById(R.id.ivClipboard);
@@ -113,7 +115,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        initCircle(false);
     }
 
     private void setClipboard(Context context, String text) {

@@ -1,5 +1,8 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.Utils.GET_FROM_GALLERY;
+import static com.example.roomies.utils.Utils.conversionBitmapParseFile;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -42,8 +45,6 @@ public class ManageCircleFragment extends Fragment {
     private ProgressDialog pd;
 
     private Bitmap bitmap;
-
-    public static final int GET_FROM_GALLERY = 3;
 
     public ManageCircleFragment() {
         // Required empty public constructor
@@ -116,15 +117,6 @@ public class ManageCircleFragment extends Fragment {
         });
 
         return view;
-    }
-
-    // convert bitmap image to ParseFile
-    public ParseFile conversionBitmapParseFile(Bitmap imageBitmap){
-        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-        imageBitmap.compress(Bitmap.CompressFormat.PNG,0,byteArrayOutputStream);
-        byte[] imageByte = byteArrayOutputStream.toByteArray();
-        ParseFile parseFile = new ParseFile("image_file.png",imageByte);
-        return parseFile;
     }
 
     // after upload new circle image

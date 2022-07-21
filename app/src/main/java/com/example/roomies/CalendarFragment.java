@@ -1,7 +1,7 @@
 package com.example.roomies;
 
 import static com.example.roomies.utils.CalendarDayUtils.*;
-import static com.example.roomies.utils.TimeUtils.*;
+import static com.example.roomies.utils.Utils.*;
 
 import android.os.Bundle;
 
@@ -14,11 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.adapter.CalendarAdapter;
-import com.example.roomies.model.CalendarDay;
 import com.example.roomies.model.Chore;
 import com.example.roomies.utils.ChoreUtils;
 
@@ -32,6 +32,7 @@ public class CalendarFragment extends Fragment {
     private RecyclerView rvCalendar;
     private CalendarAdapter adapter;
 
+    private Switch switchFilter;
     private TextView tvMonth;
     private ImageView ivPrevMonth;
     private ImageView ivNextMonth;
@@ -50,7 +51,6 @@ public class CalendarFragment extends Fragment {
     /**
      * @return A new instance of fragment CalendarFragment.
      */
-
     public static CalendarFragment newInstance() {
         CalendarFragment fragment = new CalendarFragment();
         Bundle args = new Bundle();
@@ -76,6 +76,15 @@ public class CalendarFragment extends Fragment {
         myChores = ChoreUtils.getMyChores();
         allChores = ChoreUtils.getCircleChores();
 
+        // switch
+        switchFilter = view.findViewById(R.id.switchFilter);
+        switchFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateMyChores();
+            }
+        });
+
         // Create adapter
         adapter = new CalendarAdapter(getCalendarList());
         // Attach the adapter to the recyclerview to populate items
@@ -95,7 +104,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 getFirstOfMonth().add(Calendar.MONTH, 1);
                 tvMonth.setText(getMonthForInt(getFirstOfMonth().get(Calendar.MONTH)) + " " + getFirstOfMonth().get(Calendar.YEAR));
-                updateCalendar(myChores, getFirstOfMonth(), adapter, rvCalendar);
+                updateCalendar(getActivity(), myChores, getFirstOfMonth(), adapter, rvCalendar);
             }
         });
 
@@ -106,7 +115,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 getFirstOfMonth().add(Calendar.MONTH, -1);
                 tvMonth.setText(getMonthForInt(getFirstOfMonth().get(Calendar.MONTH)) + " " + getFirstOfMonth().get(Calendar.YEAR));
-                updateCalendar(myChores, getFirstOfMonth(), adapter, rvCalendar);
+                updateCalendar(getActivity(), myChores, getFirstOfMonth(), adapter, rvCalendar);
             }
         });
         return view;
@@ -114,11 +123,15 @@ public class CalendarFragment extends Fragment {
 
     // get chores that are assigned to current user
     public void updateMyChores(){
-        if(ChoreUtils.getMyChores() != null){
+        if(switchFilter.isChecked() && ChoreUtils.getMyChores() != null){
             // create each day item in calendar
-            updateCalendar(ChoreUtils.getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
+            updateCalendar(getActivity(), ChoreUtils.getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
         }
-        else if(myChores.isEmpty()){
+        else if(!switchFilter.isChecked() && ChoreUtils.getCircleChores() != null){
+            // create each day item in calendar
+            updateCalendar(getActivity(), ChoreUtils.getCircleChores(), getFirstOfMonth(), adapter ,rvCalendar);
+        }
+        else if(myChores != null && myChores.isEmpty()){
             Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();
         }
         else { Log.e(TAG, "Error retrieving chores"); }

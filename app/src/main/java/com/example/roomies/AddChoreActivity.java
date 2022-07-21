@@ -1,9 +1,13 @@
 package com.example.roomies;
 
+import static com.example.roomies.ChoreFragment.updateChoreList;
 import static com.example.roomies.model.Recurrence.*;
+import static com.example.roomies.utils.ChoreUtils.addChoreAssignment;
 import static com.example.roomies.utils.ChoreUtils.addCircleChore;
-import static com.example.roomies.utils.TimeUtils.convertFromMilitaryTime;
-import static com.example.roomies.utils.TimeUtils.getMonthForInt;
+import static com.example.roomies.utils.ChoreUtils.getRepeatMessage;
+import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
+import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
+import static com.example.roomies.utils.Utils.getMonthForInt;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -13,16 +17,21 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -32,9 +41,8 @@ import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
 import com.example.roomies.model.UserCircle;
-import com.example.roomies.utils.ChoreUtils;
 import com.example.roomies.utils.CircleUtils;
-import com.example.roomies.utils.TimeUtils;
+import com.example.roomies.utils.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseUser;
@@ -48,8 +56,11 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     private EditText etChoreName;
     private EditText etChoreDescription;
     private Switch switchAllDay;
+    private Switch switchGoogleCalendar;
+    private Switch switchInvite;
     private RadioGroup radioPriority;
-    private EditText etPoints;
+    private EditText etDuration;
+    private Spinner spDuration;
     private static TextView tvTime;
     private static TextView tvDate;
     private ChipGroup chipUsers;
@@ -58,6 +69,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     private TextView tvRepeat;
 
     private List<ParseUser> assignedUsers;
+    private ArrayList<String> assignedEmails;
     private static Calendar date;
     private Chore chore;
 
@@ -80,7 +92,24 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         etChoreName = findViewById(R.id.etChoreName);
         etChoreDescription = findViewById(R.id.etChoreDescription);
         radioPriority = findViewById(R.id.radioPriority);
-        etPoints = findViewById(R.id.etPoints);
+
+        // add chore to Google Calendar
+        switchGoogleCalendar = findViewById(R.id.switchGoogleCalendar);
+        switchGoogleCalendar.setChecked(false);
+        switchGoogleCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(switchGoogleCalendar.isChecked()){
+                    switchInvite.setClickable(true);
+                }
+                else{
+                    switchInvite.setClickable(false);
+                    switchInvite.setChecked(false);
+                }
+            }
+        });
+        switchInvite = findViewById(R.id.switchInvite);
+        switchInvite.setChecked(false);
 
         // get current time
         final Calendar c = Calendar.getInstance();
@@ -157,6 +186,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         // ChipGroup of users to assign chore to
         chipUsers = findViewById(R.id.chipUsers);
         assignedUsers = new ArrayList<>();
+        assignedEmails = new ArrayList<>();
         initializeChips();
 
         // submit chore
@@ -172,10 +202,38 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                 }
             }
         });
+
+        // duration
+        spDuration = findViewById(R.id.spDuration);
+        etDuration = findViewById(R.id.etDuration);
+        // set plurality of frequency items
+        etDuration.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if(etDuration.getText().toString().equals("1")){
+                    int pos = spDuration.getSelectedItemPosition();
+                    ArrayAdapter<String> freqTypeAdapter = new ArrayAdapter<String>(AddChoreActivity.this,android.R.layout.simple_spinner_dropdown_item,
+                            getResources().getStringArray(R.array.duration_array));
+                    spDuration.setAdapter(freqTypeAdapter);
+                    spDuration.setSelection(pos);
+                }
+                else{
+                    int pos = spDuration.getSelectedItemPosition();
+                    ArrayAdapter<String> freqTypeAdapter = new ArrayAdapter<String>(AddChoreActivity.this,android.R.layout.simple_spinner_dropdown_item,
+                            getResources().getStringArray(R.array.duration_array_plural));
+                    spDuration.setAdapter(freqTypeAdapter);
+                    spDuration.setSelection(pos);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
     }
 
     // create chore object and add to database
     public void addChore(){
+        Log.i(TAG, "addChore");
         // check a user has been assigned to chore
         if(assignedUsers.size() < 1){
             Toast.makeText(this, "No one assigned to chore", Toast.LENGTH_SHORT).show();
@@ -184,11 +242,18 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
         Chore entity = new Chore();
 
-        entity.put("circle", CircleUtils.getCurrentCircle());
+        entity.put("circle", getCurrentCircle());
         entity.put("creator", ParseUser.getCurrentUser());
         entity.put("title", etChoreName.getText().toString());
         entity.put("description", etChoreDescription.getText().toString());
-        entity.put("points", Integer.parseInt(etPoints.getText().toString()));
+
+        int duration = Integer.parseInt(etDuration.getText().toString());
+        if(spDuration.getSelectedItem().toString().equals("hours") ||
+                spDuration.getSelectedItem().toString().equals("hour")){
+            duration *= 60;
+        }
+        entity.put("duration", duration);
+
         entity.put("dueDatetime", date.getTime());
         entity.put("allDay", switchAllDay.isChecked());
 
@@ -210,6 +275,9 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         entity.saveInBackground(e -> {
             if (e==null){
                 //Save was done
+                List<Chore> list = new ArrayList<>();
+                list.add(chore);
+                Chore.pinAllInBackground(list);
                 assignChores();
             }else{
                 //Something went wrong
@@ -220,20 +288,29 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
     // create ChoreAssignment object for each user assigned chore and add to database
     public void assignChores(){
+        boolean sendInvites = switchInvite.isChecked();
+
         // loop through all assigned users
         for(int i=0; i<assignedUsers.size(); i++){
             ChoreAssignment entity = new ChoreAssignment();
 
             entity.put("user", assignedUsers.get(i));
             entity.put("chore", chore);
+            entity.put("circle", getCurrentCircle());
 
-            // Saves the new object.
+            int finalI = i;
             entity.saveInBackground(e -> {
                 if (e==null){
-                    //Save was done
+                    // Saves the new object.
+                    addChoreAssignment(entity);
+
+                    if(finalI == assignedUsers.size() - 1){
+                        updateChoreList();
+                    }
                 }else{
                     //Something went wrong
                     Toast.makeText(this, "Error assigning chore", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, e.getMessage());
                     return;
                 }
             });
@@ -241,7 +318,17 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         //done
         Toast.makeText(this, "Chore added success", Toast.LENGTH_SHORT).show();
         addCircleChore(chore);
-        ChoreUtils.initChores();
+
+        // create Google Calendar event
+        // send Google Calendar invites if needed
+        if(switchGoogleCalendar.isChecked()){
+            Intent i = new Intent(context, GoogleSignInActivity.class);
+            i.putExtra("chore", chore);
+            Log.i(TAG, "final emails: " + assignedEmails.toString());
+            i.putStringArrayListExtra("emails", assignedEmails);
+            context.startActivity(i);
+        }
+
         finish();
     }
 
@@ -279,13 +366,13 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
             endDate = Calendar.getInstance();
             endDate.setTime(date.getTime());
             endDate.set(Calendar.YEAR, date.get(Calendar.YEAR) + 100);
-            TimeUtils.clearTime(endDate);
+            Utils.clearTime(endDate);
         }
         else if(endDate == null){
             // after number of occurrences
             endDate = Calendar.getInstance();
             endDate.setTime(date.getTime());
-            TimeUtils.clearTime(endDate);
+            Utils.clearTime(endDate);
 
             if(recurrence.getFrequencyType().equals(TYPE_DAY)){
                 // add numOccurrence days to first due date
@@ -354,10 +441,22 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                         if(chip.isChecked()){
                             // user selected to be assigned chore
                             assignedUsers.add(userCircleList.get(userNum).getUser());
+                            String email = userCircleList.get(userNum).getUser().getString("username");
+
+                            if(email != null && !email.isEmpty()){
+                                assignedEmails.add(email);
+                                Log.i(TAG, assignedEmails.toString());
+                            }
                         }
                         else{
                             // user deselected to be assigned chore
                             assignedUsers.remove(userCircleList.get(userNum).getUser());
+                            String email = userCircleList.get(userNum).getUser().getString("username");
+
+                            if(email != null && !email.isEmpty()){
+                                assignedEmails.removeIf(e -> e.equals(email));
+                                Log.i(TAG, assignedEmails.toString());
+                            }
                         }
                     }
                 });
@@ -379,38 +478,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         this.recurrence = r;
         this.endDate = endDate;
         this.numOccurrences = numOccurrences;
-        getRepeatMessage();
-    }
-
-    // set text of repeat button
-    public void getRepeatMessage(){
-        if(recurrence == null){
-            tvRepeat.setText("Does not repeat");
-            return;
-        }
-
-        String message = "Repeats every ";
-        if(recurrence.getFrequency() > 1){
-            message = message + recurrence.getFrequency() + " ";
-        }
-
-        message = message + recurrence.getFrequencyType();
-
-        if(recurrence.getFrequency() > 1){
-            message = message + "s";
-        }
-
-        if(endDate != null){
-            int month = endDate.get(Calendar.MONTH);
-            int day = endDate.get(Calendar.DAY_OF_MONTH);
-            int year = endDate.get(Calendar.YEAR);
-            message = message + " until " + getMonthForInt(month) + " " + day + ", " + year;
-        }
-        else if(numOccurrences != null){
-            message = message + " until " + numOccurrences + " occurrences";
-        }
-
-        tvRepeat.setText(message);
+        tvRepeat.setText(getRepeatMessage(r, endDate, numOccurrences));
     }
 
     // time picker dialog

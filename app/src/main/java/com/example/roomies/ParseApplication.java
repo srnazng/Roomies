@@ -3,8 +3,10 @@ import android.app.Application;
 
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
+import com.example.roomies.model.ChoreCompleted;
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.Expense;
+import com.example.roomies.model.ExpenseComment;
 import com.example.roomies.model.Recurrence;
 import com.example.roomies.model.Transaction;
 import com.example.roomies.model.UserCircle;
@@ -24,8 +26,10 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(UserCircle.class);
         ParseObject.registerSubclass(Chore.class);
         ParseObject.registerSubclass(ChoreAssignment.class);
+        ParseObject.registerSubclass(ChoreCompleted.class);
         ParseObject.registerSubclass(Transaction.class);
         ParseObject.registerSubclass(Expense.class);
+        ParseObject.registerSubclass(ExpenseComment.class);
         ParseObject.registerSubclass(Recurrence.class);
 
         // Use for troubleshooting -- remove this line for production
@@ -43,6 +47,7 @@ public class ParseApplication extends Application {
                 .applicationId(getString(R.string.back4app_app_id))
                 .clientKey(getString(R.string.back4app_client_key))
                 .server(getString(R.string.back4app_server_url))
+                .enableLocalDataStore()
                 .build());
     }
 }

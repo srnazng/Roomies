@@ -1,6 +1,6 @@
 package com.example.roomies;
 import static com.example.roomies.model.Recurrence.*;
-import static com.example.roomies.utils.TimeUtils.getMonthForInt;
+import static com.example.roomies.utils.Utils.getMonthForInt;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

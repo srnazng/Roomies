@@ -17,6 +17,7 @@ public class Chore extends ParseObject {
     public static final String KEY_ALL_DAY = "allDay";
     public static final String KEY_DUE = "dueDatetime";
     public static final String KEY_RECURRENCE = "recurrence";
+    public static final String KEY_DURATION = "duration";
 
     public static final String PRIORITY_LOW = "Low";
     public static final String PRIORITY_MED = "Medium";
@@ -67,4 +68,8 @@ public class Chore extends ParseObject {
     public Recurrence getRecurrence() { return (Recurrence) getParseObject(KEY_RECURRENCE); }
 
     public void setRecurrence(Recurrence recurrence) { put(KEY_RECURRENCE, recurrence); }
+
+    public int getDuration() { return getInt(KEY_DURATION); }
+
+    public void setDuration( int duration ) { put(KEY_DURATION, duration); }
 }

@@ -8,6 +8,7 @@ import com.parse.ParseUser;
 public class ChoreAssignment extends ParseObject {
     public static final String KEY_USER = "user";
     public static final String KEY_CHORE = "chore";
+    public static final String KEY_CIRCLE = "circle";
 
     public Chore getChore(){ return (Chore) getParseObject(KEY_CHORE); }
 
@@ -16,4 +17,8 @@ public class ChoreAssignment extends ParseObject {
     public ParseUser getUser(){ return getParseUser(KEY_USER); }
 
     public void setUser(ParseUser user) { put(KEY_USER, user); }
+
+    public Circle getCircle() { return (Circle) getParseObject(KEY_CIRCLE); }
+
+    public void setCircle (Circle circle) { put(KEY_CIRCLE, circle); }
 }

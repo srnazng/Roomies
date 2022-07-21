@@ -13,7 +13,7 @@ import android.widget.Toast;
 import android.content.ClipboardManager;
 
 import com.example.roomies.model.Circle;
-import com.example.roomies.utils.SessionUtils;
+import com.example.roomies.utils.Session;
 
 import org.parceler.Parcels;
 
@@ -40,7 +40,7 @@ public class NewCircleActivity extends AppCompatActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionUtils.startSession(NewCircleActivity.this);
+                Session.startSession(NewCircleActivity.this);
             }
         });
 

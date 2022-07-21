@@ -1,5 +1,9 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.ChoreUtils.getMyChoresToday;
+import static com.example.roomies.utils.ExpenseUtils.*;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,20 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.roomies.model.Chore;
 import com.example.roomies.model.Circle;
+import com.example.roomies.model.Expense;
 import com.example.roomies.model.UserCircle;
 import com.example.roomies.utils.CircleUtils;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +45,12 @@ public class HomeFragment extends Fragment {
     private ImageView ivProfile4;
     private ImageView ivProfile5;
     private TextView tvExtraProfiles;
+
+    private TextView tvPendingRequestsNum;
+    private TextView tvPendingPaymentsNum;
+    private TextView tvHighNum;
+    private TextView tvMedNum;
+    private TextView tvLowNum;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -74,6 +80,11 @@ public class HomeFragment extends Fragment {
         // bind layout
         ivCirclePhoto = view.findViewById(R.id.ivCirclePhoto);
         tvCircleName = view.findViewById(R.id.tvCircleName);
+        tvPendingRequestsNum = view.findViewById(R.id.tvPendingRequestsNum);
+        tvPendingPaymentsNum = view.findViewById(R.id.tvPendingPaymentsNum);
+        tvHighNum = view.findViewById(R.id.tvHighNum);
+        tvMedNum = view.findViewById(R.id.tvMedNum);
+        tvLowNum = view.findViewById(R.id.tvLowNum);
 
         // TODO: use for loop
         ivProfile1 = view.findViewById(R.id.ivProfile1);
@@ -91,7 +102,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        CircleUtils.initCircle(false);
         updateCircle(getActivity(), getView());
     }
 
@@ -104,17 +114,20 @@ public class HomeFragment extends Fragment {
      * Query UserCircle objects that contain current user to get circles that user has joined
      */
     public void updateCircle(Context context, View view){
-        if(CircleUtils.getInCircle()){
+        if(CircleUtils.getCurrentCircle() != null){
             Circle currentCircle = CircleUtils.getCurrentCircle();
 
             // fill image and text on home screen
             Glide.with(context).load(currentCircle.getImage().getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCirclePhoto);
             tvCircleName.setText(currentCircle.getName());
 
+            updateStats();
             updateAllProfiles(view);
         }
         else{
-            Log.e(TAG, "error loading circle");
+            Intent i = new Intent(context, AddCircleActivity.class);
+            startActivity(i);
+            ((Activity)context).finish();
         }
     }
 
@@ -188,6 +201,44 @@ public class HomeFragment extends Fragment {
         }
         else{
             tvExtraProfiles.setVisibility(view.GONE);
+        }
+    }
+
+    /**
+     * update home screen expense and chore stats
+     */
+    private void updateStats(){
+        // expense stats
+        List<Expense> paymentList = getMyPendingPayments();
+        if(paymentList != null){
+            tvPendingPaymentsNum.setText("" + paymentList.size());
+        }
+
+        List<Expense> requestList = getMyPendingRequests();
+        if(requestList != null){
+            tvPendingRequestsNum.setText("" + requestList.size());
+        }
+
+        // chores today stats
+        List<Chore> choresToday = getMyChoresToday();
+        if(choresToday != null){
+            int numHigh = 0;
+            int numMed = 0;
+            int numLow = 0;
+            for(int i=0; i<choresToday.size(); i++){
+                if(choresToday.get(i).getPriority().equals(Chore.PRIORITY_HIGH)){
+                    numHigh++;
+                }
+                else if(choresToday.get(i).getPriority().equals(Chore.PRIORITY_MED)){
+                    numMed++;
+                }
+                else if(choresToday.get(i).getPriority().equals(Chore.PRIORITY_LOW)){
+                    numLow++;
+                }
+            }
+            tvHighNum.setText(numHigh + "");
+            tvMedNum.setText(numMed + "");
+            tvLowNum.setText(numLow + "");
         }
     }
 }

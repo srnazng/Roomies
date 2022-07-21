@@ -1,6 +1,6 @@
 package com.example.roomies.adapter;
 
-import static com.example.roomies.utils.TimeUtils.calendarDayOfWeek;
+import static com.example.roomies.utils.Utils.calendarDayOfWeek;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -86,6 +86,8 @@ public class CalendarAdapter extends
 
             // Create adapter passing in the sample user data
             adapter = new EventAdapter(choreList);
+            adapter.setDay(cal);
+
             // Attach the adapter to the recyclerview to populate items
             rvEvents.setAdapter(adapter);
             // Set layout manager to position the items

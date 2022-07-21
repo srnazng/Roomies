@@ -13,11 +13,10 @@
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="0dp"
+        app:cardElevation="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@android:color/secondary_text_dark">
-        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,15 +28,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp">
 
                 <!-- Title, secondary and supporting text -->
                 <TextView
                     android:id="@+id/tvExpenseName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/proxima_nova_reg"
                     android:text="My expense"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
+                    android:textColor="@color/black"
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tvPayTo"
@@ -55,7 +57,20 @@
                     android:layout_marginTop="16dp"
                     android:text="$20.00"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:textColor="@color/black" />
+
+                <HorizontalScrollView
+                    android:id="@+id/chipScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/assigneeChips"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:singleLine="true" />
+                </HorizontalScrollView>
 
             </LinearLayout>
 
@@ -67,12 +82,62 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMarkPaid"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:contentDescription="Mark paid"
+                    android:tooltipText="Mark as paid"
+                    app:icon="@drawable/done"
+                    app:iconSize="25dp" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnComment"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="Comment" />
+                    android:contentDescription="Comment"
+                    android:tooltipText="Comment"
+                    app:icon="@drawable/comment"
+                    app:iconGravity="start"
+                    app:iconSize="25dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRemind"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Remind"
+                    android:tooltipText="Send reminder"
+                    app:icon="@drawable/remind"
+                    app:iconSize="25dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditExpense"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Edit"
+                    android:tooltipText="Edit Expense"
+                    app:icon="@drawable/edit"
+                    app:iconSize="25dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancelTransaction"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="delete"
+                    android:tooltipText="Delete expense"
+                    app:icon="@drawable/delete"
+                    app:iconSize="25dp" />
+
             </LinearLayout>
 
         </LinearLayout>
