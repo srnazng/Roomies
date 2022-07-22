@@ -1,6 +1,7 @@
 package com.example.roomies;
 
 import static com.example.roomies.model.CircleManager.getChoreCollection;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
 import static com.example.roomies.utils.CalendarDayUtils.*;
 import static com.example.roomies.utils.Utils.*;
 
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import java.util.List;
 public class CalendarFragment extends Fragment {
     private RecyclerView rvCalendar;
     private CalendarAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
 
     private Switch switchFilter;
     private TextView tvMonth;
@@ -83,6 +86,17 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 updateMyChores();
+            }
+        });
+
+        // Pull down to refresh
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.calendarSwipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh expense lists
+                getExpenseCollection().initExpenses(getActivity());
+                swipeContainer.setRefreshing(false);
             }
         });
 

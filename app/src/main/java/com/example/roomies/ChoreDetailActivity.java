@@ -32,13 +32,15 @@ import java.util.List;
 public class ChoreDetailActivity extends AppCompatActivity {
     Chore chore;
     private TextView tvTitle;
+    private TextView tvEditor;
     private TextView tvDescription;
     private TextView tvDue;
     private TextView tvRecurrence;
     private ImageView ivRecurrence;
     public static MaterialCardView card;
-    private Button messageButton;
     private Button btnGoogleCalendar;
+    private Button btnComplete;
+    private Button btnEditChore;
     private Calendar day;
     private ImageView ivCircle;
     private ChipGroup assigneeChips;
@@ -60,6 +62,16 @@ public class ChoreDetailActivity extends AppCompatActivity {
         // add chore details to card
         tvTitle = findViewById(R.id.tvDetailTitle);
         tvTitle.setText(chore.getTitle());
+
+        tvEditor = findViewById(R.id.tvEditor);
+        if(chore.getLastEditedBy() == null){
+            String text = "Created by " + chore.getCreator().getString("name");
+            tvEditor.setText(text);
+        }
+        else{
+            String text = "Last edited by " + chore.getLastEditedBy().getString("name");
+            tvEditor.setText(text);
+        }
 
         tvRecurrence = findViewById(R.id.tvRecurrence);
         ivRecurrence = findViewById(R.id.ivRecurrence);
@@ -86,7 +98,6 @@ public class ChoreDetailActivity extends AppCompatActivity {
         card = findViewById(R.id.detailCard);
         card.setLongClickable(false);
         card.setCheckable(true);
-        card.setChecked(getChoreCollection().isCompleted(getChoreCollection().getChoreAssignment(chore)));
 
         btnGoogleCalendar = findViewById(R.id.btnDetailGoogleCalendar);
         btnGoogleCalendar.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +106,20 @@ public class ChoreDetailActivity extends AppCompatActivity {
                 Intent i = new Intent(ChoreDetailActivity.this, GoogleSignInActivity.class);
                 i.putExtra("chore", chore);
                 startActivity(i);
+            }
+        });
+
+        btnComplete = findViewById(R.id.btnComplete);
+        btnComplete.setVisibility(View.GONE);
+
+        btnEditChore = findViewById(R.id.btnEditChore);
+        btnEditChore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ChoreDetailActivity.this, EditChoreActivity.class);
+                i.putExtra("chore", chore);
+                startActivity(i);
+                finish();
             }
         });
 
@@ -124,7 +149,7 @@ public class ChoreDetailActivity extends AppCompatActivity {
             chip.setClickable(false);
             chip.setCheckable(true);
             chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.yellow)));
-            chipCompleted(assignees.get(i), chip, day);
+            chipCompleted(assignees.get(i), chip, day, card);
 
             // user can click their own chip to mark complete
             if(assignees.get(i).getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
@@ -132,6 +157,17 @@ public class ChoreDetailActivity extends AppCompatActivity {
                 chip.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        getChoreCollection().markCompleted(ChoreDetailActivity.this, chore, chip.isChecked(), day);
+                        Log.i(TAG, "checked: " + chip.isChecked());
+                        card.setChecked(chip.isChecked());
+                        updateChoreList();
+                    }
+                });
+                btnComplete.setVisibility(View.VISIBLE);
+                btnComplete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        chip.setChecked(!chip.isChecked());
                         getChoreCollection().markCompleted(ChoreDetailActivity.this, chore, chip.isChecked(), day);
                         Log.i(TAG, "checked: " + chip.isChecked());
                         card.setChecked(chip.isChecked());

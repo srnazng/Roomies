@@ -10,8 +10,9 @@
         <entry key="app/src/main/res/layout/activity_add_chore.xml" value="0.3738314848523843" />
         <entry key="app/src/main/res/layout/activity_add_circle.xml" value="0.6625905797101449" />
         <entry key="app/src/main/res/layout/activity_add_expense.xml" value="0.4649993896484375" />
-        <entry key="app/src/main/res/layout/activity_chore_detail.xml" value="0.5157032171350002" />
+        <entry key="app/src/main/res/layout/activity_chore_detail.xml" value="0.46758157406859396" />
         <entry key="app/src/main/res/layout/activity_circle.xml" value="0.361016845703125" />
+        <entry key="app/src/main/res/layout/activity_edit_chore.xml" value="0.6166152954101562" />
         <entry key="app/src/main/res/layout/activity_edit_expense.xml" value="0.5698237007731503" />
         <entry key="app/src/main/res/layout/activity_expense_detail.xml" value="0.1616544752051658" />
         <entry key="app/src/main/res/layout/activity_google_oauth.xml" value="0.3644251626898048" />
@@ -25,7 +26,8 @@
         <entry key="app/src/main/res/layout/calendar_event.xml" value="0.28176116943359375" />
         <entry key="app/src/main/res/layout/completed_animation.xml" value="0.34117144078666095" />
         <entry key="app/src/main/res/layout/dialog_custom_recurrence.xml" value="0.9520833333333333" />
-        <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.5386144867124796" />
+        <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.11596322607605516" />
+        <entry key="app/src/main/res/layout/fragment_calendar.xml" value="0.2920634920634921" />
         <entry key="app/src/main/res/layout/fragment_chore.xml" value="0.6334478739488164" />
         <entry key="app/src/main/res/layout/fragment_custom_recurrence.xml" value="0.4889176327115307" />
         <entry key="app/src/main/res/layout/fragment_expense.xml" value="0.31898025138381586" />

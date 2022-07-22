@@ -46,6 +46,12 @@ public class ExpenseCollection {
     public ExpenseCollection(){}
 
     public ExpenseCollection(Context context){
+        circleExpenses = new ArrayList<>();
+        circleTransactions = new ArrayList<>();
+        myCompletedPayments = new ArrayList<>();
+        myPendingPayments = new ArrayList<>();
+        myPendingRequests = new ArrayList<>();
+        myCompletedRequests = new ArrayList<>();
         initExpenses(context);
     }
 
@@ -112,11 +118,6 @@ public class ExpenseCollection {
      * Query expenses belonging to current circle
      */
     public void initCircleExpenses(Context context){
-        // initialize circleExpenses
-        if(circleExpenses == null){
-            circleExpenses = new ArrayList<>();
-        }
-
         // no current circle
         if(getCurrentCircle() == null){
             return;
@@ -170,12 +171,6 @@ public class ExpenseCollection {
      * Query transactions belonging to current circle
      */
     public void initCircleTransactions(Context context){
-        if(circleTransactions == null){ circleTransactions = new ArrayList<>(); }
-        if(myCompletedPayments == null){ myCompletedPayments = new ArrayList<>(); }
-        if(myPendingPayments == null){ myPendingPayments = new ArrayList<>(); }
-        if(myPendingRequests == null){ myPendingRequests = new ArrayList<>(); }
-        if(myCompletedRequests == null){ myCompletedRequests = new ArrayList<>(); }
-
         // no current circle
         if(getCurrentCircle() == null){
             return;

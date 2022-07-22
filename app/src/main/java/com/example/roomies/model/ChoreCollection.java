@@ -18,8 +18,6 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.example.roomies.GoogleSignInActivity;
-import com.google.android.material.card.MaterialCardView;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -45,6 +43,14 @@ public class ChoreCollection {
     public ChoreCollection(){}
 
     public ChoreCollection(Context context){
+        circleChores = new ArrayList<>();
+        circleChoreAssignments = new ArrayList<>();
+        myChores = new ArrayList<>();
+        myChoresToday = new ArrayList<>();
+        myPendingChoresToday = new ArrayList<>();
+        myCompletedChoresToday = new ArrayList<>();
+        myChoreAssignments = new ArrayList<>();
+        completionsToday = new ArrayList<>();
         initChores(context);
     }
 
@@ -130,6 +136,98 @@ public class ChoreCollection {
         });
     }
 
+    public void updateChore(Chore entity,
+                            boolean sendInvites,
+                            List<ChoreAssignment> originalChoreAssignments,
+                            List<ParseUser> assignedUsers,
+                            ArrayList<String> assignedEmails,
+                            Context context){
+
+        entity.setLastEditedBy(ParseUser.getCurrentUser());
+
+        // Saves the new object.
+        entity.saveInBackground(e -> {
+            if (e==null){
+                //Save was done
+                List<Chore> list = new ArrayList<>();
+                list.add(entity);
+                Chore.pinAllInBackground(list);
+                reassignChores(entity, sendInvites, originalChoreAssignments,
+                        assignedUsers, assignedEmails, context);
+            }else{
+                //Something went wrong
+                Toast.makeText(context, "Could not update chore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public int listContainsUser(List<ChoreAssignment> list, ParseUser user){
+        for(int i=0; i<list.size(); i++){
+            if(list.get(i).getUser().getObjectId().equals(user.getObjectId())){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void reassignChores(Chore chore,
+                               boolean sendInvites,
+                               List<ChoreAssignment> originalChoreAssignments,
+                               List<ParseUser> assignedUsers,
+                               ArrayList<String> assignedEmails,
+                               Context context){
+        // loop through all assigned users
+        for(int i=0; i<assignedUsers.size(); i++){
+            int index = listContainsUser(originalChoreAssignments, assignedUsers.get(i));
+            if(index >= 0){
+                originalChoreAssignments.remove(index);
+                continue;
+            }
+            ChoreAssignment entity = new ChoreAssignment();
+
+            entity.put("user", assignedUsers.get(i));
+            entity.put("chore", chore);
+            entity.put("circle", getCurrentCircle());
+
+            int finalI = i;
+            entity.saveInBackground(e -> {
+                if (e==null){
+                    // Saves the new object.
+                    getChoreCollection().addChoreAssignment(entity);
+
+                    if(finalI == assignedUsers.size() - 1){
+                        updateChoreList();
+                    }
+                }else{
+                    //Something went wrong
+                    Toast.makeText(context, "Error assigning chore", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, e.getMessage());
+                    return;
+                }
+            });
+        }
+
+        for(ChoreAssignment c : originalChoreAssignments){
+            c.deleteInBackground();
+        }
+
+        //done
+        Toast.makeText(context, "Chore updated success", Toast.LENGTH_SHORT).show();
+        getChoreCollection().addCircleChore(chore);
+
+        // create Google Calendar event
+        // send Google Calendar invites if needed
+        if(sendInvites){
+            Intent i = new Intent(context, GoogleSignInActivity.class);
+            i.putExtra("chore", chore);
+            Log.i(TAG, "final emails: " + assignedEmails.toString());
+            i.putStringArrayListExtra("emails", assignedEmails);
+            context.startActivity(i);
+        }
+
+        ((Activity)context).finish();
+    }
+
     // create ChoreAssignment object for each user assigned chore and add to database
     public void assignChores(Chore chore,
                              boolean sendInvites,
@@ -184,10 +282,6 @@ public class ChoreCollection {
      * @param choreAssignments
      */
     private void updateCompletions(Context context, List<ChoreAssignment> choreAssignments){
-        if(completionsToday == null){
-            completionsToday = new ArrayList<>();
-        }
-
         completionsToday.clear();
 
         // save received chore assignments in this circle to list
@@ -305,15 +399,6 @@ public class ChoreCollection {
      * Initialize list of all chores for current circle
      */
     public void initCircleChores(Context context){
-        if(circleChores == null){ circleChores = new ArrayList<>();}
-        if(circleChoreAssignments == null){ circleChoreAssignments = new ArrayList<>(); }
-        if(myChores == null){ myChores = new ArrayList<>(); }
-        if(myChoresToday == null){ myChoresToday = new ArrayList<>();}
-        if(myPendingChoresToday == null){ myPendingChoresToday = new ArrayList<>();}
-        if(myCompletedChoresToday == null){ myCompletedChoresToday = new ArrayList<>(); }
-        if(myChoreAssignments == null){ myChoreAssignments = new ArrayList<>(); }
-        if(completionsToday == null){ completionsToday = new ArrayList<>(); }
-
         // only get chore assignments for user's current circle
         ParseQuery<ChoreAssignment> query = ParseQuery.getQuery(ChoreAssignment.class).whereEqualTo(ChoreAssignment.KEY_CIRCLE, getCurrentCircle());
 
@@ -451,11 +536,10 @@ public class ChoreCollection {
             return true;
         }
         // recurrence with monthly frequency
-        else if(recurrence.getFrequencyType().equals(Recurrence.TYPE_MONTH)){
-            if(today.get(Calendar.DAY_OF_MONTH) == due.get(Calendar.DAY_OF_MONTH) &&
-                    occursToday_monthFreq(due, recurrence.getFrequency(), today)){
-                return true;
-            }
+        else if(recurrence.getFrequencyType().equals(Recurrence.TYPE_MONTH) &&
+                today.get(Calendar.DAY_OF_MONTH) == due.get(Calendar.DAY_OF_MONTH) &&
+                occursToday_monthFreq(due, recurrence.getFrequency(), today)){
+            return true;
         }
         // recurrence with yearly frequency
         else {

@@ -56,12 +56,12 @@
                     android:id="@+id/tvDetailDue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="5dp"
                     android:text="due today"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDetailTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvEditor" />
 
                 <TextView
                     android:id="@+id/tvDetailDescription"
@@ -111,10 +111,19 @@
                     android:id="@+id/ivRecurrence"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDetailDue"
                     app:srcCompat="@drawable/repeat" />
+
+                <TextView
+                    android:id="@+id/tvEditor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDetailTitle"
+                    tools:text="Last edited by Serena" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -139,15 +148,6 @@
                     app:iconTintMode="add" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnDetailEdit"
-                    style="?attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:text="Edit"
-                    android:visibility="gone" />
-
-                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnDetailCancel"
                     style="?attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
@@ -155,6 +155,28 @@
                     android:layout_marginEnd="8dp"
                     android:text="Cancel"
                     android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnComplete"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Check"
+                    android:tooltipText="Mark chore complete"
+                    app:icon="@drawable/done"
+                    app:iconSize="25dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditChore"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Edit"
+                    android:tooltipText="Edit Chore"
+                    app:icon="@drawable/edit"
+                    app:iconSize="25dp" />
             </LinearLayout>
 
         </LinearLayout>

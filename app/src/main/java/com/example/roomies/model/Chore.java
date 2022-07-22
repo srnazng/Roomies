@@ -18,6 +18,7 @@ public class Chore extends ParseObject {
     public static final String KEY_DUE = "dueDatetime";
     public static final String KEY_RECURRENCE = "recurrence";
     public static final String KEY_DURATION = "duration";
+    public static final String KEY_EDITOR = "lastEditedBy";
 
     public static final String PRIORITY_LOW = "Low";
     public static final String PRIORITY_MED = "Medium";
@@ -72,4 +73,8 @@ public class Chore extends ParseObject {
     public int getDuration() { return getInt(KEY_DURATION); }
 
     public void setDuration( int duration ) { put(KEY_DURATION, duration); }
+
+    public ParseUser getLastEditedBy() { return getParseUser(KEY_EDITOR); }
+
+    public void setLastEditedBy(ParseUser user) { put(KEY_EDITOR, user); }
 }

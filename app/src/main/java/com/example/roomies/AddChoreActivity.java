@@ -1,9 +1,8 @@
 package com.example.roomies;
 
-import static com.example.roomies.ChoreFragment.updateChoreList;
 import static com.example.roomies.model.CircleManager.getChoreCollection;
 import static com.example.roomies.model.CircleManager.getUserCircleList;
-import static com.example.roomies.model.Recurrence.*;
+import static com.example.roomies.utils.ChoreUtils.getEndDate;
 import static com.example.roomies.utils.ChoreUtils.getRepeatMessage;
 import static com.example.roomies.model.CircleManager.getCurrentCircle;
 import static com.example.roomies.utils.Utils.convertFromMilitaryTime;
@@ -17,7 +16,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,10 +36,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.roomies.model.Chore;
-import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.Recurrence;
 import com.example.roomies.model.UserCircle;
-import com.example.roomies.utils.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseUser;
@@ -275,9 +271,9 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
 
     // create Recurrence object
     public void addRecurrence() {
-        Date d = getEndDate();
+        Date d = getEndDate(endDate, numOccurrences, recurrence, date);
         if(d != null){
-            recurrence.setEndDate(getEndDate());
+            recurrence.setEndDate(getEndDate(endDate, numOccurrences, recurrence, date));
         }
 
         if(numOccurrences == null){
@@ -297,71 +293,6 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    // end date is last day of occurrence
-    public Date getEndDate() {
-        if(endDate == null && numOccurrences == null){
-            // never end
-            endDate = Calendar.getInstance();
-            endDate.setTime(date.getTime());
-            endDate.set(Calendar.YEAR, date.get(Calendar.YEAR) + 100);
-            Utils.clearTime(endDate);
-        }
-        else if(endDate == null){
-            // after number of occurrences
-            endDate = Calendar.getInstance();
-            endDate.setTime(date.getTime());
-            Utils.clearTime(endDate);
-
-            if(recurrence.getFrequencyType().equals(TYPE_DAY)){
-                // add numOccurrence days to first due date
-                endDate.add(Calendar.DAY_OF_MONTH, (numOccurrences - 1) * recurrence.getFrequency());
-            }
-            else if(recurrence.getFrequencyType().equals(TYPE_WEEK)){
-                // find last day of week chore occurs on
-                List<DaysOfWeek> days = new ArrayList<>();
-                String daysList = recurrence.getDaysOfWeek();
-                if (daysList != null) {
-                    for (int i=0;i<daysList.length();i++){
-                        if(daysList.charAt(i) != ','){
-                            DaysOfWeek day = DaysOfWeek.values()[Integer.parseInt(String.valueOf(daysList.charAt(i)))];
-                            days.add(day);
-                        }
-                    }
-                    Log.e(TAG, "days list: " + days);
-                }
-
-                if(!days.isEmpty()){
-                    DaysOfWeek last = days.get(0);
-                    if(days != null && days.size() > 0){
-                        for(int i=0; i<days.size(); i++){
-                            if(days.get(i).compareTo(last) > 0){
-                                last = days.get(i);
-                            }
-                        }
-                        if(DaysOfWeek.values()[date.get(Calendar.DAY_OF_WEEK) - 1].compareTo(last) < 0){
-                            int diff = last.ordinal() - DaysOfWeek.values()[date.get(Calendar.DAY_OF_WEEK) - 1].ordinal();
-                            endDate.add(Calendar.DAY_OF_YEAR, diff);
-                            Log.e(TAG, "diff " + diff);
-                        }
-                    }
-
-                    Log.e(TAG, "last: " + last.ordinal());
-                    Log.e(TAG, "end on " + endDate.toString());
-                }
-
-                // find last occurrence based last day of week
-                endDate.add(Calendar.WEEK_OF_YEAR, (numOccurrences - 1) * recurrence.getFrequency());
-            }
-            else if(recurrence.getFrequencyType().equals(TYPE_MONTH)){
-                endDate.add(Calendar.MONTH, (numOccurrences - 1) * recurrence.getFrequency());
-            }
-            else if(recurrence.getFrequencyType().equals(TYPE_YEAR)){
-                endDate.add(Calendar.YEAR, (numOccurrences - 1) * recurrence.getFrequency());
-            }
-        }
-        return endDate.getTime();
     }
 
     // create chips for assigning chore to users
@@ -408,7 +339,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     // recurrence dialog
     private void showRepeatDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        CustomRecurrenceFragment customRecurrenceFragment = CustomRecurrenceFragment.newInstance();
+        CustomRecurrenceFragment customRecurrenceFragment = CustomRecurrenceFragment.newInstance(new Recurrence());
         customRecurrenceFragment.show(fm, "fragment_custom_recurrence");
     }
 

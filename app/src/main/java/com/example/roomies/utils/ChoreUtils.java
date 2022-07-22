@@ -1,5 +1,6 @@
 package com.example.roomies.utils;
 
+import static com.example.roomies.model.Recurrence.*;
 import static com.example.roomies.utils.Utils.clearTime;
 import static com.example.roomies.utils.Utils.getMonthForInt;
 
@@ -16,12 +17,16 @@ import com.example.roomies.model.Chore;
 import com.example.roomies.model.ChoreAssignment;
 import com.example.roomies.model.ChoreCompleted;
 import com.example.roomies.model.Recurrence;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ChoreUtils {
@@ -33,7 +38,7 @@ public class ChoreUtils {
      * @param chip
      * @param today
      */
-    public static void chipCompleted(ChoreAssignment choreAssignment, Chip chip, Calendar today){
+    public static void chipCompleted(ChoreAssignment choreAssignment, Chip chip, Calendar today, MaterialCardView card){
         // find time period of completion
         clearTime(today);
         Calendar tomorrow = Calendar.getInstance();
@@ -60,9 +65,15 @@ public class ChoreUtils {
                 // mark chip
                 if(!choreCompletedList.isEmpty() && choreCompletedList.get(0).getCompleted()){
                     chip.setChecked(true);
+                    if(choreAssignment.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                        card.setChecked(true);
+                    }
                 }
                 else{
                     chip.setChecked(false);
+                    if(choreAssignment.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+                        card.setChecked(false);
+                    }
                 }
             }
         });
@@ -130,5 +141,71 @@ public class ChoreUtils {
         }
 
         return message;
+    }
+
+
+    // end date is last day of occurrence
+    public static Date getEndDate(Calendar endDate, Integer numOccurrences, Recurrence recurrence, Calendar date) {
+        if(endDate == null && numOccurrences == null){
+            // never end
+            endDate = Calendar.getInstance();
+            endDate.setTime(date.getTime());
+            endDate.set(Calendar.YEAR, date.get(Calendar.YEAR) + 100);
+            Utils.clearTime(endDate);
+        }
+        else if(endDate == null){
+            // after number of occurrences
+            endDate = Calendar.getInstance();
+            endDate.setTime(date.getTime());
+            Utils.clearTime(endDate);
+
+            if(recurrence.getFrequencyType().equals(TYPE_DAY)){
+                // add numOccurrence days to first due date
+                endDate.add(Calendar.DAY_OF_MONTH, (numOccurrences - 1) * recurrence.getFrequency());
+            }
+            else if(recurrence.getFrequencyType().equals(TYPE_WEEK)){
+                // find last day of week chore occurs on
+                List<DaysOfWeek> days = new ArrayList<>();
+                String daysList = recurrence.getDaysOfWeek();
+                if (daysList != null) {
+                    for (int i=0;i<daysList.length();i++){
+                        if(daysList.charAt(i) != ','){
+                            DaysOfWeek day = DaysOfWeek.values()[Integer.parseInt(String.valueOf(daysList.charAt(i)))];
+                            days.add(day);
+                        }
+                    }
+                    Log.e(TAG, "days list: " + days);
+                }
+
+                if(!days.isEmpty()){
+                    DaysOfWeek last = days.get(0);
+                    if(days != null && days.size() > 0){
+                        for(int i=0; i<days.size(); i++){
+                            if(days.get(i).compareTo(last) > 0){
+                                last = days.get(i);
+                            }
+                        }
+                        if(DaysOfWeek.values()[date.get(Calendar.DAY_OF_WEEK) - 1].compareTo(last) < 0){
+                            int diff = last.ordinal() - DaysOfWeek.values()[date.get(Calendar.DAY_OF_WEEK) - 1].ordinal();
+                            endDate.add(Calendar.DAY_OF_YEAR, diff);
+                            Log.e(TAG, "diff " + diff);
+                        }
+                    }
+
+                    Log.e(TAG, "last: " + last.ordinal());
+                    Log.e(TAG, "end on " + endDate.toString());
+                }
+
+                // find last occurrence based last day of week
+                endDate.add(Calendar.WEEK_OF_YEAR, (numOccurrences - 1) * recurrence.getFrequency());
+            }
+            else if(recurrence.getFrequencyType().equals(TYPE_MONTH)){
+                endDate.add(Calendar.MONTH, (numOccurrences - 1) * recurrence.getFrequency());
+            }
+            else if(recurrence.getFrequencyType().equals(TYPE_YEAR)){
+                endDate.add(Calendar.YEAR, (numOccurrences - 1) * recurrence.getFrequency());
+            }
+        }
+        return endDate.getTime();
     }
 }

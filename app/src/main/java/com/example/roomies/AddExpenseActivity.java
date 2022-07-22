@@ -179,6 +179,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         List<UserCircle> userCircleList = getUserCircleList();
         if(userCircleList == null){
             Toast.makeText(this, "Error accessing circle", Toast.LENGTH_SHORT).show();
+            return;
         }
         for(int i=0; i<userCircleList.size(); i++){
             LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

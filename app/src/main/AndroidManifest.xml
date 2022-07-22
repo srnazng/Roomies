@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Roomies"
         tools:targetApi="31">
         <activity
+            android:name=".EditChoreActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChoreDetailActivity"
             android:exported="false" />
         <activity
