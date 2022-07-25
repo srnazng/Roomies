@@ -138,7 +138,6 @@ public class AddExpenseActivity extends AppCompatActivity {
         layoutAssign = findViewById(R.id.layoutAssign);
         checkSplit.setChecked(true);
         checkSplit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-
             // toggle showing the assign to section
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -211,6 +210,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                     else{
                         etAmount.setVisibility(View.INVISIBLE);
                     }
+                    findAssignedSum(tvSplitSum, transactionViews);
                 }
             });
 
