@@ -8,11 +8,13 @@ public class CalendarMonth{
     private List<CalendarDay> days;
     private int month;
     private int year;
+    private boolean myChoresOnly;
 
-    public CalendarMonth(int year, int month){
+    public CalendarMonth(int year, int month, boolean myChoresOnly){
         this.month = month;
         this.year = year;
         this.days = new ArrayList<>();
+        this.myChoresOnly = myChoresOnly;
     }
 
     public List<CalendarDay> getDays() {
