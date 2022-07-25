@@ -57,6 +57,8 @@ public class Messaging extends FirebaseMessagingService {
                 getCurrentCircle().getNotificationKey().isEmpty()){
                 generateCircleNotificationKey();
             }
+
+            updateUserNotificationKey();
         }
     }
 
@@ -74,6 +76,7 @@ public class Messaging extends FirebaseMessagingService {
         FirebaseMessaging.getInstance().deleteToken();
         ParseUser.getCurrentUser().put("registerCircleNotifs", false);
         ParseUser.getCurrentUser().put("notificationToken", "");
+        ParseUser.getCurrentUser().put("notificationKey", "");
         ParseUser.getCurrentUser().saveInBackground(e -> {
             if(e != null ){
                 Log.e(TAG, e.getMessage());
@@ -93,7 +96,7 @@ public class Messaging extends FirebaseMessagingService {
             return;
         }
         if(ParseUser.getCurrentUser().getString("notificationKey") == null){
-            generateUserNotificationKey();
+            updateUserNotificationKey();
             return;
         }
 
@@ -140,7 +143,8 @@ public class Messaging extends FirebaseMessagingService {
     /**
      * Create notification group for user
      */
-    private static void generateUserNotificationKey() {
+    private static void updateUserNotificationKey() {
+        Log.i(TAG, "updateUserNotificationKey");
         if(ParseUser.getCurrentUser().getString("notificationToken") == null){
             Log.e(TAG, "no notification token");
             return;
@@ -149,7 +153,50 @@ public class Messaging extends FirebaseMessagingService {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    OkHttpClient client = new OkHttpClient().newBuilder()
+                            .build();
+                    MediaType mediaType = MediaType.parse("application/json");
+                    RequestBody body = RequestBody.create(mediaType, "");
+                    String url = "https://fcm.googleapis.com/fcm/notification?notification_key_name=user-" + ParseUser.getCurrentUser().getObjectId();
+                    Request request = new Request.Builder()
+                            .url(url)
+                            .addHeader("Content-Type", "application/json")
+                            .addHeader("Authorization", API_KEY)
+                            .addHeader("project_id", PROJECT_ID)
+                            .build();
+                    Response response = client.newCall(request).execute();
+
+                    ResponseBody responseBody = response.body();
+
+                    JSONObject obj = new JSONObject(responseBody.string());
+                    if(obj.has("error")){
+                        Log.i(TAG, obj.getString("error"));
+                        generateNewDeviceKey();
+                    }
+                    else{
+                        String key = obj.getString("notification_key");
+                        Log.i(TAG, "User device group key: " + key);
+                        ParseUser.getCurrentUser().put("notificationKey", key);
+                        ParseUser.getCurrentUser().saveInBackground();
+                    }
+                }
+                catch (Exception err){
+                    Log.e(TAG, err.getMessage());
+                }
+
+            }
+        });
+
+        thread.start();
+    }
+
+    public static void generateNewDeviceKey(){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
                 try  {
+                    Log.i(TAG, "generateNewDeviceKey");
                     OkHttpClient client = new OkHttpClient().newBuilder()
                             .build();
                     MediaType mediaType = MediaType.parse("application/json");
@@ -183,7 +230,6 @@ public class Messaging extends FirebaseMessagingService {
                 }
             }
         });
-
         thread.start();
     }
 
@@ -330,7 +376,7 @@ public class Messaging extends FirebaseMessagingService {
                             addToUserGroup();
                         }
                         else{
-                            generateUserNotificationKey();
+                            updateUserNotificationKey();
                         }
 
                         if(!user.getBoolean("registerCircleNotifs")){
