@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -52,6 +53,8 @@ public class HomeFragment extends Fragment {
     private TextView tvMedNum;
     private TextView tvLowNum;
 
+    private ConstraintLayout profileGroup;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -85,8 +88,16 @@ public class HomeFragment extends Fragment {
         tvHighNum = view.findViewById(R.id.tvHighNum);
         tvMedNum = view.findViewById(R.id.tvMedNum);
         tvLowNum = view.findViewById(R.id.tvLowNum);
+        profileGroup = view.findViewById(R.id.profileGroup);
+        profileGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // view list of users in circle
+                Intent i = new Intent(getActivity(), CircleProfilesActivity.class);
+                getActivity().startActivity(i);
+            }
+        });
 
-        // TODO: use for loop
         ivProfile1 = view.findViewById(R.id.ivProfile1);
         ivProfile2 = view.findViewById(R.id.ivProfile2);
         ivProfile3 = view.findViewById(R.id.ivProfile3);

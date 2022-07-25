@@ -30,7 +30,6 @@ public class CircleManager {
 
     public static final String TAG = "CircleManager";
 
-
     public static Circle getCurrentCircle(){
         return currentCircle;
     }
