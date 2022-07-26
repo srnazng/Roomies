@@ -12,13 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="#FFFFFF"
+        android:backgroundTintMode="src_over"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
         app:cardElevation="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@android:color/secondary_text_dark">
+        app:strokeColor="@color/black">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,9 +50,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/proxima_nova_reg"
+                    android:text="My chore"
                     android:textColor="@color/black"
                     android:textSize="22sp"
-                    android:text="My chore"
                     app:layout_constraintStart_toEndOf="@+id/ivPriorityCircle"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,7 +63,7 @@
                     android:layout_marginTop="8dp"
                     android:text="due today"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/grey"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
@@ -72,7 +74,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Due date"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDue" />
 

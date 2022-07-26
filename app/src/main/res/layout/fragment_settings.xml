@@ -131,6 +131,7 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="25dp"
             android:text="Share join code:"
+            android:textColor="@color/grey"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCircleTitle" />

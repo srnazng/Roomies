@@ -13,11 +13,18 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="textAppearanceLabelLarge">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="background">@color/white</item>
     </style>
     <style name="Theme.Roomies.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
-    <style name="Theme.Roomies.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.Roomies.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.Roomies.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+    <style name="Theme.Roomies.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" >
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
 </resources>

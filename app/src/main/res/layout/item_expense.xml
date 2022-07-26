@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="src_over"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
@@ -48,7 +50,7 @@
                     android:layout_marginTop="8dp"
                     android:text="to User"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:textColor="@color/grey" />
 
                 <TextView
                     android:id="@+id/tvTotal"

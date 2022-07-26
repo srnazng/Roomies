@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ChoreDetailActivity">
 
     <com.google.android.material.card.MaterialCardView
@@ -11,6 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="src_over"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
@@ -45,10 +49,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text="My chore"
                     android:fontFamily="@font/proxima_nova_reg"
-                    android:textSize="26sp"
+                    android:text="My chore"
                     android:textColor="@color/black"
+                    android:textSize="26sp"
                     app:layout_constraintStart_toEndOf="@+id/ivCircle"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +63,7 @@
                     android:layout_marginTop="5dp"
                     android:text="due today"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/grey"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvEditor" />
 
@@ -70,7 +74,7 @@
                     android:layout_marginTop="15dp"
                     android:text="description"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvRecurrence" />
 
@@ -103,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="Repeats every day"
+                    android:textColor="@color/grey"
                     app:layout_constraintBottom_toBottomOf="@+id/ivRecurrence"
                     app:layout_constraintStart_toEndOf="@+id/ivRecurrence"
                     app:layout_constraintTop_toTopOf="@+id/ivRecurrence" />
@@ -121,6 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:textColor="@color/grey"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDetailTitle"
                     tools:text="Last edited by Serena" />

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
+    android:background="@color/white"
+    android:padding="10dp"
     tools:context=".ExpenseDetailActivity">
 
 
@@ -12,6 +13,8 @@
         android:id="@+id/expenseDetailCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="src_over"
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
@@ -39,9 +42,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/proxima_nova_reg"
                     android:text="My expense"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
                     android:textColor="@color/black"
-                    android:textSize="26sp"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
+                    android:textSize="26sp" />
 
                 <TextView
                     android:id="@+id/tvCreator"
@@ -50,7 +53,7 @@
                     android:layout_marginTop="8dp"
                     android:text="to User"
                     android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:textColor="@color/grey" />
 
                 <TextView
                     android:id="@+id/tvAmount"
@@ -210,6 +213,7 @@
             android:hint="Comment"
             android:inputType="textPersonName"
             android:minHeight="48dp"
+            android:textColor="@color/grey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivSend"
             app:layout_constraintStart_toEndOf="@+id/ivProfile" />
