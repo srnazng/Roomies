@@ -20,6 +20,12 @@
         android:title="Expenses"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_shopping_list"
+        android:enabled="true"
+        android:icon="@drawable/shopping_cart"
+        android:title="Groceries"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_settings"
         android:enabled="true"
         android:icon="@drawable/settings"

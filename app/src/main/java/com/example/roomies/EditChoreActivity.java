@@ -109,10 +109,15 @@ public class EditChoreActivity extends AppCompatActivity implements CustomRecurr
             public void onClick(View v) {
                 if(switchEditAllDay.isChecked()){
                     // allow user to select time
+                    Log.i(TAG, "set gone");
                     tvEditTime.setVisibility(View.GONE);
                 }
                 else{
                     // don't allow user to select time
+                    Log.i(TAG, "set visible");
+                    int hour = date.get(Calendar.HOUR_OF_DAY);
+                    int minute = date.get(Calendar.MINUTE);
+                    tvEditTime.setText(convertFromMilitaryTime(hour, minute));
                     tvEditTime.setVisibility(View.VISIBLE);
                 }
             }

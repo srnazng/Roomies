@@ -27,6 +27,7 @@ public class CircleManager {
 
     private static ChoreCollection choreCollection;
     private static ExpenseCollection expenseCollection;
+    private static GroceryCollection groceryCollection;
 
     public static final String TAG = "CircleManager";
 
@@ -43,6 +44,8 @@ public class CircleManager {
     public static ChoreCollection getChoreCollection() { return choreCollection; }
 
     public static ExpenseCollection getExpenseCollection() { return expenseCollection; }
+
+    public static GroceryCollection getGroceryCollection() { return groceryCollection; }
 
     /**
      * clear locally stored circle information
@@ -106,6 +109,7 @@ public class CircleManager {
             if(firstInit){
                 choreCollection = new ChoreCollection(context);
                 expenseCollection = new ExpenseCollection(context);
+                groceryCollection = new GroceryCollection(context);
                 CalendarDayUtils.initCalendar();
             }
             initUserCircleList(context);

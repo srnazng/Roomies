@@ -54,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
                         // go to house expense screen
                         selectedFragment = ExpenseFragment.newInstance();
                         break;
+                    case R.id.action_shopping_list:
+                        // go to shopping list screen
+                        selectedFragment = ShoppingListFragment.newInstance();
+                        break;
                     case R.id.action_settings:
                         // go to settings screen (manage user account and circle)
                         selectedFragment = SettingsFragment.newInstance();
