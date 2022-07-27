@@ -16,8 +16,8 @@
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
 
             <TextView
                 android:id="@+id/tvChoreTitle"
@@ -321,6 +321,34 @@
                 app:layout_constraintTop_toBottomOf="@+id/switchGoogleCalendar"
                 app:srcCompat="@drawable/invite"
                 app:tint="@color/black" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/points"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="10dp"
+                android:clipToPadding="false"
+                android:elevation="1dp"
+                android:textAlignment="textStart"
+                app:boxBackgroundColor="@color/white"
+                app:boxCollapsedPaddingTop="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switchInvite">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPoints"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="1dp"
+                    android:hint="Points"
+                    android:inputType="number"
+                    android:text="1"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

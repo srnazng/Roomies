@@ -71,12 +71,12 @@
                     android:id="@+id/tvDetailDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="20dp"
                     android:text="description"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvRecurrence" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivRecurrence" />
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -116,10 +116,11 @@
                     android:id="@+id/ivRecurrence"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="3dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDetailDue"
-                    app:srcCompat="@drawable/repeat" />
+                    app:layout_constraintTop_toBottomOf="@+id/ivPoints"
+                    app:srcCompat="@drawable/repeat"
+                    app:tint="@color/turquoise" />
 
                 <TextView
                     android:id="@+id/tvEditor"
@@ -130,6 +131,27 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDetailTitle"
                     tools:text="Last edited by Serena" />
+
+                <ImageView
+                    android:id="@+id/ivPoints"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="3dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDetailDue"
+                    app:srcCompat="@drawable/star_outline"
+                    app:tint="@color/yellow" />
+
+                <TextView
+                    android:id="@+id/tvPoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="5 points"
+                    android:textColor="@color/grey"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivPoints"
+                    app:layout_constraintStart_toEndOf="@+id/ivPoints"
+                    app:layout_constraintTop_toTopOf="@+id/ivPoints" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -36,6 +36,7 @@ public class ChoreDetailActivity extends AppCompatActivity {
     private TextView tvDescription;
     private TextView tvDue;
     private TextView tvRecurrence;
+    private TextView tvPoint;
     private ImageView ivRecurrence;
     public static MaterialCardView card;
     private Button btnGoogleCalendar;
@@ -91,6 +92,16 @@ public class ChoreDetailActivity extends AppCompatActivity {
         if(chore.getDescription().isEmpty()){
             tvDescription.setVisibility(View.GONE);
         }
+
+        tvPoint = findViewById(R.id.tvPoint);
+        String points;
+        if(chore.getPoints() == 1){
+            points = chore.getPoints() + " point";
+        }
+        else{
+            points = chore.getPoints() + " points";
+        }
+        tvPoint.setText(points);
 
         tvDue = findViewById(R.id.tvDetailDue);
         tvDue.setText(formatDue(chore, day));

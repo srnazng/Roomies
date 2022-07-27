@@ -107,7 +107,8 @@
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="20dp"
             android:background="@color/turquoise"
-            android:paddingBottom="5dp"
+            android:paddingHorizontal="5dp"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -120,14 +121,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
+                android:fontFamily="@font/proxima_nova_bold"
                 android:text="House Expenses"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:fontFamily="@font/proxima_nova_bold"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivToExpenses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:src="@drawable/arrow"
+                app:layout_constraintBottom_toBottomOf="@+id/tvExpenses"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvExpenses"
+                app:tint="@color/grey" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -212,8 +224,9 @@
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="10dp"
             android:background="@color/turquoise"
+            android:paddingHorizontal="5dp"
             android:paddingTop="10dp"
-            android:paddingBottom="5dp"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.233"
@@ -221,14 +234,25 @@
             app:layout_constraintTop_toBottomOf="@+id/choreListLayout"
             app:layout_constraintVertical_bias="0.063">
 
+            <ImageView
+                android:id="@+id/ivToChores"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:src="@drawable/arrow"
+                app:layout_constraintBottom_toBottomOf="@+id/tvChores"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvChores"
+                app:tint="@color/grey" />
+
             <TextView
                 android:id="@+id/tvChores"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Today's To Dos"
                 android:fontFamily="@font/proxima_nova_bold"
-                android:textSize="20sp"
+                android:text="Today's To Dos"
                 android:textColor="@color/white"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

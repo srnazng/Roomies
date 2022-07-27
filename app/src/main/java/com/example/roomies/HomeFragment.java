@@ -26,6 +26,7 @@ import com.example.roomies.model.Chore;
 import com.example.roomies.model.Circle;
 import com.example.roomies.model.Expense;
 import com.example.roomies.model.UserCircle;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseFile;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class HomeFragment extends Fragment {
 
     private ImageView ivCirclePhoto;
     private TextView tvCircleName;
+    private ImageView ivToExpenses;
+    private ImageView ivToChores;
 
     private ImageView ivProfile1;
     private ImageView ivProfile2;
@@ -104,6 +107,25 @@ public class HomeFragment extends Fragment {
         ivProfile4 = view.findViewById(R.id.ivProfile4);
         ivProfile5 = view.findViewById(R.id.ivProfile5);
         tvExtraProfiles = view.findViewById(R.id.tvExtraProfiles);
+
+        ivToChores = view.findViewById(R.id.ivToChores);
+        ivToChores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // go to chore fragment
+                BottomNavigationView menu = getActivity().findViewById(R.id.bottom_navigation);
+                menu.setSelectedItemId(R.id.action_chores);
+            }
+        });
+        ivToExpenses = view.findViewById(R.id.ivToExpenses);
+        ivToExpenses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // go to expense fragment
+                BottomNavigationView menu = getActivity().findViewById(R.id.bottom_navigation);
+                menu.setSelectedItemId(R.id.action_expenses);
+            }
+        });
 
         updateCircle(getActivity(), view);
 

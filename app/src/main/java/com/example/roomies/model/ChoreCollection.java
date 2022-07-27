@@ -560,6 +560,8 @@ public class ChoreCollection {
      */
     public void markCompleted(Context context, Chore chore, boolean completed, Calendar day){
         ChoreAssignment choreAssignment = getChoreAssignment(chore);
+        
+        addPoints(ParseUser.getCurrentUser(), chore, completed);
 
         if(choreAssignment == null){
             return;
@@ -589,6 +591,15 @@ public class ChoreCollection {
             }
             return task;
         }, ContextCompat.getMainExecutor(context));
+    }
+
+    private boolean addPoints(ParseUser user, Chore chore, boolean completed){
+        if(completed){
+            return CircleManager.addPoints(user, chore.getPoints());
+        }
+        else{
+            return CircleManager.addPoints(user, -1 * chore.getPoints());
+        }
     }
 
     private void setNewCompletion(List<ChoreCompleted> chores,

@@ -7,10 +7,10 @@
         <entry key="app/src/main/res/drawable-v24/home-48px.xml" value="0.309" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.171" />
         <entry key="app/src/main/res/font/cooperhewitt.xml" value="0.16126042632066728" />
-        <entry key="app/src/main/res/layout/activity_add_chore.xml" value="0.3738314848523843" />
+        <entry key="app/src/main/res/layout/activity_add_chore.xml" value="0.26870269775390626" />
         <entry key="app/src/main/res/layout/activity_add_circle.xml" value="0.6625905797101449" />
         <entry key="app/src/main/res/layout/activity_add_expense.xml" value="0.3870967741935484" />
-        <entry key="app/src/main/res/layout/activity_chore_detail.xml" value="0.46758157406859396" />
+        <entry key="app/src/main/res/layout/activity_chore_detail.xml" value="0.8181818181818182" />
         <entry key="app/src/main/res/layout/activity_circle.xml" value="0.361016845703125" />
         <entry key="app/src/main/res/layout/activity_circle_profiles.xml" value="0.26024096385542167" />
         <entry key="app/src/main/res/layout/activity_edit_chore.xml" value="0.6166152954101562" />
@@ -21,7 +21,7 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.23734893798828127" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19855957031250002" />
         <entry key="app/src/main/res/layout/activity_new_circle.xml" value="0.491796875" />
-        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.4289245982694685" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.35431674914837474" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.35975952148437507" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.17534637451171875" />
         <entry key="app/src/main/res/layout/calendar_day.xml" value="0.5283459945284854" />
@@ -33,7 +33,7 @@
         <entry key="app/src/main/res/layout/fragment_chore.xml" value="0.6334478739488164" />
         <entry key="app/src/main/res/layout/fragment_custom_recurrence.xml" value="0.4889176327115307" />
         <entry key="app/src/main/res/layout/fragment_expense.xml" value="0.31898025138381586" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.29570735800285775" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.4965928085022442" />
         <entry key="app/src/main/res/layout/fragment_manage_account.xml" value="0.4793778941326938" />
         <entry key="app/src/main/res/layout/fragment_manage_circle.xml" value="0.44114583333333335" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.7577763070814031" />
@@ -59,7 +59,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.23853820598006645" />
+        <option name="scale" value="0.5360742623465402" />
       </ProjectState>
     </option>
   </component>

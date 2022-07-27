@@ -8,6 +8,7 @@ import com.parse.ParseUser;
 public class UserCircle extends ParseObject {
     public static final String KEY_USER = "user";
     public static final String KEY_CIRCLE = "circle";
+    public static final String KEY_POINTS = "points";
 
     public ParseUser getUser(){
         return getParseUser(KEY_USER);
@@ -22,4 +23,8 @@ public class UserCircle extends ParseObject {
     }
 
     public void setCircle(Circle circle) { put(KEY_CIRCLE, circle); }
+
+    public int getPoints() { return getInt(KEY_POINTS); }
+
+    public void addPoints( int num ) { put(KEY_POINTS, getPoints() + num ); }
 }

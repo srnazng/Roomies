@@ -39,6 +39,13 @@ public class CircleProfilesActivity extends AppCompatActivity {
         rvProfiles.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        users = getUsers();
+        adapter.notifyDataSetChanged();
+    }
+
     // get all users in circle
     public List<ParseUser> getUsers(){
         List<ParseUser> list = new ArrayList<>();

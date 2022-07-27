@@ -1,5 +1,7 @@
 package com.example.roomies;
 
+import static com.example.roomies.model.CircleManager.getPoints;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -25,6 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvCashApp;
     private TextView tvVenmoLabel;
     private TextView tvCashAppLabel;
+    private TextView tvPoints;
     private String cashApp;
     private String venmo;
 
@@ -58,7 +61,19 @@ public class ProfileActivity extends AppCompatActivity {
         ivCashApp = findViewById(R.id.ivCashApp);
         tvCashAppLabel = findViewById(R.id.tvCashAppLabel);
 
+        tvPoints = findViewById(R.id.tvPoints);
+        tvPoints.setText(getPointsString());
+
         setButtons();
+    }
+
+    // points plurality
+    public String getPointsString(){
+        int points = getPoints(user);
+        if(points == 1){
+            return points + " point";
+        }
+        return points + " points";
     }
 
     public void setButtons() {

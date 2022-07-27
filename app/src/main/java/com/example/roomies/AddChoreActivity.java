@@ -18,6 +18,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 import com.example.roomies.model.Chore;
 import com.example.roomies.model.Recurrence;
 import com.example.roomies.model.UserCircle;
+import com.example.roomies.utils.InputFilterMinMax;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.parse.ParseUser;
@@ -62,6 +64,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
     private Button btnAdd;
     private ImageView ivRepeat;
     private TextView tvRepeat;
+    private EditText etPoints;
 
     private List<ParseUser> assignedUsers;
     private ArrayList<String> assignedEmails;
@@ -87,6 +90,8 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         etChoreName = findViewById(R.id.etChoreName);
         etChoreDescription = findViewById(R.id.etChoreDescription);
         radioPriority = findViewById(R.id.radioPriority);
+        etPoints = findViewById(R.id.etPoints);
+        etPoints.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "10")});
 
         // add chore to Google Calendar
         switchGoogleCalendar = findViewById(R.id.switchGoogleCalendar);
@@ -241,6 +246,7 @@ public class AddChoreActivity extends AppCompatActivity implements CustomRecurre
         entity.put("creator", ParseUser.getCurrentUser());
         entity.put("title", etChoreName.getText().toString());
         entity.put("description", etChoreDescription.getText().toString());
+        entity.put("points", Integer.parseInt(etPoints.getText().toString()));
 
         int duration = Integer.parseInt(etDuration.getText().toString());
         if(spDuration.getSelectedItem().toString().equals("hours") ||
