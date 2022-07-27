@@ -2,6 +2,7 @@ package com.example.roomies.utils;
 
 import static com.example.roomies.model.CircleManager.getChoreCollection;
 import static com.example.roomies.model.CircleManager.getExpenseCollection;
+import static com.example.roomies.model.CircleManager.getGroceryCollection;
 import static com.example.roomies.utils.CalendarDayUtils.clearCalendarCache;
 import static com.example.roomies.utils.CalendarDayUtils.setFirstOfMonth;
 
@@ -46,6 +47,7 @@ public class Session {
     public static void endSession(){
         getChoreCollection().clearAll();
         getExpenseCollection().clearAll();
+        getGroceryCollection().clearAll();
         CircleManager.clearAll();
         setFirstOfMonth(null);
         clearCalendarCache();

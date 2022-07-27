@@ -26,6 +26,10 @@ public class GroceryCollection {
         initGroceries(context);
     }
 
+    public void clearAll(){
+        groceryList.clear();
+    }
+
     /**
      * Retrieve groceryList sorted based on completion
      * @return
@@ -133,13 +137,17 @@ public class GroceryCollection {
      */
     public void deleteCompleted(){
         int size = groceryList.size();
+        List<GroceryItem> toDelete = new ArrayList<>();
         for(int i = size - 1; i >= 0; i--){
             GroceryItem item = groceryList.get(i);
             if(item.getCompleted()){
                 item.deleteInBackground();
+                toDelete.add(item);
                 groceryList.remove(item);
             }
         }
+
+        GroceryItem.deleteAllInBackground(toDelete);
         updateList();
     }
 
