@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -106,6 +107,7 @@ public class GroceryCollection {
     public void setGroceries(List<GroceryItem> list){
         groceryList.clear();
         groceryList.addAll(list);
+        updateList();
     }
 
     /**
@@ -114,6 +116,7 @@ public class GroceryCollection {
      */
     public void toggleGroceryCompletion(GroceryItem groceryItem){
         groceryItem.setCompleted(!groceryItem.getCompleted());
+        groceryItem.setCompletedBy(ParseUser.getCurrentUser());
         groceryItem.saveInBackground(e -> {
             if(e != null){
                 Log.e(TAG, "Error marking item completed " + e);

@@ -65,7 +65,14 @@ public class ShoppingAdapter extends RecyclerView.Adapter<ShoppingAdapter.ViewHo
 
         public void bind(GroceryItem item){
             // custom to grocery item
-            checkBox.setText(item.getName());
+
+            String text = item.getName();
+            // show who completed grocery item if applicable
+            if(item.getCompleted() && item.getCompletedBy() != null){
+                text = text + " - " + item.getCompletedBy().getString("name");
+            }
+
+            checkBox.setText(text);
             checkBox.setChecked(item.getCompleted());
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override

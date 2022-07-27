@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,9 @@ public class ShoppingListFragment extends Fragment {
     private EditText etGrocery;
     private Button btnAddGrocery;
     private ImageView ivSweep;
+    private SwipeRefreshLayout grocerySwipeContainer;
+
+    public static final String TAG = "ShoppingListFragment";
 
     private static List<GroceryItem> groceries;
 
@@ -81,6 +85,18 @@ public class ShoppingListFragment extends Fragment {
         // Set layout manager to position the items
         rvGroceries.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        // pull down to refresh
+        grocerySwipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.grocerySwipeContainer);
+        // Setup refresh listener which triggers new data loading
+        grocerySwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // refresh shopping list
+                getGroceryCollection().initGroceries(getActivity());
+                grocerySwipeContainer.setRefreshing(false);
+            }
+        });
+
         return view;
     }
 
@@ -93,6 +109,8 @@ public class ShoppingListFragment extends Fragment {
     public static void updateList(){
         // update adapter
         groceries = getGroceryCollection().getGroceryList();
-        adapter.notifyDataSetChanged();
+        if(adapter != null){
+            adapter.notifyDataSetChanged();
+        }
     }
 }
