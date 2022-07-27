@@ -16,12 +16,29 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="25dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:backgroundTint="@color/turquoise"
             android:elevation="1dp"
             android:text="Log Out"
             android:textColor="@color/white"
             android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnResetPassword" />
+
+        <Button
+            android:id="@+id/btnResetPassword"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/turquoise"
+            android:elevation="1dp"
+            android:text="Reset Password"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnManageAccount" />
 

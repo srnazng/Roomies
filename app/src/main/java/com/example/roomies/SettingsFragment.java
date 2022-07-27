@@ -2,6 +2,7 @@ package com.example.roomies;
 
 import static com.example.roomies.model.CircleManager.getCurrentCircle;
 import static com.example.roomies.model.CircleManager.leaveCircle;
+import static com.example.roomies.model.CircleManager.passwordReset;
 import static com.example.roomies.utils.UserUtils.*;
 
 import android.content.ClipData;
@@ -20,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseUser;
+
 /**
  * Settings page
  */
@@ -28,14 +31,13 @@ public class SettingsFragment extends Fragment {
     private Button btnManageAccount;
     private Button btnManageCircle;
     private Button btnLeaveCircle;
+    private Button btnResetPassword;
     private TextView tvJoinCode;
     private ImageView ivClipboard;
 
     public static final String TAG = "SettingsFragment";
 
-    public SettingsFragment() {
-
-    }
+    public SettingsFragment() {}
 
     /**
      * @return A new instance of fragment SettingsFragment.
@@ -97,6 +99,15 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 logout(getActivity());
+            }
+        });
+
+        // reset password button
+        btnResetPassword = view.findViewById(R.id.btnResetPassword);
+        btnResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                passwordReset(getActivity(), ParseUser.getCurrentUser().getString("username"));
             }
         });
 

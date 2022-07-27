@@ -236,4 +236,21 @@ public class CircleManager {
         }
         return false;
     }
+
+    /**
+     * Reset password by sending email
+     * @param context
+     * @param email
+     */
+    public static void passwordReset(Context context, String email) {
+        // An e-mail will be sent with further instructions
+        ParseUser.requestPasswordResetInBackground(email, e -> {
+            if (e == null) {
+                // An email was successfully sent with reset instructions.
+                Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Something went wrong. Look at the ParseException to see what's up.
+            }
+        });
+    }
 }
