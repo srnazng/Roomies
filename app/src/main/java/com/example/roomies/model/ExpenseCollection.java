@@ -4,6 +4,7 @@ import static com.example.roomies.ExpenseFragment.getFilterInt;
 import static com.example.roomies.ExpenseFragment.updateExpenseList;
 import static com.example.roomies.model.CircleManager.getCurrentCircle;
 import static com.example.roomies.utils.ExpenseUtils.removeDollar;
+import static com.example.roomies.utils.Messaging.sendToDeviceGroup;
 import static com.example.roomies.utils.Utils.conversionBitmapParseFile;
 
 import android.app.Activity;
@@ -375,10 +376,16 @@ public class ExpenseCollection {
 
                 // Saves the new object.
                 // Notice that the SaveCallback is totally optional!
+                int finalI1 = i;
                 entity.saveInBackground(e -> {
                     if (e==null){
                         //Save was done
                         circleTransactions.add(entity);
+
+                        String title = "New house expense request!";
+                        String body = "You owe " + ParseUser.getCurrentUser().getString("name")
+                                + " for " + expense.getName();
+                        sendToDeviceGroup(transactionUsers.get(finalI1).getString("notificationKey"), title, body);
 
                         // all transactions successfully saved
                         if(finalI + 1 == transactionViews.size()){
