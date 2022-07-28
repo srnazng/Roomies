@@ -3,11 +3,11 @@ package com.example.roomies.model;
 import static com.example.roomies.ChoreFragment.updateChoreList;
 import static com.example.roomies.model.CircleManager.getChoreCollection;
 import static com.example.roomies.model.CircleManager.getCurrentCircle;
+import static com.example.roomies.utils.CalendarDayUtils.occursToday_dayFreq;
+import static com.example.roomies.utils.CalendarDayUtils.occursToday_monthFreq;
+import static com.example.roomies.utils.CalendarDayUtils.occursToday_weekFreq;
 import static com.example.roomies.utils.Utils.clearTime;
 import static com.example.roomies.utils.Utils.compareDates;
-import static com.example.roomies.utils.Utils.occursToday_dayFreq;
-import static com.example.roomies.utils.Utils.occursToday_monthFreq;
-import static com.example.roomies.utils.Utils.occursToday_weekFreq;
 
 import android.app.Activity;
 import android.content.Context;

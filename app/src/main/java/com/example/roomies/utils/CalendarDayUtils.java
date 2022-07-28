@@ -1,13 +1,10 @@
 package com.example.roomies.utils;
 
-import static com.example.roomies.utils.Session.isNetworkConnected;
 import static com.example.roomies.utils.Utils.clearTime;
 import static com.example.roomies.utils.Utils.compareDates;
-import static com.example.roomies.utils.Utils.occursToday_dayFreq;
-import static com.example.roomies.utils.Utils.occursToday_monthFreq;
-import static com.example.roomies.utils.Utils.occursToday_weekFreq;
+import static com.example.roomies.utils.Utils.getDaysDifference;
+import static com.example.roomies.utils.Utils.getWeeksDifference;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -490,4 +487,81 @@ public class CalendarDayUtils {
             calendarCache.clear();
         }
     }
+
+    /**
+     * determines if an event with daily recurrence occurs on a day
+     * @param startRecurrence   Start of recurrence
+     * @param freq              Frequency of days event occurs on
+     * @param today             Date being evaluated
+     * @return  whether the recurring event occurs on given date
+     */
+    public static boolean occursToday_dayFreq(Calendar startRecurrence, int freq, Calendar today){
+        clearTime(startRecurrence);
+        clearTime(today);
+
+        if(today.compareTo(startRecurrence) < 0){
+            return false;
+        }
+
+        int diff = getDaysDifference(startRecurrence.getTime(), today.getTime());
+
+        if(diff % freq == 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * determines if an event with weekly recurrence occurs on a day
+     * @param startRecurrence   Start of recurrence
+     * @param daysOfWeek        Days of week event occurs on
+     * @param freq              Frequency of weeks event occurs
+     * @param today             Date being evaluated
+     * @return  whether the recurring event occurs on given date
+     */
+    public static boolean occursToday_weekFreq(Calendar startRecurrence, String daysOfWeek, int freq, Calendar today){
+        clearTime(startRecurrence);
+        clearTime(today);
+
+        if(today.compareTo(startRecurrence) < 0){
+            return false;
+        }
+
+        long diff = getWeeksDifference(startRecurrence, today);
+        int dayOfWeek = today.get(Calendar.DAY_OF_WEEK) - 1;
+
+        if(!daysOfWeek.contains(dayOfWeek + ",")){
+            return false;
+        }
+
+        if(diff % freq != 0){
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * determines if an event with monthly recurrence occurs this month
+     * @param startRecurrence   Start of recurrence
+     * @param freq              Frequency of months event occurs on
+     * @param today             Date being evaluated
+     * @return whether the recurring event occurs on given date
+     */
+    public static boolean occursToday_monthFreq(Calendar startRecurrence, int freq, Calendar today){
+        clearTime(startRecurrence);
+        clearTime(today);
+
+        if(today.compareTo(startRecurrence) < 0){
+            return false;
+        }
+
+        long diff = Utils.getMonthsDifference(startRecurrence, today);
+        if(diff % freq == 0){
+            return true;
+        }
+
+        return false;
+    }
+
 }
