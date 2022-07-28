@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.model.CircleManager.getPoints;
+import static com.example.roomies.utils.UserUtils.getPoints;
 
 import androidx.appcompat.app.AppCompatActivity;
 

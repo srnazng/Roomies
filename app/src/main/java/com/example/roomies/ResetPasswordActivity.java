@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.model.CircleManager.passwordReset;
+import static com.example.roomies.utils.UserUtils.passwordReset;
 
 import androidx.appcompat.app.AppCompatActivity;
 

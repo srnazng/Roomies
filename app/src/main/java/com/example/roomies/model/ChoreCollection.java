@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 
 import com.example.roomies.GoogleSignInActivity;
+import com.example.roomies.utils.UserUtils;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -595,10 +596,10 @@ public class ChoreCollection {
 
     private boolean addPoints(ParseUser user, Chore chore, boolean completed){
         if(completed){
-            return CircleManager.addPoints(user, chore.getPoints());
+            return UserUtils.addPoints(user, chore.getPoints());
         }
         else{
-            return CircleManager.addPoints(user, -1 * chore.getPoints());
+            return UserUtils.addPoints(user, -1 * chore.getPoints());
         }
     }
 

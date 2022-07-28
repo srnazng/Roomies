@@ -2,7 +2,6 @@ package com.example.roomies;
 
 import static com.example.roomies.model.CircleManager.getCurrentCircle;
 import static com.example.roomies.model.CircleManager.leaveCircle;
-import static com.example.roomies.model.CircleManager.passwordReset;
 import static com.example.roomies.utils.UserUtils.*;
 
 import android.content.ClipData;

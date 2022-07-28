@@ -212,45 +212,4 @@ public class CircleManager {
         });
         clearAll();
     }
-
-    // get user's points in circle
-    public static int getPoints(ParseUser user){
-        for(UserCircle uc : userCircleList){
-            if(uc.getUser().getObjectId().equals(user.getObjectId())){
-                return uc.getPoints();
-            }
-        }
-        return 0;
-    }
-
-    // add to user's points in circle
-    public static boolean addPoints(ParseUser user, int num){
-        for(UserCircle uc : userCircleList){
-            if(uc.getUser().getObjectId().equals(user.getObjectId())){
-                 uc.addPoints(num);
-                 uc.saveInBackground(e -> {
-                     Log.i(TAG, "added points");
-                 });
-                 return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Reset password by sending email
-     * @param context
-     * @param email
-     */
-    public static void passwordReset(Context context, String email) {
-        // An e-mail will be sent with further instructions
-        ParseUser.requestPasswordResetInBackground(email, e -> {
-            if (e == null) {
-                // An email was successfully sent with reset instructions.
-                Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
-            } else {
-                // Something went wrong. Look at the ParseException to see what's up.
-            }
-        });
-    }
 }
