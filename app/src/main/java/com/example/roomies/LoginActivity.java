@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.Utils.loginUser;
+import static com.example.roomies.utils.UserUtils.loginUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,10 +18,10 @@ public class LoginActivity extends AppCompatActivity {
     public static final String TAG = "LoginActivity";
 
     private TextView tvRegister;
+    private TextView tvForgotPassword;
     private Button btnLogin;
     private EditText etEmailInput;
     private EditText etPasswordInput;
-    private TextView tvError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,15 @@ public class LoginActivity extends AppCompatActivity {
                 String username = etEmailInput.getText().toString();
                 String password = etPasswordInput.getText().toString();
                 loginUser(LoginActivity.this, username, password);
+            }
+        });
+
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                startActivity(i);
             }
         });
     }

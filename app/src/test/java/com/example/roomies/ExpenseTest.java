@@ -5,8 +5,10 @@ import static org.junit.Assert.assertNotEquals;
 
 import android.view.View;
 
+import com.example.roomies.model.ExpenseCollection;
 import com.parse.ParseException;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,8 +17,14 @@ import java.util.List;
 public class ExpenseTest {
     private List<View> transactionViews;
     private String expenseTotal;
+    private ExpenseCollection expenseCollection;
 
     public static final int NUM_ITEMS = 5;
+
+    @Before
+    public void init(){
+        expenseCollection = new ExpenseCollection();
+    }
 
     // success split expense
     @Test
@@ -67,19 +75,19 @@ public class ExpenseTest {
     // init circle expenses
     @Test
     public void testInitCircleExpenses() throws ParseException {
-        initCircleExpenses(null);
-        assertNotEquals(null, getCircleExpenses());
+        expenseCollection.initCircleExpenses(null);
+        assertNotEquals(null, expenseCollection.getCircleExpenses());
     }
 
     // init circle expenses
     @Test
     public void testInitCircleTransactions(){
-        initCircleTransactions(null);
-        assertNotEquals(null, getCircleTransactions());
-        assertNotEquals(null, getMyCompletedPayments());
-        assertNotEquals(null, getMyPendingPayments());
-        assertNotEquals(null, getMyCompletedRequests());
-        assertNotEquals(null, getMyPendingRequests());
+        expenseCollection.initCircleTransactions(null);
+        assertNotEquals(null, expenseCollection.getCircleTransactions());
+        assertNotEquals(null, expenseCollection.getMyCompletedPayments());
+        assertNotEquals(null, expenseCollection.getMyPendingPayments());
+        assertNotEquals(null, expenseCollection.getMyCompletedRequests());
+        assertNotEquals(null, expenseCollection.getMyPendingRequests());
     }
 
 }

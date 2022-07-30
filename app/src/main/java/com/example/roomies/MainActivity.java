@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.CircleUtils.getCurrentCircle;
+import static com.example.roomies.model.CircleManager.getCurrentCircle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_expenses:
                         // go to house expense screen
                         selectedFragment = ExpenseFragment.newInstance();
+                        break;
+                    case R.id.action_shopping_list:
+                        // go to shopping list screen
+                        selectedFragment = ShoppingListFragment.newInstance();
                         break;
                     case R.id.action_settings:
                         // go to settings screen (manage user account and circle)

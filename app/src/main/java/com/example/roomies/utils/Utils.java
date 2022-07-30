@@ -38,34 +38,6 @@ public class Utils {
     public static final String TAG = "Utils";
     public static final int GET_FROM_GALLERY = 3;
 
-    /**
-     * Sign in
-     * @param context
-     * @param username
-     * @param password
-     */
-    public static void loginUser(Context context, String username, String password){
-        Log.i(TAG, "attempt login");
-
-        // login in background thread
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if(e != null){
-                    // issue
-                    List<ParseUser> userList = new ArrayList<>();
-                    userList.add(user);
-                    ParseUser.pinAllInBackground(userList);
-                    Log.e(TAG, "Issue with login", e);
-                    Toast.makeText(context, "Incorrect login credentials", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Log.e(TAG, "login success");
-                Session.startSession(context);
-            }
-        });
-    }
-
     // format chore due date
     public static String formatDue(Chore chore, Calendar day){
         boolean isToday = (compareDates(day, Calendar.getInstance()) == 0);
@@ -226,70 +198,6 @@ public class Utils {
         if (c1.get(Calendar.MONTH) != c2.get(Calendar.MONTH))
             return c1.get(Calendar.MONTH) - c2.get(Calendar.MONTH);
         return c1.get(Calendar.DAY_OF_MONTH) - c2.get(Calendar.DAY_OF_MONTH);
-    }
-
-    /**
-     * determines if an event with daily recurrence occurs on a day
-     * @param startRecurrence   Start of recurrence
-     * @param freq              Frequency of days event occurs on
-     * @param today             Date being evaluated
-     * @return  whether the recurring event occurs on given date
-     */
-    public static boolean occursToday_dayFreq(Calendar startRecurrence, int freq, Calendar today){
-        clearTime(startRecurrence);
-        clearTime(today);
-
-        int diff = getDaysDifference(startRecurrence.getTime(), today.getTime());
-
-        if(diff % freq == 0){
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * determines if an event with weekly recurrence occurs on a day
-     * @param startRecurrence   Start of recurrence
-     * @param daysOfWeek        Days of week event occurs on
-     * @param freq              Frequency of weeks event occurs
-     * @param today             Date being evaluated
-     * @return  whether the recurring event occurs on given date
-     */
-    public static boolean occursToday_weekFreq(Calendar startRecurrence, String daysOfWeek, int freq, Calendar today){
-        clearTime(startRecurrence);
-        clearTime(today);
-
-        long diff = getWeeksDifference(startRecurrence, today);
-        int dayOfWeek = today.get(Calendar.DAY_OF_WEEK) - 1;
-
-        if(!daysOfWeek.contains(dayOfWeek + ",")){
-            return false;
-        }
-
-        if(diff % freq != 0){
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * determines if an event with monthly recurrence occurs on a day
-     * @param startRecurrence   Start of recurrence
-     * @param freq              Frequency of months event occurs on
-     * @param today             Date being evaluated
-     * @return whether the recurring event occurs on given date
-     */
-    public static boolean occursToday_monthFreq(Calendar startRecurrence, int freq, Calendar today){
-        clearTime(startRecurrence);
-        clearTime(today);
-
-        long diff = Utils.getMonthsDifference(startRecurrence, today);
-        if(diff % freq == 0){
-            return true;
-        }
-
-        return false;
     }
 
     /**

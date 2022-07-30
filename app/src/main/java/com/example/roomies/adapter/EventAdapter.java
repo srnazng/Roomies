@@ -4,7 +4,6 @@ import static com.example.roomies.utils.ChoreUtils.setPriorityColors;
 import static com.example.roomies.utils.ChoreUtils.toDetail;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

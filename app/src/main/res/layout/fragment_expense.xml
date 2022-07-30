@@ -86,6 +86,7 @@
                 android:layout_marginEnd="5dp"
                 android:checked="true"
                 android:text="Pending"
+                android:textColor="@color/grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/checkCompleted"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -97,6 +98,7 @@
                 android:layout_marginEnd="15dp"
                 android:checked="true"
                 android:text="Completed"
+                android:textColor="@color/grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

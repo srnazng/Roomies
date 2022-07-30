@@ -1,6 +1,6 @@
 package com.example.roomies;
 
-import static com.example.roomies.utils.ExpenseUtils.editExpense;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
 import static com.example.roomies.utils.ExpenseUtils.removeDollar;
 import static com.example.roomies.utils.Utils.GET_FROM_GALLERY;
 import static com.example.roomies.utils.Utils.getPath;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.example.roomies.model.Expense;
 import com.example.roomies.utils.NumberTextWatcher;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class EditExpenseActivity extends AppCompatActivity {
@@ -61,7 +60,7 @@ public class EditExpenseActivity extends AppCompatActivity {
         btnUpdateExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editExpense(EditExpenseActivity.this,
+                getExpenseCollection().editExpense(EditExpenseActivity.this,
                         expense,
                         etEditExpenseName.getText().toString(),
                         Float.parseFloat(removeDollar(etEditTotal.getText().toString())),

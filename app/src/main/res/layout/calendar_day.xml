@@ -32,6 +32,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="Tues"
+        android:textColor="@color/grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,6 +43,7 @@
         android:layout_marginStart="64dp"
         android:clickable="false"
         android:text="28"
+        android:textColor="@color/grey"
         app:layout_constraintBottom_toBottomOf="@+id/tvDayOfWeek"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvDayOfWeek"

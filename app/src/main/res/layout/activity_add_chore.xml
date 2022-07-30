@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/background"
     tools:context=".AddChoreActivity">
 
     <ScrollView
@@ -15,8 +16,8 @@
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
 
             <TextView
                 android:id="@+id/tvChoreTitle"
@@ -95,6 +96,7 @@
                 android:layout_marginTop="10dp"
                 android:minHeight="48dp"
                 android:text="All day"
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/choreDescription" />
@@ -104,6 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
+                android:textColor="@color/grey"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
                 tools:text="Thu Jun 16, 2022" />
@@ -113,6 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="30dp"
+                android:textColor="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/switchAllDay"
                 tools:text="3:00 PM" />
@@ -158,7 +162,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="High" />
+                    android:text="High"
+                    android:textColor="@color/grey" />
 
                 <RadioButton
                     android:id="@+id/rbMed"
@@ -166,14 +171,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:checked="true"
-                    android:text="Medium" />
+                    android:text="Medium"
+                    android:textColor="@color/grey" />
 
                 <RadioButton
                     android:id="@+id/rbLow"
                     android:layout_width="86dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Low" />
+                    android:text="Low"
+                    android:textColor="@color/grey" />
 
             </RadioGroup>
 
@@ -275,6 +282,7 @@
                 android:layout_marginTop="5dp"
                 android:minHeight="48dp"
                 android:text="Create Google Calendar Event"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="@+id/spDuration"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView9"
@@ -287,6 +295,7 @@
                 android:layout_marginStart="10dp"
                 android:minHeight="48dp"
                 android:text="Invite Assignees to Google Calendar Event"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="@+id/spDuration"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/imageView10"
@@ -312,6 +321,34 @@
                 app:layout_constraintTop_toBottomOf="@+id/switchGoogleCalendar"
                 app:srcCompat="@drawable/invite"
                 app:tint="@color/black" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/points"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="10dp"
+                android:clipToPadding="false"
+                android:elevation="1dp"
+                android:textAlignment="textStart"
+                app:boxBackgroundColor="@color/white"
+                app:boxCollapsedPaddingTop="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/switchInvite">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPoints"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="1dp"
+                    android:hint="Points"
+                    android:inputType="number"
+                    android:text="1"
+                    android:textColor="@color/black" />
+
+            </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

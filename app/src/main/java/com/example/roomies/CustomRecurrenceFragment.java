@@ -59,6 +59,8 @@ public class CustomRecurrenceFragment extends DialogFragment {
     private static Integer numOccurrences;
     private List<DaysOfWeek> daysOfWeek;
 
+    Recurrence recurrence;
+
     public static final String TAG = "CustomRecurrenceFragment";
 
     public CustomRecurrenceFragment() {
@@ -73,9 +75,10 @@ public class CustomRecurrenceFragment extends DialogFragment {
     public OnInputListener dialogListener;
 
     // create new dialog
-    public static CustomRecurrenceFragment newInstance() {
+    public static CustomRecurrenceFragment newInstance(Recurrence r) {
         CustomRecurrenceFragment frag = new CustomRecurrenceFragment();
         Bundle args = new Bundle();
+        args.putParcelable("recurrence", r);
         frag.setArguments(args);
         return frag;
     }
@@ -95,6 +98,7 @@ public class CustomRecurrenceFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        recurrence = getArguments().getParcelable("recurrence");
         return inflater.inflate(R.layout.fragment_custom_recurrence, container);
     }
 
@@ -187,15 +191,6 @@ public class CustomRecurrenceFragment extends DialogFragment {
                 else{
                     layoutWeek.setVisibility(View.GONE);
                 }
-
-                /**
-                if(freqType.equals("month") || freqType.equals("months")){
-                    layoutMonth.setVisibility(View.VISIBLE);
-                }
-                else{
-                    layoutMonth.setVisibility(View.GONE);
-                }
-                 */
             }
         });
 
@@ -237,7 +232,9 @@ public class CustomRecurrenceFragment extends DialogFragment {
 
     // create Recurrence object
     public void submitRecurrence(){
-        Recurrence recurrence = new Recurrence();
+        if(recurrence == null){
+            recurrence = new Recurrence();
+        }
         recurrence.setFrequency(Integer.parseInt(etNumber.getText().toString()));
 
         String freq = spFrequency.getSelectedItem().toString();

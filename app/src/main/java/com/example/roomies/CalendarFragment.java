@@ -1,5 +1,7 @@
 package com.example.roomies;
 
+import static com.example.roomies.model.CircleManager.getChoreCollection;
+import static com.example.roomies.model.CircleManager.getExpenseCollection;
 import static com.example.roomies.utils.CalendarDayUtils.*;
 import static com.example.roomies.utils.Utils.*;
 
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +23,7 @@ import android.widget.Toast;
 
 import com.example.roomies.adapter.CalendarAdapter;
 import com.example.roomies.model.Chore;
-import com.example.roomies.utils.ChoreUtils;
+import com.example.roomies.model.ChoreCollection;
 
 import java.util.Calendar;
 import java.util.List;
@@ -31,6 +34,7 @@ import java.util.List;
 public class CalendarFragment extends Fragment {
     private RecyclerView rvCalendar;
     private CalendarAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
 
     private Switch switchFilter;
     private TextView tvMonth;
@@ -73,8 +77,8 @@ public class CalendarFragment extends Fragment {
         rvCalendar = view.findViewById(R.id.rvCalendar);
 
         // Initialize
-        myChores = ChoreUtils.getMyChores();
-        allChores = ChoreUtils.getCircleChores();
+        myChores = getChoreCollection().getMyChores();
+        allChores = getChoreCollection().getCircleChores();
 
         // switch
         switchFilter = view.findViewById(R.id.switchFilter);
@@ -82,6 +86,17 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 updateMyChores();
+            }
+        });
+
+        // Pull down to refresh
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.calendarSwipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh expense lists
+                refreshMyChores();
+                swipeContainer.setRefreshing(false);
             }
         });
 
@@ -104,7 +119,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 getFirstOfMonth().add(Calendar.MONTH, 1);
                 tvMonth.setText(getMonthForInt(getFirstOfMonth().get(Calendar.MONTH)) + " " + getFirstOfMonth().get(Calendar.YEAR));
-                updateCalendar(getActivity(), myChores, getFirstOfMonth(), adapter, rvCalendar);
+                updateCalendar(myChores, getFirstOfMonth(), adapter, switchFilter.isChecked(), rvCalendar);
             }
         });
 
@@ -115,7 +130,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View v) {
                 getFirstOfMonth().add(Calendar.MONTH, -1);
                 tvMonth.setText(getMonthForInt(getFirstOfMonth().get(Calendar.MONTH)) + " " + getFirstOfMonth().get(Calendar.YEAR));
-                updateCalendar(getActivity(), myChores, getFirstOfMonth(), adapter, rvCalendar);
+                updateCalendar( myChores, getFirstOfMonth(), adapter, switchFilter.isChecked(), rvCalendar);
             }
         });
         return view;
@@ -123,13 +138,29 @@ public class CalendarFragment extends Fragment {
 
     // get chores that are assigned to current user
     public void updateMyChores(){
-        if(switchFilter.isChecked() && ChoreUtils.getMyChores() != null){
+        if(switchFilter.isChecked() && getChoreCollection().getMyChores() != null){
             // create each day item in calendar
-            updateCalendar(getActivity(), ChoreUtils.getMyChores(), getFirstOfMonth(), adapter ,rvCalendar);
+            updateCalendar(getChoreCollection().getMyChores(), getFirstOfMonth(), adapter , switchFilter.isChecked(), rvCalendar);
         }
-        else if(!switchFilter.isChecked() && ChoreUtils.getCircleChores() != null){
+        else if(!switchFilter.isChecked() && getChoreCollection().getCircleChores() != null){
             // create each day item in calendar
-            updateCalendar(getActivity(), ChoreUtils.getCircleChores(), getFirstOfMonth(), adapter ,rvCalendar);
+            updateCalendar(getChoreCollection().getCircleChores(), getFirstOfMonth(), adapter , switchFilter.isChecked(), rvCalendar);
+        }
+        else if(myChores != null && myChores.isEmpty()){
+            Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();
+        }
+        else { Log.e(TAG, "Error retrieving chores"); }
+    }
+
+    public void refreshMyChores(){
+        Log.e(TAG, "refresh chores");
+        if(switchFilter.isChecked() && getChoreCollection().getMyChores() != null){
+            // create each day item in calendar
+            refreshCalendar(getChoreCollection().getMyChores(), getFirstOfMonth(), adapter , switchFilter.isChecked(), rvCalendar);
+        }
+        else if(!switchFilter.isChecked() && getChoreCollection().getCircleChores() != null){
+            // create each day item in calendar
+            refreshCalendar(getChoreCollection().getCircleChores(), getFirstOfMonth(), adapter , switchFilter.isChecked(), rvCalendar);
         }
         else if(myChores != null && myChores.isEmpty()){
             Toast.makeText(getActivity(), "No chores today!", Toast.LENGTH_SHORT).show();

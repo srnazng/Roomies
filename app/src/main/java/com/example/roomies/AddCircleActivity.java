@@ -1,11 +1,14 @@
 package com.example.roomies;
 
+import static com.example.roomies.utils.UserUtils.logout;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roomies.model.Circle;
@@ -18,6 +21,7 @@ import org.parceler.Parcels;
 public class AddCircleActivity extends AppCompatActivity {
     private Button btnCreateCircle;
     private Button btnJoin;
+    private TextView tvLogOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,14 @@ public class AddCircleActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(AddCircleActivity.this, JoinCircleActivity.class);
                 startActivity(i);
+            }
+        });
+
+        tvLogOut = findViewById(R.id.tvLogOut);
+        tvLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout(AddCircleActivity.this);
             }
         });
     }
