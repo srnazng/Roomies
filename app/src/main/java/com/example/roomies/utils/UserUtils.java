@@ -8,13 +8,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.roomies.LoginActivity;
+import com.example.roomies.MainActivity;
 import com.example.roomies.model.UserCircle;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class UserUtils {
 
@@ -35,14 +38,15 @@ public class UserUtils {
             public void done(ParseUser user, ParseException e) {
                 if(e != null){
                     // issue
-                    List<ParseUser> userList = new ArrayList<>();
-                    userList.add(user);
-                    ParseUser.pinAllInBackground(userList);
                     Log.e(TAG, "Issue with login", e);
                     Toast.makeText(context, "Incorrect login credentials", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Log.e(TAG, "login success");
+                List<ParseUser> userList = new ArrayList<>();
+                userList.add(user);
+                ParseUser.pinAllInBackground(userList);
+
+                Log.i(TAG, "login success " + ParseUser.getCurrentUser().getString("name"));
                 Session.startSession(context);
                 ((Activity)context).finish();
             }
@@ -107,5 +111,58 @@ public class UserUtils {
                 // Something went wrong. Look at the ParseException to see what's up.
             }
         });
+    }
+
+
+    public static void createAccount(Context context, String name, String email, String password, String password2){
+        if(name.isEmpty()){
+            Toast.makeText(context, "Name is a required field", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!isEmail(email)){
+            Toast.makeText(context, "Enter a valid email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(password.length() < 8){
+            Toast.makeText(context, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!password.equals(password2)){
+            Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create the ParseUser
+        ParseUser user = new ParseUser();
+        // Set core properties
+        user.setUsername(email);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.put("name", name);
+
+        // Invoke signUpInBackground
+        user.signUpInBackground(new SignUpCallback() {
+            public void done(ParseException e) {
+                if (e == null) {
+                    loginUser(context, email, password);
+                    Intent i = new Intent(context, MainActivity.class);
+                    context.startActivity(i);
+                    ((Activity)context).finish();
+                } else {
+                    Log.e(TAG, "Sign up failed " + e);
+                    Toast.makeText(context, "Sign up error: " + e, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private static boolean isEmail(String emailAddress) {
+        String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        return Pattern.compile(regexPattern)
+                .matcher(emailAddress)
+                .matches();
     }
 }

@@ -45,9 +45,18 @@ public class Session {
     }
 
     public static void endSession(){
-        getChoreCollection().clearAll();
-        getExpenseCollection().clearAll();
-        getGroceryCollection().clearAll();
+        if(getChoreCollection() != null){
+            getChoreCollection().clearAll();
+        }
+
+        if(getExpenseCollection() != null){
+            getExpenseCollection().clearAll();
+        }
+
+        if(getGroceryCollection() != null){
+            getGroceryCollection().clearAll();
+        }
+
         CircleManager.clearAll();
         setFirstOfMonth(null);
         clearCalendarCache();

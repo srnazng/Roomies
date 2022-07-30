@@ -52,7 +52,9 @@ public class CircleManager {
      */
     public static void clearAll(){
         currentCircle = null;
-        userCircleList.clear();
+        if(userCircleList != null){
+            userCircleList.clear();
+        }
     }
 
     /**

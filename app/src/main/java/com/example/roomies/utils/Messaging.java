@@ -74,6 +74,9 @@ public class Messaging extends FirebaseMessagingService {
     public static void clearFirebaseInstance(boolean withLogout){
         Log.i(TAG, "Delete token");
         FirebaseMessaging.getInstance().deleteToken();
+        if(ParseUser.getCurrentUser() == null){
+            Log.e(TAG, "no current user");
+        }
         ParseUser.getCurrentUser().put("registerCircleNotifs", false);
         ParseUser.getCurrentUser().put("notificationToken", "");
         ParseUser.getCurrentUser().put("notificationKey", "");
